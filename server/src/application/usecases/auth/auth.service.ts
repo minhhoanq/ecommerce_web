@@ -63,20 +63,20 @@ export class AuthService implements IAuthService {
 
             await sendMail(data);
 
-            // const time = Date.now();
-            // const date = new Date(time);
+            const time = Date.now();
+            const date = new Date(time);
 
-            // const deleteUser = async () => {
-            //     await this._userRepo.delete(newUser.id);
-            // };
+            const deleteUser = async () => {
+                await this._userRepo.delete(newUser.id);
+            };
 
-            // console.log(date.getTime());
-            // schedule.scheduleJob(
-            //     date.getTime() + 5 * 60 * 1000,
-            //     async function () {
-            //         deleteUser();
-            //     }
-            // );
+            console.log(date.getTime());
+            schedule.scheduleJob(
+                date.getTime() + 5 * 60 * 1000,
+                async function () {
+                    deleteUser();
+                }
+            );
 
             return true;
         }
