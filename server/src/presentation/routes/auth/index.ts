@@ -6,6 +6,6 @@ import { TYPES } from "../../../shared/constants/types";
 const router = express.Router();
 const controller = container.get<AuthController>(TYPES.AuthController);
 
-router.get("/signup", controller.register.bind(controller));
+router.post("/signup", controller.signup.bind(controller));
 
 export default router;

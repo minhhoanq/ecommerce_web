@@ -8,8 +8,7 @@ export const userBodySchema = {
     email: z.string({ required_error: "email is required" }),
     password: z.string({ required_error: "password is required" }),
     username: z.string({ required_error: "name is required" }),
-    phoneNumber: z.string({ required_error: "phoneNumber is required" }),
-    role: z.number({ required_error: "role is required" }),
+    roleId: z.number({ required_error: "role is required" }),
 };
 
 export const createUserSchema = z.object({
