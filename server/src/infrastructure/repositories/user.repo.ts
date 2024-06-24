@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
+import "reflect-metadata";
 import User from "../../domain/entities/user";
 import { IUserRepository } from "../../domain/repositories/user.interface";
 
+@injectable()
 export default class UserRepoImpl implements IUserRepository {
     findByEmail(email: string): Promise<User | null> {
         throw new Error("Method not implemented.");

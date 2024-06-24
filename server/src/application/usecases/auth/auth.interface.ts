@@ -1,5 +1,5 @@
-import User from "../../domain/entities/user";
-import { Tokens } from "../../shared/types/tokens";
+import User from "../../../domain/entities/user";
+import { Tokens } from "../../../shared/types/tokens";
 
 export default interface IAuthService {
     signup(): Promise<User>;

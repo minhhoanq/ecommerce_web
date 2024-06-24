@@ -1,4 +1,7 @@
-export const TYPES = {
-    AuthServiceLocator: Symbol.for("AuthServiceLocator"),
-    IUserReadOnlyRepository: Symbol.for("IuserReadOnlyRepository"),
+const TYPES = {
+    AuthService: Symbol.for("AuthService"),
+    UserRepository: Symbol.for("UserRepository"),
+    AuthController: Symbol.for("AuthController"),
 };
+
+export { TYPES };

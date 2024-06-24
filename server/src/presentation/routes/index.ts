@@ -1,8 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import authRouter from "./auth/index";
 const router = express.Router();
 
-router.use("/auth", (req: Request, res: Response) => {
-    return res.json("check");
-});
+router.use("/auth", authRouter);
 
 export default router;
