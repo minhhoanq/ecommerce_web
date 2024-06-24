@@ -15,14 +15,6 @@ export const createTokensPair = async (
             expiresIn: "7 days",
         });
 
-        JWT.verify(accessToken, publicKey, (err, decode) => {
-            if (err) {
-                console.log("err: ", err);
-            } else {
-                console.log(decode);
-            }
-        });
-
         return { accessToken, refreshToken };
     } catch (error) {}
 };

@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { TYPES } from "../../shared/constants/types";
 import IAuthService from "../../application/usecases/auth/auth.interface";
 import { NextFunction, Request, Response } from "express";
-import { SuccessResponse } from "../../shared/core/success.response";
+import { Created, SuccessResponse } from "../../shared/core/success.response";
 
 @injectable()
 export default class AuthController {
@@ -21,6 +21,17 @@ export default class AuthController {
             new SuccessResponse({
                 message: "OK!",
                 metadata: await this._authService.signup(req.body),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async finalSignup(req: Request, res: Response, next: NextFunction) {
+        try {
+            new Created({
+                message: "CREATED!",
+                metadata: await this._authService.finalSignup(req.body),
             }).send(res);
         } catch (error) {
             next(error);

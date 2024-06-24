@@ -23,3 +23,13 @@ export const updateUserSchema = z.object({
 });
 
 export type UpdateUserDTO = TypeOf<typeof updateUserSchema>["body"];
+
+const codeVerify = {
+    code: z.string({ required_error: "Missing code verify!" }),
+};
+
+const codeVerifySchema = z.object({
+    body: z.object(codeVerify),
+});
+
+export type CodeVerifyDTO = TypeOf<typeof codeVerifySchema>["body"];
