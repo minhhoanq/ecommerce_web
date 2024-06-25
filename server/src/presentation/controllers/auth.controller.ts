@@ -70,4 +70,12 @@ export default class AuthController {
             next(error);
         }
     }
+
+    async test(req: Request, res: Response, next: NextFunction) {
+        try {
+            return res.json("test access");
+        } catch (error) {
+            next(error);
+        }
+    }
 }

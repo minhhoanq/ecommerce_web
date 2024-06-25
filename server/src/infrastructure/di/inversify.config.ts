@@ -9,6 +9,10 @@ import { IKeyStoreRepository } from "../../domain/repositories/keyStore.interfac
 import { KeyStoreRepoImpl } from "../repositories/keyStore.repo";
 import { IKeyStoreService } from "../../application/usecases/keystore/keystore.interface";
 import { KeyStoreService } from "../../application/usecases/keystore/keystrore.service";
+import { IRoleResourceRepository } from "../../domain/repositories/roleResource.interface";
+import { RoleResourceRepoImpl } from "../repositories/roleResource.repo";
+import { Auth } from "../../presentation/auth/auth.util";
+import { Access } from "../../presentation/auth/rbac";
 
 const container = new Container();
 
@@ -20,5 +24,11 @@ container
     .bind<IKeyStoreRepository>(TYPES.KeyStoreRepository)
     .to(KeyStoreRepoImpl);
 container.bind<IKeyStoreService>(TYPES.KeyStoreService).to(KeyStoreService);
-
+//
+container
+    .bind<IRoleResourceRepository>(TYPES.RoleResourceRepository)
+    .to(RoleResourceRepoImpl);
+container.bind(TYPES.Auth).to(Auth);
+//
+container.bind(TYPES.Access).to(Access);
 export { container };

@@ -10,51 +10,18 @@ import { TYPES } from "../../shared/constants/types";
 import { IKeyStoreRepository } from "../../domain/repositories/keyStore.interface";
 import crypto from "crypto";
 
-export const createTokensPair = async (
-    payload: any,
-    privateKey: string,
-    publicKey: string
-) => {
-    try {
-        //access token
-        const accessToken = await JWT.sign(payload, publicKey, {
-            expiresIn: "2 days",
-        });
-
-        const refreshToken = await JWT.sign(payload, privateKey, {
-            expiresIn: "7 days",
-        });
-
-        return { accessToken, refreshToken };
-    } catch (error) {}
-};
-
-export const createPasswordChangedToken = () => {
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const passwordResetToken = crypto
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
-    const passwordResetExpires = String(Date.now() + 10 * 60 * 1000);
-    return {
-        resetToken,
-        passwordResetToken,
-        passwordResetExpires,
-    };
-};
-
-interface TokenData {
+export interface TokenData {
     userId: number;
     roleId: number;
     shopId: number;
 }
 
 @injectable()
-export class auth {
+export class Auth {
     private _keyStoreRepo: IKeyStoreRepository;
     constructor(
         @inject(TYPES.KeyStoreRepository)
-        private keyStoreRepo: IKeyStoreRepository
+        keyStoreRepo: IKeyStoreRepository
     ) {
         this._keyStoreRepo = keyStoreRepo;
     }

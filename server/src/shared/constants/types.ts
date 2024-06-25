@@ -6,6 +6,10 @@ const TYPES = {
     //KeyStore
     KeyStoreRepository: Symbol.for("KeyStoreRepository"),
     KeyStoreService: Symbol.for("KeyStoreService"),
+    //RoleResource
+    RoleResourceRepository: Symbol.for("RoleResourceRepository"),
+    Auth: Symbol.for("Auth"),
+    Access: Symbol.for("Access"),
 };
 
 export { TYPES };

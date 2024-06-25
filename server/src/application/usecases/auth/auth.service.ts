@@ -13,16 +13,16 @@ import {
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { IKeyStoreService } from "../keystore/keystore.interface";
-import {
-    createPasswordChangedToken,
-    createTokensPair,
-} from "../../../presentation/auth/auth.util";
 import sendMail from "../../../shared/utils/httpStatusCode/sendMail";
 import makeVerification from "uniqid";
 import { ConfirmSignup } from "../../../shared/utils/templateHtml/confirmSignup";
 import schedule from "node-schedule";
 import { CodeVerifyDTO, CreateUserDTO, SigninDTO } from "../../dtos/user.dto";
 import { ConfirmResetPassword } from "../../../shared/utils/templateHtml/confirmResetPassword";
+import {
+    createPasswordChangedToken,
+    createTokensPair,
+} from "../../../shared/utils/auth";
 
 @injectable()
 export class AuthService implements IAuthService {
