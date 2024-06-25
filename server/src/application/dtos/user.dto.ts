@@ -1,46 +1,93 @@
-import { z, TypeOf } from "zod";
+import { z } from "zod";
 
-export const userIdSchema = z.object({
-    id: z.number({ required_error: "id is required!" }),
+//create user dto
+const createUserSchema = z.object({
+    username: z.string({ required_error: "Username can't empty!" }),
+    email: z.string({ required_error: "Email can't empty!" }),
+    password: z.string({ required_error: "Password can't empty!" }),
+    roleId: z.number({ required_error: "Role id can't empty!" }),
 });
 
-export const userBodySchema = {
-    email: z.string({ required_error: "email is required" }),
-    password: z.string({ required_error: "password is required" }),
-    username: z.string({ required_error: "name is required" }),
-    roleId: z.number({ required_error: "role is required" }),
-};
+type CreateUserDTO = z.infer<typeof createUserSchema>;
 
-export const createUserSchema = z.object({
-    body: z.object(userBodySchema),
+//update user dto
+const updateUserSchema = z.object({
+    username: z.string().optional(),
+    firstName: z.string().min(1, "First name is required!").optional(),
+    lastName: z.string().min(1, "Last name is required!").optional(),
+    email: z.string().optional(),
+    password: z.string().optional(),
+    avatar: z.string().optional(),
+    gender: z.string().optional(),
+    dob: z.string().optional(),
+    phone: z.number().optional(),
+    roleId: z.number().optional(),
+    status: z.boolean().optional(),
+    isVerify: z.boolean().optional(),
+    passwordChangedAt: z.string().optional(),
+    passwordResetToken: z.string().optional(),
+    passwordResetExpires: z.string().optional(),
 });
 
-export type CreateUserDTO = TypeOf<typeof createUserSchema>["body"];
+type UpdateUserDTO = z.infer<typeof updateUserSchema>;
 
-export const updateUserSchema = z.object({
-    params: userIdSchema,
-    body: z.object(userBodySchema).partial(),
-});
-
-export type UpdateUserDTO = TypeOf<typeof updateUserSchema>["body"];
-
-const codeVerify = {
-    code: z.string({ required_error: "Missing code verify!" }),
-};
-
+// code verify dto
 const codeVerifySchema = z.object({
-    body: z.object(codeVerify),
+    code: z.string({ required_error: "Missing code verify!" }),
 });
 
-export type CodeVerifyDTO = TypeOf<typeof codeVerifySchema>["body"];
+type CodeVerifyDTO = z.infer<typeof codeVerifySchema>;
 
-const signin = {
+// sign in
+const signinSchema = z.object({
     email: z.string({ required_error: "Email is required!" }),
-    password: z.string({ required_error: "password is required" }),
-};
-
-const signSchema = z.object({
-    body: z.object(signin),
+    password: z.string({ required_error: "Password is required!" }),
 });
 
-export type SigninDTO = TypeOf<typeof signSchema>["body"];
+type SigninDTO = z.infer<typeof signinSchema>;
+
+//reset password
+const resetPasswordSchema = z.object({
+    password: z.string({ required_error: "Missing password!" }),
+    tokenPassword: z.string({ required_error: "Missing token password!" }),
+});
+
+type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;
+
+//find first user
+//update user dto
+const findFirstUserSchema = z.object({
+    id: z.number().optional(),
+    username: z.string().optional(),
+    firstName: z.string().min(1, "First name is required!").optional(),
+    lastName: z.string().min(1, "Last name is required!").optional(),
+    email: z.string().optional(),
+    password: z.string().optional(),
+    avatar: z.string().optional(),
+    gender: z.string().optional(),
+    dob: z.string().optional(),
+    phone: z.number().optional(),
+    roleId: z.number().optional(),
+    status: z.boolean().optional(),
+    isVerify: z.boolean().optional(),
+    passwordChangedAt: z.string().optional(),
+    passwordResetToken: z.string().optional(),
+    passwordResetExpires: z.string().optional(),
+});
+
+type FindFirstUserDTO = z.infer<typeof findFirstUserSchema>;
+
+export {
+    createUserSchema,
+    CreateUserDTO,
+    updateUserSchema,
+    UpdateUserDTO,
+    codeVerifySchema,
+    CodeVerifyDTO,
+    signinSchema,
+    SigninDTO,
+    resetPasswordSchema,
+    ResetPasswordDTO,
+    findFirstUserSchema,
+    FindFirstUserDTO,
+};

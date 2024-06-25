@@ -1,7 +1,13 @@
 import { KeyStore } from "../../../domain/entities/keyStore";
+import {
+    CreateKeyStoreDTO,
+    DeleteKeyStoreDTO,
+    UpdateKeyStoreDTO,
+} from "../../dtos/keystore.dto";
 
 export interface IKeyStoreService {
-    createKeyStore(data: any): Promise<KeyStore>;
+    createKeyStore(data: CreateKeyStoreDTO): Promise<KeyStore>;
     findKeyStrore(userId: number): Promise<KeyStore | null>;
-    updateKeyStore(userId: number, publicKey: string): Promise<any>;
+    updateKeyStore(data: UpdateKeyStoreDTO): Promise<any>;
+    deleteKeyStore(body: DeleteKeyStoreDTO): Promise<boolean>;
 }

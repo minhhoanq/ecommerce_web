@@ -48,4 +48,26 @@ export default class AuthController {
             next(error);
         }
     }
+
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.forgotPassword(req.body),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async resetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.resetPassword(req.body),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

@@ -8,16 +8,21 @@ import { IUserRepository } from "../../../domain/repositories/user.interface";
 import {
     AuthFailureError,
     BadRequestError,
+    NotFoundError,
 } from "../../../shared/core/error.response";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { IKeyStoreService } from "../keystore/keystore.interface";
-import { createTokensPair } from "../../../domain/auth/auth.util";
-import { CodeVerifyDTO, CreateUserDTO } from "../../dtos/user.dto";
+import {
+    createPasswordChangedToken,
+    createTokensPair,
+} from "../../../presentation/auth/auth.util";
 import sendMail from "../../../shared/utils/httpStatusCode/sendMail";
 import makeVerification from "uniqid";
 import { ConfirmSignup } from "../../../shared/utils/templateHtml/confirmSignup";
 import schedule from "node-schedule";
+import { CodeVerifyDTO, CreateUserDTO, SigninDTO } from "../../dtos/user.dto";
+import { ConfirmResetPassword } from "../../../shared/utils/templateHtml/confirmResetPassword";
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -84,11 +89,9 @@ export class AuthService implements IAuthService {
         return false;
     }
 
-    async finalSignup({
-        codeVerify,
-    }: {
-        codeVerify: CodeVerifyDTO;
-    }): Promise<{ user: User; tokens: Tokens | undefined } | null> {
+    async finalSignup(
+        codeVerify: CodeVerifyDTO
+    ): Promise<{ user: User; tokens: Tokens | undefined } | null> {
         console.log(codeVerify);
         const userExist = await this._userRepo.findByCodeVerify(codeVerify);
 
@@ -100,10 +103,9 @@ export class AuthService implements IAuthService {
         userExist.email = atob(userExist.email.split("@")[0]);
         console.log(userExist.email, userExist.id);
 
-        const updateUser = await this._userRepo.update(
-            userExist.id,
-            userExist.email
-        );
+        const updateUser = await this._userRepo.update(userExist.id, {
+            email: userExist.email,
+        });
         if (!updateUser) throw new BadRequestError("Error!");
 
         const publicKey = crypto.randomBytes(64).toString("hex");
@@ -114,6 +116,7 @@ export class AuthService implements IAuthService {
         const publicKeyString = await this._keyStoreService.createKeyStore({
             userId: userExist.id,
             publicKey: publicKey,
+            privateKey: privateKey,
         });
 
         if (!publicKeyString) {
@@ -126,11 +129,15 @@ export class AuthService implements IAuthService {
                 email: userExist.email,
                 roleId: userExist.roleId,
             },
-            publicKey,
-            privateKey
+            publicKeyString.publicKey,
+            publicKeyString.privateKey
         );
 
         console.log("tokens: ", tokens);
+        await this._keyStoreService.updateKeyStore({
+            userId: userExist.id,
+            refreshToken: tokens?.refreshToken,
+        });
 
         return {
             user: userExist,
@@ -138,10 +145,9 @@ export class AuthService implements IAuthService {
         };
     }
 
-    async signin(user: {
-        email: string;
-        password: string;
-    }): Promise<{ user: User; tokens: Tokens | undefined } | null> {
+    async signin(
+        user: SigninDTO
+    ): Promise<{ user: User; tokens: Tokens | undefined } | null> {
         const { email, password } = user;
         //check user exist
         const userExist = await this._userRepo.findByEmail(email);
@@ -165,11 +171,16 @@ export class AuthService implements IAuthService {
         // const
 
         if (keyStore) {
-            await this._keyStoreService.updateKeyStore(userExist.id, publicKey);
+            await this._keyStoreService.updateKeyStore({
+                userId: userExist.id,
+                publicKey,
+                privateKey,
+            });
         } else {
             await this._keyStoreService.createKeyStore({
                 userId: userExist.id,
                 publicKey: publicKey,
+                privateKey: privateKey,
             });
         }
 
@@ -183,17 +194,145 @@ export class AuthService implements IAuthService {
             privateKey
         );
 
+        await this._keyStoreService.updateKeyStore({
+            userId: userExist.id,
+            refreshToken: tokens?.refreshToken,
+        });
+
         return {
             user: userExist,
             tokens,
         };
     }
 
-    signout(): Promise<User> {
-        throw new Error("Method not implemented 3.");
+    async signout(keyToken: any): Promise<boolean> {
+        const deleteKeyToke = await this._keyStoreService.deleteKeyStore(
+            keyToken.id
+        );
+        console.log(deleteKeyToke);
+        return true;
     }
 
-    refreshToken(): Promise<Tokens> {
-        throw new Error("Method not implemented4.");
+    async refreshToken(
+        refreshToken: string,
+        user: any,
+        keyStore: any
+    ): Promise<{ user: User; tokens: Tokens | undefined } | null> {
+        const { userId, email, roleId } = user;
+        if (keyStore.refreshToken !== refreshToken)
+            throw new AuthFailureError("User not signup!");
+
+        const foundUser = await this._userRepo.findByEmail(email);
+        if (!foundUser) throw new AuthFailureError("User not signup!");
+        //create tokens
+        const tokens = await createTokensPair(
+            { userId, email, roleId },
+            keyStore.publicKey,
+            keyStore.privateKey
+        );
+
+        await this._keyStoreService.updateKeyStore({
+            userId,
+            refreshToken: tokens?.refreshToken,
+        });
+
+        //refreshToken cu bo vo session check trung refreshToken
+
+        return {
+            user: user,
+            tokens: tokens,
+        };
+    }
+
+    //forgot password
+    async forgotPassword(body: { email: string }): Promise<boolean> {
+        const { email } = body;
+        console.log(email);
+        if (!email) throw new BadRequestError("Missing email!");
+        const user = await this._userRepo.findByEmail(email);
+        if (!user) throw new NotFoundError("User not found!");
+
+        const passwordTokens = createPasswordChangedToken();
+
+        console.log(passwordTokens);
+
+        const updateUser = await this._userRepo.update(user.id, {
+            passwordResetToken: passwordTokens.passwordResetToken,
+            passwordResetExpires: passwordTokens.passwordResetExpires,
+        });
+
+        if (updateUser) {
+            const time = Date.now();
+            const date = new Date(time);
+
+            // const delete passwordResetToken
+            const delPasswordResetToken = async () =>
+                await this._userRepo.update(user.id, {
+                    passwordResetToken: "",
+                    passwordResetExpires: "",
+                });
+
+            console.log(date.getTime());
+            schedule.scheduleJob(
+                date.getTime() + 5 * 60 * 1000,
+                async function () {
+                    delPasswordResetToken();
+                }
+            );
+
+            const html = ConfirmResetPassword(passwordTokens.resetToken);
+            const payload = {
+                email: user.email,
+                html,
+                subject: "Reset password!",
+            };
+
+            await sendMail(payload);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //reset password
+    async resetPassword(body: {
+        password: string;
+        tokenPassword: string;
+    }): Promise<any> {
+        const { password, tokenPassword } = body;
+        if (!password || !tokenPassword)
+            throw new BadRequestError("Missing data!");
+
+        const passwordResetToken = crypto
+            .createHash("sha256")
+            .update(tokenPassword)
+            .digest("hex");
+
+        console.log(passwordResetToken);
+
+        const dateNow = Date.now();
+
+        const user = await this._userRepo.findFirst({
+            passwordResetToken: passwordResetToken,
+            passwordResetExpires: String(dateNow),
+        });
+
+        if (!user)
+            throw new AuthFailureError(
+                "The data is invalid or you have timed out"
+            );
+        console.log(user);
+
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const updateUser = await this._userRepo.update(user.id, {
+            password: passwordHash,
+            passwordResetToken: "",
+            passwordChangedAt: Date.now().toString(),
+            passwordResetExpires: "",
+        });
+
+        return updateUser;
     }
 }

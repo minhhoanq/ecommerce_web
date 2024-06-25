@@ -4,6 +4,7 @@ import { KeyStore } from "../../../domain/entities/keyStore";
 import { IKeyStoreService } from "./keystore.interface";
 import { IKeyStoreRepository } from "../../../domain/repositories/keyStore.interface";
 import { TYPES } from "../../../shared/constants/types";
+import { DeleteKeyStoreDTO, UpdateKeyStoreDTO } from "../../dtos/keystore.dto";
 
 @injectable()
 export class KeyStoreService implements IKeyStoreService {
@@ -23,7 +24,11 @@ export class KeyStoreService implements IKeyStoreService {
         return await this._keyStoreRepo.findByUserId(userId);
     }
 
-    async updateKeyStore(userId: number, publicKey: string): Promise<any> {
-        return await this._keyStoreRepo.update(userId, publicKey);
+    async updateKeyStore(data: UpdateKeyStoreDTO): Promise<any> {
+        return await this._keyStoreRepo.update(data);
+    }
+
+    async deleteKeyStore(body: DeleteKeyStoreDTO): Promise<boolean> {
+        return await this._keyStoreRepo.delete(body);
     }
 }
