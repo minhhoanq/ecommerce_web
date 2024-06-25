@@ -37,4 +37,15 @@ export default class AuthController {
             next(error);
         }
     }
+
+    async signin(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.signin(req.body),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

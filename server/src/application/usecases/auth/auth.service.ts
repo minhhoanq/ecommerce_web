@@ -111,7 +111,7 @@ export class AuthService implements IAuthService {
 
         console.log({ publicKey, privateKey });
 
-        const publicKeyString = this._keyStoreService.createKeyStore({
+        const publicKeyString = await this._keyStoreService.createKeyStore({
             userId: userExist.id,
             publicKey: publicKey,
         });
@@ -138,12 +138,61 @@ export class AuthService implements IAuthService {
         };
     }
 
-    signin(): Promise<User> {
-        throw new Error("Method not implemented2.");
+    async signin(user: {
+        email: string;
+        password: string;
+    }): Promise<{ user: User; tokens: Tokens | undefined } | null> {
+        const { email, password } = user;
+        //check user exist
+        const userExist = await this._userRepo.findByEmail(email);
+        if (!userExist) throw new BadRequestError("User not signup !");
+
+        //check match password
+        const macth = await bcrypt.compare(password, userExist.password);
+        if (!macth) throw new AuthFailureError("Incorrect password!");
+
+        const publicKey = crypto.randomBytes(64).toString("hex");
+        const privateKey = crypto.randomBytes(64).toString("hex");
+
+        console.log({ publicKey, privateKey });
+
+        const keyStore = await this._keyStoreService.findKeyStrore(
+            userExist.id
+        );
+
+        console.log(keyStore);
+
+        // const
+
+        if (keyStore) {
+            await this._keyStoreService.updateKeyStore(userExist.id, publicKey);
+        } else {
+            await this._keyStoreService.createKeyStore({
+                userId: userExist.id,
+                publicKey: publicKey,
+            });
+        }
+
+        const tokens = await createTokensPair(
+            {
+                userId: userExist.id,
+                email: userExist.email,
+                roleId: userExist.roleId,
+            },
+            publicKey,
+            privateKey
+        );
+
+        return {
+            user: userExist,
+            tokens,
+        };
     }
+
     signout(): Promise<User> {
         throw new Error("Method not implemented 3.");
     }
+
     refreshToken(): Promise<Tokens> {
         throw new Error("Method not implemented4.");
     }

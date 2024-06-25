@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { KeyStore } from "../../domain/entities/keyStore";
 import { IKeyStoreRepository } from "../../domain/repositories/keyStore.interface";
 import { BaseCreateEntityType } from "../../shared/types/baseCreateEntityType";
@@ -22,10 +22,26 @@ export class KeyStoreRepoImpl implements IKeyStoreRepository {
             data: data,
         });
     }
-    update(id: number): Promise<KeyStore> {
-        throw new Error("Method not implemented.");
+
+    async update(userId: number, publicKey: string): Promise<any> {
+        console.log(publicKey);
+        return await this._prisma.keyStore.update({
+            where: {
+                userId: userId,
+            },
+            data: {
+                publicKey: publicKey,
+            },
+        });
     }
+
     delete(id: number): Promise<KeyStore> {
         throw new Error("Method not implemented.");
+    }
+
+    async findByUserId(userId: number): Promise<KeyStore | null> {
+        console.log(userId);
+        return await this._prisma
+            .$queryRaw`SELECT * FROM keystores WHERE "userId"=${userId}`;
     }
 }

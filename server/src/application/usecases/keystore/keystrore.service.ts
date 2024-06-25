@@ -18,4 +18,12 @@ export class KeyStoreService implements IKeyStoreService {
     async createKeyStore(data: any): Promise<KeyStore> {
         return await this._keyStoreRepo.create(data);
     }
+
+    async findKeyStrore(userId: number): Promise<KeyStore | null> {
+        return await this._keyStoreRepo.findByUserId(userId);
+    }
+
+    async updateKeyStore(userId: number, publicKey: string): Promise<any> {
+        return await this._keyStoreRepo.update(userId, publicKey);
+    }
 }

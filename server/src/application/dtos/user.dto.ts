@@ -33,3 +33,14 @@ const codeVerifySchema = z.object({
 });
 
 export type CodeVerifyDTO = TypeOf<typeof codeVerifySchema>["body"];
+
+const signin = {
+    email: z.string({ required_error: "Email is required!" }),
+    password: z.string({ required_error: "password is required" }),
+};
+
+const signSchema = z.object({
+    body: z.object(signin),
+});
+
+export type SigninDTO = TypeOf<typeof signSchema>["body"];
