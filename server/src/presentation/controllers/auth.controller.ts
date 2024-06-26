@@ -42,7 +42,9 @@ export default class AuthController {
         try {
             new Created({
                 message: "CREATED!",
-                metadata: await this._authService.finalSignup(req.body),
+                metadata: await this._authService.finalSignup(
+                    req.params as { token: string }
+                ),
             }).send(res);
         } catch (error) {
             next(error);

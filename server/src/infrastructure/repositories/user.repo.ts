@@ -9,6 +9,10 @@ import {
     FindFirstUserDTO,
     UpdateUserDTO,
 } from "../../application/dtos/user.dto";
+import {
+    BadRequestError,
+    NotFoundError,
+} from "../../shared/core/error.response";
 
 @injectable()
 export default class UserRepoImpl implements IUserRepository {
@@ -33,11 +37,11 @@ export default class UserRepoImpl implements IUserRepository {
     }
 
     async findByCodeVerify(codeverify: CodeVerifyDTO): Promise<User | null> {
-        console.log(codeverify.code);
+        console.log(codeverify.token);
         return await this._prisma.user.findFirst({
             where: {
                 email: {
-                    endsWith: `${codeverify.code}`,
+                    endsWith: `${codeverify.token}`,
                 },
             },
         });
@@ -89,6 +93,7 @@ export default class UserRepoImpl implements IUserRepository {
             data: data,
         });
     }
+
     update(
         id: number,
         {
@@ -160,5 +165,30 @@ export default class UserRepoImpl implements IUserRepository {
             return true;
         }
         return false;
+    }
+
+    async deleteByEmail(email: string): Promise<boolean> {
+        try {
+            const user = await this._prisma.user.findFirst({
+                where: {
+                    email: email,
+                },
+            });
+
+            if (!user) return false;
+
+            const deleteUser = await this._prisma.user.delete({
+                where: {
+                    email: user.email,
+                },
+            });
+
+            if (!deleteUser) {
+                return false;
+            }
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 }

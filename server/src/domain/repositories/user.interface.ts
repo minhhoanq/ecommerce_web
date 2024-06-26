@@ -16,4 +16,5 @@ export interface IUserRepository extends IBaseRepository<User> {
     create(data: CreateUserDTO): Promise<User>;
     update(id: number, data: UpdateUserDTO): Promise<any>;
     delete(id: number): Promise<boolean>;
+    deleteByEmail(email: string): Promise<boolean>;
 }

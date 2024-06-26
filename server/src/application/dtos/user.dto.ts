@@ -2,6 +2,8 @@ import { z } from "zod";
 
 //create user dto
 const createUserSchema = z.object({
+    firstName: z.string({ required_error: "First name can't empty!" }),
+    lastName: z.string({ required_error: "Last name can't empty!" }),
     username: z.string({ required_error: "Username can't empty!" }),
     email: z.string({ required_error: "Email can't empty!" }),
     password: z.string({ required_error: "Password can't empty!" }),
@@ -33,7 +35,7 @@ type UpdateUserDTO = z.infer<typeof updateUserSchema>;
 
 // code verify dto
 const codeVerifySchema = z.object({
-    code: z.string({ required_error: "Missing code verify!" }),
+    token: z.string({ required_error: "Missing code verify!" }),
 });
 
 type CodeVerifyDTO = z.infer<typeof codeVerifySchema>;
@@ -49,7 +51,7 @@ type SigninDTO = z.infer<typeof signinSchema>;
 //reset password
 const resetPasswordSchema = z.object({
     password: z.string({ required_error: "Missing password!" }),
-    tokenPassword: z.string({ required_error: "Missing token password!" }),
+    token: z.string({ required_error: "Missing token password!" }),
 });
 
 type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;

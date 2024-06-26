@@ -47,7 +47,7 @@ export class AuthService implements IAuthService {
 
     async signup(user: CreateUserDTO): Promise<boolean> {
         // check user exist
-        const { email, username, password, roleId } = user;
+        const { email, username, password, firstName, lastName } = user;
         const userExist = await this._userRepo.findByEmail(email);
         if (userExist) throw new BadRequestError("User already signin!");
         const passwordHash = await bcrypt.hash(password, 10);
@@ -59,6 +59,8 @@ export class AuthService implements IAuthService {
 
         const newUser = await this._userRepo.create({
             username,
+            firstName,
+            lastName,
             password: passwordHash,
             email: emailEdited,
             roleId: 3,
@@ -80,7 +82,7 @@ export class AuthService implements IAuthService {
             const date = new Date(time);
 
             const deleteUser = async () => {
-                await this._userRepo.delete(newUser.id);
+                await this._userRepo.deleteByEmail(emailEdited);
             };
 
             console.log(date.getTime());
@@ -306,15 +308,14 @@ export class AuthService implements IAuthService {
     //reset password
     async resetPassword(body: {
         password: string;
-        tokenPassword: string;
+        token: string;
     }): Promise<any> {
-        const { password, tokenPassword } = body;
-        if (!password || !tokenPassword)
-            throw new BadRequestError("Missing data!");
+        const { password, token } = body;
+        if (!password || !token) throw new BadRequestError("Missing data!");
 
         const passwordResetToken = crypto
             .createHash("sha256")
-            .update(tokenPassword)
+            .update(token)
             .digest("hex");
 
         console.log(passwordResetToken);
