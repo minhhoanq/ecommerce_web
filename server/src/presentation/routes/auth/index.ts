@@ -10,6 +10,7 @@ const controller = container.get<AuthController>(TYPES.AuthController);
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
 
+router.get("/me", auth.authentication, controller.me.bind(controller));
 router.post("/signup", controller.signup.bind(controller));
 router.post("/signin", controller.signin.bind(controller));
 router.post("/final-signup", controller.finalSignup.bind(controller));
@@ -18,7 +19,7 @@ router.post("/reset-password", controller.resetPassword.bind(controller));
 router.get(
     "/product",
     auth.authentication,
-    access.GrantAccess("readAny", "product"),
+    // access.GrantAccess("readAny", "product"),
     controller.test.bind(controller)
 );
 

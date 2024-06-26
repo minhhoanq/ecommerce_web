@@ -78,8 +78,11 @@ export default class UserRepoImpl implements IUserRepository {
         });
     }
 
-    findById(id: number): Promise<User | null> {
-        throw new Error("Method not implemented.");
+    async findById(id: number): Promise<User | null> {
+        const user: User[] = await this._prisma
+            .$queryRaw`SELECT * FROM "users" WHERE id=${id}`;
+        console.log(user);
+        return user.length > 0 ? user[0] : null;
     }
     async create(data: any): Promise<any> {
         return await this._prisma.user.create({

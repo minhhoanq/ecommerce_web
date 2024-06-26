@@ -51,7 +51,8 @@ export class Auth {
         if (!keyStore) throw new NotFoundError("Not found Keystore!");
         //verify token
         if (req.headers[HEADER.REFRESHTOKEN]) {
-            const refreshToken = req.headers[HEADER.REFRESHTOKEN] as string;
+            const token = req.headers[HEADER.REFRESHTOKEN] as string;
+            const refreshToken = token.split(" ")[1];
             try {
                 const decodeUser = <TokenData>(
                     await JWT.verify(refreshToken, keyStore.privateKey)
@@ -63,24 +64,27 @@ export class Auth {
                 req.refreshToken = refreshToken as string;
                 return next();
             } catch (error) {
-                throw error;
+                next(error);
             }
         }
 
-        const accessToken = req.headers[HEADER.AUTHORIZATION] as string;
+        const token = req.headers[HEADER.AUTHORIZATION] as string;
+        const accessToken = token.split(" ")[1];
         if (!accessToken) throw new AuthFailureError("Invalid Access token!");
         try {
             // console.log(accessToken + " | " + keyStore.publicKey);
             const decodeUser = <TokenData>(
                 await JWT.verify(accessToken, keyStore.publicKey)
             );
+            console.log("accessToken", decodeUser);
+
             if (userId !== decodeUser.userId)
                 throw new AuthFailureError("Invalid userId");
             req.keyStore = keyStore;
             req.user = decodeUser;
             return next();
         } catch (error) {
-            throw error;
+            next(error);
         }
     };
 }

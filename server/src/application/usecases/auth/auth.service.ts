@@ -37,6 +37,14 @@ export class AuthService implements IAuthService {
         this._keyStoreService = keyStoreRepo;
     }
 
+    async me(body: { userId: number }): Promise<User | null> {
+        const { userId } = body;
+        const user: User | null = await this._userRepo.findById(userId);
+        console.log("userId", user);
+
+        return user;
+    }
+
     async signup(user: CreateUserDTO): Promise<boolean> {
         // check user exist
         const { email, username, password, roleId } = user;

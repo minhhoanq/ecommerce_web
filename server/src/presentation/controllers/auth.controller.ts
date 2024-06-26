@@ -16,6 +16,17 @@ export default class AuthController {
         this._authService = authService;
     }
 
+    async me(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.me(req.user),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async signup(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({

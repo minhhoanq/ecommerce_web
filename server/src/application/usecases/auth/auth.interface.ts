@@ -8,6 +8,7 @@ import {
 } from "../../dtos/user.dto";
 
 export default interface IAuthService {
+    me(body: { userId: number }): Promise<User | null>;
     signup(user: CreateUserDTO): Promise<boolean>;
     finalSignup(
         codeVerify: CodeVerifyDTO

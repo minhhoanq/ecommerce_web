@@ -1,7 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 // import cookieParser from "cookie-parser";
-import passport from "passport";
+// import passport from "passport";
 // const passportSetup = require("./utils/passport");
 import cookieSession from "cookie-session";
 import router from "./presentation/routes";
@@ -17,8 +17,8 @@ app.use(
     })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(
     cors({
