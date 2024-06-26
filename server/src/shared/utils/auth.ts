@@ -3,8 +3,8 @@ import crypto from "crypto";
 
 export const createTokensPair = async (
     payload: any,
-    privateKey: string,
-    publicKey: string
+    publicKey: string,
+    privateKey: string
 ) => {
     try {
         //access token
@@ -15,6 +15,16 @@ export const createTokensPair = async (
         const refreshToken = await JWT.sign(payload, privateKey, {
             expiresIn: "7 days",
         });
+
+        // JWT.verify(accessToken, publicKey, (err, decode) => {
+        //     if (err) {
+        //         console.error(`error verify::`, err);
+        //     } else {
+        //         console.log(`decode verify::`, { accessToken, publicKey });
+
+        //         console.log(`decode verify::`, decode);
+        //     }
+        // });
 
         return { accessToken, refreshToken };
     } catch (error) {}

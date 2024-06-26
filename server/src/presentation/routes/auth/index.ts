@@ -18,7 +18,7 @@ router.post("/reset-password", controller.resetPassword.bind(controller));
 router.get(
     "/product",
     auth.authentication,
-    access.GrantAccess("read:any", "product"),
+    access.GrantAccess("readAny", "product"),
     controller.test.bind(controller)
 );
 

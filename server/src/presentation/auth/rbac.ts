@@ -25,26 +25,31 @@ export class Access {
     GrantAccess = (action: string, resource: string) => {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
+                // console.log(req.user.roleId + " | " + resource);
                 const access = await this._RResourceRepo.getResource(
                     req.user.roleId,
                     resource
                 );
 
-                console.log(access);
-                return 1;
+                // console.log("access: ", access);
+                if (!access.roleName)
+                    return res.json("You dont have enough permissions");
 
-                // const ac = new AccessControl(access.grantList);
-                // const permissions = ac.can(access.role_name);
-                // const isPermitted = permissions[
-                //     action as keyof typeof permissions
-                // ](resource) as Permission;
+                const ac = new AccessControl(access.grantList);
+                const permissions = ac.can(access.roleName);
+                const isPermitted = permissions[
+                    action as keyof typeof permissions
+                ](resource) as Permission;
 
-                // if (!isPermitted.granted) {
-                //     throw new AuthFailureError(
-                //         "You dont have enough permissions"
-                //     );
-                // }
-            } catch (error) {}
+                // const permissions = ac.;
+                // console.log("check 3", isPermitted.granted);
+                if (!isPermitted.granted) {
+                    return res.json("You dont have enough permissions");
+                }
+                next();
+            } catch (error) {
+                console.log(error);
+            }
         };
     };
 }

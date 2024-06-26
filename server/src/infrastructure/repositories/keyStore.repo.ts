@@ -55,8 +55,9 @@ export class KeyStoreRepoImpl implements IKeyStoreRepository {
     }
 
     async findByUserId(userId: number): Promise<KeyStore | null> {
-        console.log(userId);
-        return await this._prisma
+        const keyStore: KeyStore[] = await this._prisma
             .$queryRaw`SELECT * FROM keystores WHERE "userId"=${userId}`;
+
+        return keyStore.length > 0 ? keyStore[0] : null;
     }
 }
