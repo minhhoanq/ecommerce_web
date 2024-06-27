@@ -13,6 +13,7 @@ import { IRoleResourceRepository } from "../../domain/repositories/roleResource.
 import { RoleResourceRepoImpl } from "../repositories/roleResource.repo";
 import { Auth } from "../../presentation/auth/auth.util";
 import { Access } from "../../presentation/auth/rbac";
+import ProductController from "../../presentation/controllers/product.controller";
 
 const container = new Container();
 
@@ -31,4 +32,6 @@ container
 container.bind(TYPES.Auth).to(Auth);
 //
 container.bind(TYPES.Access).to(Access);
+//product
+container.bind(TYPES.ProductController).to(ProductController);
 export { container };

@@ -10,6 +10,8 @@ const TYPES = {
     RoleResourceRepository: Symbol.for("RoleResourceRepository"),
     Auth: Symbol.for("Auth"),
     Access: Symbol.for("Access"),
+    //Product
+    ProductController: Symbol.for("ProductController"),
 };
 
 export { TYPES };

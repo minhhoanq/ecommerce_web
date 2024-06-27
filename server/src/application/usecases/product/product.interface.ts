@@ -1,3 +1,8 @@
 export interface IProductService {
-    // getProducts(): Promise<>
+    getProducts(body: {
+        limit: number;
+        sort: string;
+        page: number;
+        filters: any;
+    }): Promise<any>;
 }
