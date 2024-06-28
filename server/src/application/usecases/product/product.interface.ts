@@ -5,4 +5,6 @@ export interface IProductService {
         page: number;
         filters: any;
     }): Promise<any>;
+
+    createProduct(body: any): Promise<any>;
 }

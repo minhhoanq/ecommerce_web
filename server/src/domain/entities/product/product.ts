@@ -1,20 +1,24 @@
+import slugify from "slugify";
+
 export class Product {
-    private name: string;
-    private slug: string;
-    private desc: string;
-    private originalPrice: number;
-    private categoryId: number;
-    private brandId: number;
-    private isDraft: boolean;
-    private isPublished: boolean;
-    private releaseDate: Date | null;
-    private createdAt: Date | null;
-    private updatedAt: Date | null;
+    public name: string;
+    public slug: string;
+    public desc: string;
+    public originalPrice: number;
+    public salePrice: number;
+    public categoryId: number;
+    public brandId: number;
+    public isDraft: boolean;
+    public isPublished: boolean;
+    public releaseDate: Date | null;
+    public createdAt: Date | null;
+    public updatedAt: Date | null;
+
     constructor(
         name: string,
-        slug: string,
         desc: string,
         originalPrice: number,
+        salePrice: number,
         categoryId: number,
         brandId: number,
         isDraft: boolean,
@@ -24,9 +28,10 @@ export class Product {
         updatedAt: Date | null
     ) {
         (this.name = name),
-            (this.slug = slug),
+            (this.slug = slugify(this.name, { lower: true })),
             (this.desc = desc),
             (this.originalPrice = originalPrice),
+            (this.salePrice = salePrice),
             (this.categoryId = categoryId),
             (this.brandId = brandId),
             (this.isDraft = isDraft),
@@ -44,9 +49,9 @@ export class SmartPhone extends Product {
 
     constructor(
         name: string,
-        slug: string,
         desc: string,
         originalPrice: number,
+        salePrice: number,
         categoryId: number,
         brandId: number,
         isDraft: boolean,
@@ -60,9 +65,9 @@ export class SmartPhone extends Product {
     ) {
         super(
             name,
-            slug,
             desc,
             originalPrice,
+            salePrice,
             categoryId,
             brandId,
             isDraft,

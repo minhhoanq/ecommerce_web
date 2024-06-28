@@ -14,6 +14,10 @@ import { RoleResourceRepoImpl } from "../repositories/roleResource.repo";
 import { Auth } from "../../presentation/auth/auth.util";
 import { Access } from "../../presentation/auth/rbac";
 import ProductController from "../../presentation/controllers/product.controller";
+import { IProductRepository } from "../../domain/repositories/product.interface";
+import { ProductRepositoryImpl } from "../repositories/product.repo";
+import { IProductService } from "../../application/usecases/product/product.interface";
+import { ProductService } from "../../application/usecases/product/product.service";
 
 const container = new Container();
 
@@ -33,5 +37,9 @@ container.bind(TYPES.Auth).to(Auth);
 //
 container.bind(TYPES.Access).to(Access);
 //product
+container
+    .bind<IProductRepository>(TYPES.ProductRepository)
+    .to(ProductRepositoryImpl);
+container.bind<IProductService>(TYPES.ProductService).to(ProductService);
 container.bind(TYPES.ProductController).to(ProductController);
 export { container };

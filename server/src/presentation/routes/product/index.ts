@@ -6,6 +6,6 @@ const router = express.Router();
 
 const controller = container.get<ProductController>(TYPES.ProductController);
 
-router.get("/", controller.getProducts.bind(controller));
+router.post("/create", controller.createProduct.bind(controller));
 
 export default router;

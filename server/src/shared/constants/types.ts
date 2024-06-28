@@ -11,6 +11,8 @@ const TYPES = {
     Auth: Symbol.for("Auth"),
     Access: Symbol.for("Access"),
     //Product
+    ProductRepository: Symbol.for("ProductRepository"),
+    ProductService: Symbol.for("ProductService"),
     ProductController: Symbol.for("ProductController"),
 };
 

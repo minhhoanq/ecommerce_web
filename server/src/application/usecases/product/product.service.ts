@@ -1,45 +1,61 @@
-export class ProductService {
-    private name: string;
-    private slug: string;
-    private desc: string;
-    private originalPrice: number;
-    private categoryId: number;
-    private brandId: number;
-    private isDraft: boolean;
-    private isPublished: boolean;
-    private releaseDate: Date | null;
-    private createdAt: Date | null;
-    private updatedAt: Date | null;
+import { BadRequestError } from "../../../shared/core/error.response";
+import "reflect-metadata";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../../shared/constants/types";
+import { IProductRepository } from "../../../domain/repositories/product.interface";
+import { IProductService } from "./product.interface";
+import { ProductDTO } from "../../dtos/product.dto";
+import { Product, SmartPhone } from "../../../domain/entities/product/product";
+
+//Product Factory
+@injectable()
+export class ProductService implements IProductService {
+    private _productRepo: IProductRepository;
 
     constructor(
-        name: string,
-        slug: string,
-        desc: string,
-        originalPrice: number,
-        categoryId: number,
-        brandId: number,
-        isDraft: boolean,
-        isPublished: boolean,
-        releaseDate: Date | null,
-        createdAt: Date | null,
-        updatedAt: Date | null
+        @inject(TYPES.ProductRepository) productRepo: IProductRepository
     ) {
-        (this.name = name),
-            (this.slug = slug),
-            (this.desc = desc),
-            (this.originalPrice = originalPrice),
-            (this.categoryId = categoryId),
-            (this.brandId = brandId),
-            (this.isDraft = isDraft),
-            (this.isPublished = isPublished),
-            (this.releaseDate = releaseDate),
-            (this.createdAt = createdAt),
-            (this.updatedAt = updatedAt);
+        this._productRepo = productRepo;
+    }
+    getProducts(body: {
+        limit: number;
+        sort: string;
+        page: number;
+        filters: any;
+    }): Promise<any> {
+        throw new Error("Method not implemented.");
     }
 
-    async createProduct(productId: number) {
-        const newProduct = "product"; //create product
-        console.log("chekr product");
-        return newProduct;
+    public async createProduct(body: ProductDTO) {
+        const { type, ...payload } = body;
+        const product = new SmartPhone(
+            payload.name,
+            payload.desc,
+            payload.originalPrice,
+            payload.salePrice,
+            payload.categoryId,
+            payload.brandId,
+            true,
+            false,
+            null,
+            payload.colorId,
+            payload.ramId,
+            payload.internalId,
+            null,
+            null
+        );
+        const newProduct = await this._productRepo.create(product);
+
+        if (!newProduct) throw new BadRequestError("Error create product");
+        console.log(newProduct.id);
+        const newChildren = await this._productRepo.createProductChildren(
+            type,
+            newProduct.id,
+            product
+        );
+
+        if (!newChildren) throw new BadRequestError("Error create product");
+
+        return { newProduct, newChildren };
     }
 }
