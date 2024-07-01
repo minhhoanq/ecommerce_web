@@ -25,4 +25,20 @@ export default class ProductController {
             next(error);
         }
     }
+
+    //update product
+    async updateProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("check");
+            new SuccessResponse({
+                message: "update products successfully!",
+                metadata: await this._productService.updateProduct(
+                    +req.params.productItemId,
+                    req.body
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

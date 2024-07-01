@@ -7,5 +7,9 @@ const router = express.Router();
 const controller = container.get<ProductController>(TYPES.ProductController);
 
 router.post("/create", controller.createProduct.bind(controller));
+router.patch(
+    "/update/:productItemId",
+    controller.updateProduct.bind(controller)
+);
 
 export default router;

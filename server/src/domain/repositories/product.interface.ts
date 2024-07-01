@@ -5,4 +5,11 @@ export interface IProductRepository {
         productId: number,
         payload: any
     ): Promise<any>;
+    update(
+        type: string,
+        productId: number,
+        productChildrenId: number,
+        payload: any
+    ): Promise<any>;
+    findProductById(id: number): Promise<any>;
 }

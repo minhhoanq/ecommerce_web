@@ -1,11 +1,15 @@
-import { BadRequestError } from "../../../shared/core/error.response";
+import {
+    BadRequestError,
+    NotFoundError,
+} from "../../../shared/core/error.response";
 import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../shared/constants/types";
 import { IProductRepository } from "../../../domain/repositories/product.interface";
 import { IProductService } from "./product.interface";
-import { ProductDTO } from "../../dtos/product.dto";
+import { ProductDTO, UpdateProductDTO } from "../../dtos/product.dto";
 import { Product, SmartPhone } from "../../../domain/entities/product/product";
+import slugify from "slugify";
 
 //Product Factory
 @injectable()
@@ -17,6 +21,7 @@ export class ProductService implements IProductService {
     ) {
         this._productRepo = productRepo;
     }
+
     getProducts(body: {
         limit: number;
         sort: string;
@@ -57,5 +62,26 @@ export class ProductService implements IProductService {
         if (!newChildren) throw new BadRequestError("Error create product");
 
         return { newProduct, newChildren };
+    }
+
+    async updateProduct(
+        productItemId: number,
+        body: UpdateProductDTO
+    ): Promise<any> {
+        const productItem = await this._productRepo.findProductById(
+            productItemId
+        );
+
+        console.log(productItem);
+        if (!productItem) throw new NotFoundError("Product not found!");
+
+        const updateProduct = await this._productRepo.update(
+            body.type,
+            productItem.productId,
+            productItemId,
+            body
+        );
+
+        return updateProduct;
     }
 }

@@ -2,8 +2,12 @@ import { injectable } from "inversify";
 import { IProductRepository } from "../../domain/repositories/product.interface";
 import "reflect-metadata";
 import { PrismaClient } from "@prisma/client";
-import { ProductDTO } from "../../application/dtos/product.dto";
+import {
+    ProductDTO,
+    UpdateProductDTO,
+} from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
+import slugify from "slugify";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {
@@ -57,5 +61,67 @@ export class ProductRepositoryImpl implements IProductRepository {
         } catch (error) {
             throw error;
         }
+    }
+
+    async update(
+        type: string,
+        productId: number,
+        productChildrenId: number,
+        payload: UpdateProductDTO
+    ): Promise<any> {
+        const {
+            name,
+            desc,
+            originalPrice,
+            categoryId,
+            brandId,
+            releaseDate,
+            colorId,
+            ramId,
+            internalId,
+            salePrice,
+        } = payload;
+        console.log("payload", { productId, productChildrenId });
+        const updatedAt = new Date();
+        let slug;
+        if (name) {
+            slug = slugify(name, { lower: true });
+        }
+        const query: any[] = [
+            this._prisma.$queryRaw`
+            UPDATE "products"
+            SET 
+                "name" = COALESCE(${name}, "name"),
+                "slug" = COALESCE(${slug}, "slug"),
+                "desc" = COALESCE(${desc}, "desc"),
+                "originalPrice" = COALESCE(${originalPrice}, "originalPrice"),
+                "categoryId" = COALESCE(${categoryId}, "categoryId"),
+                "brandId" = COALESCE(${brandId}, "brandId"),
+                "releaseDate" = COALESCE(${releaseDate}, "releaseDate"),
+                "updatedAt" = COALESCE(${updatedAt}, "updatedAt")
+            WHERE "id" = ${productId}`,
+        ];
+
+        query.push(this._prisma.$queryRaw`
+        UPDATE "smartphones"
+            SET 
+                "colorId" = COALESCE(${colorId}, "colorId"),
+                "ramId" = COALESCE(${ramId}, "ramId"),
+                "internalId" = COALESCE(${internalId}, "internalId"),
+                "originalPrice" = COALESCE(${originalPrice}, "originalPrice"),
+                "salePrice" = COALESCE(${salePrice}, "salePrice"),
+                "updatedAt" = COALESCE(${updatedAt}, "updatedAt")
+            WHERE "id" = ${productChildrenId};
+
+        `);
+
+        return await this._prisma.$transaction(query);
+    }
+
+    async findProductById(id: number): Promise<any> {
+        const productChildren: any[] = await this._prisma
+            .$queryRaw`SELECT * FROM "smartphones" WHERE "id" = ${id}`;
+
+        return productChildren.length > 0 ? productChildren[0] : null;
     }
 }
