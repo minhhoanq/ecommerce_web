@@ -14,6 +14,9 @@ const TYPES = {
     ProductRepository: Symbol.for("ProductRepository"),
     ProductService: Symbol.for("ProductService"),
     ProductController: Symbol.for("ProductController"),
+    //Image
+    ImageService: Symbol.for("ImageService"),
+    ImageController: Symbol.for("ImageController"),
 };
 
 export { TYPES };

@@ -18,6 +18,9 @@ import { IProductRepository } from "../../domain/repositories/product.interface"
 import { ProductRepositoryImpl } from "../repositories/product.repo";
 import { IProductService } from "../../application/usecases/product/product.interface";
 import { ProductService } from "../../application/usecases/product/product.service";
+import { IImageService } from "../../application/usecases/image/image.interface";
+import { ImageService } from "../../application/usecases/image/image.service";
+import { ImageController } from "../../presentation/controllers/image.controller";
 
 const container = new Container();
 
@@ -42,4 +45,8 @@ container
     .to(ProductRepositoryImpl);
 container.bind<IProductService>(TYPES.ProductService).to(ProductService);
 container.bind(TYPES.ProductController).to(ProductController);
+//image
+container.bind<IImageService>(TYPES.ImageService).to(ImageService);
+container.bind(TYPES.ImageController).to(ImageController);
+
 export { container };
