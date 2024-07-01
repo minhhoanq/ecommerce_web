@@ -45,7 +45,7 @@ export default class ProductController {
     async publishProduct(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
-                message: "update products successfully!",
+                message: "publishProduct successfully!",
                 metadata: await this._productService.publishProduct(
                     +req.params.productId
                 ),
@@ -58,7 +58,7 @@ export default class ProductController {
     async unPublishProduct(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
-                message: "update products successfully!",
+                message: "unPublishProduct successfully!",
                 metadata: await this._productService.unPublishProduct(
                     +req.params.productId
                 ),
@@ -71,11 +71,38 @@ export default class ProductController {
     async getPublishs(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
-                message: "update products successfully!",
+                message: "getPublishs successfully!",
                 metadata: await this._productService.getPublishs({
                     limit: Number(req.query.limit),
                     skip: Number(req.query.skip),
                 }),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getDrafts(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getDrafts successfully!",
+                metadata: await this._productService.getDrafts({
+                    limit: Number(req.query.limit),
+                    skip: Number(req.query.skip),
+                }),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async searchs(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getDrafts successfully!",
+                metadata: await this._productService.searchs(
+                    req.params.keySearch
+                ),
             }).send(res);
         } catch (error) {
             next(error);

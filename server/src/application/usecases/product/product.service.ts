@@ -101,7 +101,24 @@ export class ProductService implements IProductService {
     }): Promise<any> {
         const query = { isPublished: true };
         const data = await this._productRepo.queryProduct(query, limit, skip);
-        console.log(data);
+        return data;
+    }
+
+    async getDrafts({
+        limit,
+        skip,
+    }: {
+        limit: number;
+        skip: number;
+    }): Promise<any> {
+        const query = { isDraft: true };
+        const data = await this._productRepo.queryProduct(query, limit, skip);
+        return data;
+    }
+
+    async searchs(keySearch: string): Promise<any> {
+        const data = await this._productRepo.searchProducts(keySearch);
+
         return data;
     }
 }

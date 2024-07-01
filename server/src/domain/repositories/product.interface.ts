@@ -14,4 +14,5 @@ export interface IProductRepository {
     publishProductById(id: number): Promise<any>;
     unPublishProductById(id: number): Promise<any>;
     queryProduct(query: any, limit: number, skip: number): Promise<any>;
+    searchProducts(keySearch: string): Promise<any>;
 }

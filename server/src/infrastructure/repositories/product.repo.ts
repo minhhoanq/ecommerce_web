@@ -152,7 +152,7 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async queryProduct(query: any, limit: number, skip: number): Promise<any> {
-        const data = await this._prisma.product.findMany({
+        return await this._prisma.product.findMany({
             where: query,
             orderBy: [
                 {
@@ -162,9 +162,17 @@ export class ProductRepositoryImpl implements IProductRepository {
             skip: skip,
             take: limit,
         });
+    }
 
-        console.log(data);
-
-        return data;
+    async searchProducts(params: string): Promise<any> {
+        const regexSearch = new RegExp(params);
+        console.log(regexSearch);
+        // return await this._prisma.product.findMany({
+        //     where: {
+        //         name: {
+        //             contains: regexSearch,
+        //         },
+        //     },
+        // });
     }
 }
