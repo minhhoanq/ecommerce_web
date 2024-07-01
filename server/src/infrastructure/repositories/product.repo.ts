@@ -152,34 +152,16 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async queryProduct(query: any, limit: number, skip: number): Promise<any> {
-        console.log(query, limit, skip);
-
-        //WHERE "isPublished" = ${true} AND "isDraft" = false
-        let whereClause: any;
-        const keys = Object.keys(query);
-
-        if (keys.length > 0) {
-            whereClause = keys
-                .map(
-                    (key) =>
-                        `"${key}" = ${
-                            typeof query[key] === "string"
-                                ? "'" + query[key] + "'"
-                                : "${" + `${query[key]}` + "}"
-                        }`
-                )
-                .join(" AND ");
-        }
-
-        console.log(whereClause);
-
-        const data = await this._prisma.$queryRaw`
-            SELECT * FROM "products"
-            WHERE ${whereClause}
-            ORDER BY "updatedAt" DESC
-            OFFSET ${skip}
-            LIMIT ${limit}
-        `;
+        const data = await this._prisma.product.findMany({
+            where: query,
+            orderBy: [
+                {
+                    updatedAt: "desc",
+                },
+            ],
+            skip: skip,
+            take: limit,
+        });
 
         console.log(data);
 

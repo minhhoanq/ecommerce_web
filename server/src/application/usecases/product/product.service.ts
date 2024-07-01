@@ -99,7 +99,7 @@ export class ProductService implements IProductService {
         limit: number;
         skip: number;
     }): Promise<any> {
-        const query = { isPublished: true, isDraft: false };
+        const query = { isPublished: true };
         const data = await this._productRepo.queryProduct(query, limit, skip);
         console.log(data);
         return data;
