@@ -76,12 +76,32 @@ export class ProductService implements IProductService {
         if (!productItem) throw new NotFoundError("Product not found!");
 
         const updateProduct = await this._productRepo.update(
-            body.type,
             productItem.productId,
             productItemId,
             body
         );
 
         return updateProduct;
+    }
+
+    async publishProduct(productId: number): Promise<any> {
+        return await this._productRepo.publishProductById(productId);
+    }
+
+    async unPublishProduct(productId: number): Promise<any> {
+        return await this._productRepo.unPublishProductById(productId);
+    }
+
+    async getPublishs({
+        limit,
+        skip,
+    }: {
+        limit: number;
+        skip: number;
+    }): Promise<any> {
+        const query = { isPublished: true, isDraft: false };
+        const data = await this._productRepo.queryProduct(query, limit, skip);
+        console.log(data);
+        return data;
     }
 }

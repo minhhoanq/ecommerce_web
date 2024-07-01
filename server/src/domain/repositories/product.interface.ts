@@ -6,10 +6,12 @@ export interface IProductRepository {
         payload: any
     ): Promise<any>;
     update(
-        type: string,
         productId: number,
         productChildrenId: number,
         payload: any
     ): Promise<any>;
     findProductById(id: number): Promise<any>;
+    publishProductById(id: number): Promise<any>;
+    unPublishProductById(id: number): Promise<any>;
+    queryProduct(query: any, limit: number, skip: number): Promise<any>;
 }

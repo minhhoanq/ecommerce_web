@@ -29,13 +29,53 @@ export default class ProductController {
     //update product
     async updateProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("check");
             new SuccessResponse({
                 message: "update products successfully!",
                 metadata: await this._productService.updateProduct(
                     +req.params.productItemId,
                     req.body
                 ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    //publish, unPublish product
+    async publishProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "update products successfully!",
+                metadata: await this._productService.publishProduct(
+                    +req.params.productId
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async unPublishProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "update products successfully!",
+                metadata: await this._productService.unPublishProduct(
+                    +req.params.productId
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getPublishs(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "update products successfully!",
+                metadata: await this._productService.getPublishs({
+                    limit: Number(req.query.limit),
+                    skip: Number(req.query.skip),
+                }),
             }).send(res);
         } catch (error) {
             next(error);

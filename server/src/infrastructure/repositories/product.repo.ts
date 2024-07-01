@@ -64,18 +64,20 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async update(
-        type: string,
         productId: number,
         productChildrenId: number,
         payload: UpdateProductDTO
     ): Promise<any> {
         const {
+            type,
             name,
             desc,
             originalPrice,
             categoryId,
             brandId,
             releaseDate,
+            isDraft,
+            isPublished,
             colorId,
             ramId,
             internalId,
@@ -97,6 +99,8 @@ export class ProductRepositoryImpl implements IProductRepository {
                 "originalPrice" = COALESCE(${originalPrice}, "originalPrice"),
                 "categoryId" = COALESCE(${categoryId}, "categoryId"),
                 "brandId" = COALESCE(${brandId}, "brandId"),
+                "isDraft" = COALESCE(${isDraft}, "isDraft"),
+                "isPublished" = COALESCE(${isPublished}, "isPublished"),
                 "releaseDate" = COALESCE(${releaseDate}, "releaseDate"),
                 "updatedAt" = COALESCE(${updatedAt}, "updatedAt")
             WHERE "id" = ${productId}`,
@@ -123,5 +127,62 @@ export class ProductRepositoryImpl implements IProductRepository {
             .$queryRaw`SELECT * FROM "smartphones" WHERE "id" = ${id}`;
 
         return productChildren.length > 0 ? productChildren[0] : null;
+    }
+
+    async publishProductById(productId: number): Promise<any> {
+        console.log(productId);
+
+        return await this._prisma.$queryRaw`
+            UPDATE "products" 
+            SET 
+                "isDraft" = false,
+                "isPublished" = true
+            WHERE "id" = ${productId}
+        `;
+    }
+
+    async unPublishProductById(id: number): Promise<any> {
+        return await this._prisma.$queryRaw`
+            UPDATE "products" 
+            SET 
+                "isDraft" = true,
+                "isPublished" = false
+            WHERE "id" = ${id}
+        `;
+    }
+
+    async queryProduct(query: any, limit: number, skip: number): Promise<any> {
+        console.log(query, limit, skip);
+
+        //WHERE "isPublished" = ${true} AND "isDraft" = false
+        let whereClause: any;
+        const keys = Object.keys(query);
+
+        if (keys.length > 0) {
+            whereClause = keys
+                .map(
+                    (key) =>
+                        `"${key}" = ${
+                            typeof query[key] === "string"
+                                ? "'" + query[key] + "'"
+                                : "${" + `${query[key]}` + "}"
+                        }`
+                )
+                .join(" AND ");
+        }
+
+        console.log(whereClause);
+
+        const data = await this._prisma.$queryRaw`
+            SELECT * FROM "products"
+            WHERE ${whereClause}
+            ORDER BY "updatedAt" DESC
+            OFFSET ${skip}
+            LIMIT ${limit}
+        `;
+
+        console.log(data);
+
+        return data;
     }
 }

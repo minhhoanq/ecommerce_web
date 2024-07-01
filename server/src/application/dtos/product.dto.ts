@@ -31,6 +31,8 @@ const updateProductSchema = z.object({
     categoryId: z.number().optional(),
     brandId: z.number().optional(),
     releaseDate: z.date().optional(),
+    isDraft: z.date().optional(),
+    isPublished: z.date().optional(),
     colorId: z.number().optional(),
     ramId: z.number().optional(),
     internalId: z.number().optional(),
