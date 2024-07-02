@@ -7,7 +7,11 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../shared/constants/types";
 import { IProductRepository } from "../../../domain/repositories/product.interface";
 import { IProductService } from "./product.interface";
-import { ProductDTO, UpdateProductDTO } from "../../dtos/product.dto";
+import {
+    ProductDTO,
+    ProductItemDTO,
+    UpdateProductDTO,
+} from "../../dtos/product.dto";
 import { Product, SmartPhone } from "../../../domain/entities/product/product";
 import slugify from "slugify";
 
@@ -53,6 +57,21 @@ export class ProductService implements IProductService {
         if (!newChildren) throw new BadRequestError("Error create product");
 
         return { newProduct, newChildren };
+    }
+
+    async createProductItem(body: ProductItemDTO): Promise<any> {
+        const findProduct = await this._productRepo.findProductById(
+            body.productId
+        );
+
+        if (!findProduct) throw new NotFoundError("Product not found!");
+        const productChildren = await this._productRepo.createProductChildren(
+            "smartphones",
+            findProduct.id,
+            body
+        );
+
+        return productChildren;
     }
 
     async updateProduct(

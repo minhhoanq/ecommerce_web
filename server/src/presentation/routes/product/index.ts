@@ -17,6 +17,7 @@ router.get("/:productId", asyncHandler(controller.getProduct.bind(controller)));
 
 //AUTHENTICATION
 router.post("/", controller.createProduct.bind(controller));
+router.post("/item", controller.createProductItem.bind(controller));
 router.patch("/:productItemId", controller.updateProduct.bind(controller));
 router.patch("/publish/:productId", controller.publishProduct.bind(controller));
 router.patch(

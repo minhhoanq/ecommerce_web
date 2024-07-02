@@ -22,6 +22,19 @@ const productSchema = z.object({
 
 type ProductDTO = z.infer<typeof productSchema>;
 
+// Product item
+const productItemSchema = z.object({
+    productId: z.number(),
+    originalPrice: z.number(),
+    releaseDate: z.date(),
+    colorId: z.number(),
+    ramId: z.number(),
+    internalId: z.number(),
+    salePrice: z.number(),
+});
+
+type ProductItemDTO = z.infer<typeof productItemSchema>;
+
 //update product
 const updateProductSchema = z.object({
     type: z.string(),
@@ -41,4 +54,11 @@ const updateProductSchema = z.object({
 
 type UpdateProductDTO = z.infer<typeof updateProductSchema>;
 
-export { productSchema, ProductDTO, updateProductSchema, UpdateProductDTO };
+export {
+    productSchema,
+    ProductDTO,
+    updateProductSchema,
+    UpdateProductDTO,
+    productItemSchema,
+    ProductItemDTO,
+};

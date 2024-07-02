@@ -4,6 +4,7 @@ import "reflect-metadata";
 import { Prisma, PrismaClient } from "@prisma/client";
 import {
     ProductDTO,
+    ProductItemDTO,
     UpdateProductDTO,
 } from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
@@ -34,7 +35,7 @@ export class ProductRepositoryImpl implements IProductRepository {
     async createProductChildren(
         type: string,
         productId: number,
-        payload: ProductDTO
+        payload: ProductItemDTO
     ): Promise<any> {
         try {
             console.log(payload);
