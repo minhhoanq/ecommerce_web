@@ -21,6 +21,11 @@ import { ProductService } from "../../application/usecases/product/product.servi
 import { IImageService } from "../../application/usecases/image/image.interface";
 import { ImageService } from "../../application/usecases/image/image.service";
 import { ImageController } from "../../presentation/controllers/image.controller";
+import { ICategoryRepository } from "../../domain/repositories/category.interface";
+import { CategoryRepositoryImpl } from "../repositories/category.repo";
+import { ICategoryService } from "../../application/usecases/category/category.interface";
+import { CategoryService } from "../../application/usecases/category/category.service";
+import { CategoryController } from "../../presentation/controllers/category.controller";
 
 const container = new Container();
 
@@ -48,5 +53,11 @@ container.bind(TYPES.ProductController).to(ProductController);
 //image
 container.bind<IImageService>(TYPES.ImageService).to(ImageService);
 container.bind(TYPES.ImageController).to(ImageController);
+//category
+container
+    .bind<ICategoryRepository>(TYPES.CategoryRepository)
+    .to(CategoryRepositoryImpl);
+container.bind<ICategoryService>(TYPES.CategoryService).to(CategoryService);
+container.bind(TYPES.CategoryController).to(CategoryController);
 
 export { container };

@@ -17,6 +17,10 @@ const TYPES = {
     //Image
     ImageService: Symbol.for("ImageService"),
     ImageController: Symbol.for("ImageController"),
+    //Category
+    CategoryRepository: Symbol.for("CategoryRepository"),
+    CategoryService: Symbol.for("CategoryService"),
+    CategoryController: Symbol.for("CategoryController"),
 };
 
 export { TYPES };

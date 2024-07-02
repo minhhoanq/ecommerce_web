@@ -47,12 +47,14 @@ export class ProductRepositoryImpl implements IProductRepository {
             switch (type) {
                 case "smartphones":
                     return await this._prisma
-                        .$executeRaw`INSERT INTO smartphones ( "productId",
+                        .$executeRaw`INSERT INTO smartphones ( 
+                        "productId",
                         "colorId",
                         "ramId",
                         "internalId",
                         "originalPrice",
-                        "salePrice", "updatedAt") VALUES (${productId}, ${colorId}, ${ramId}, ${internalId}, ${originalPrice}, ${salePrice}, ${updatedAt})`;
+                        "salePrice", "updatedAt") 
+                        VALUES (${productId}, ${colorId}, ${ramId}, ${internalId}, ${originalPrice}, ${salePrice}, ${updatedAt})`;
                 // case "laptop":
                 //     return await this._prisma
                 //         .$executeRaw`INSERT INTO users (name, "updatedAt") VALUES (${name}, ${createdAt})`;
