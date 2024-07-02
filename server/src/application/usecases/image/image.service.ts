@@ -14,8 +14,8 @@ const urlImagePublic = "https://djusmsx094025.cloudfront.net";
 
 @injectable()
 export class ImageService implements IImageService {
-    upLoadImageS3 = async ({ file }: { file: any }) => {
-        console.log(process.env.AWS_BUCKET_NAME);
+    upLoadImageS3 = async ({ file }: { file: Express.Multer.File }) => {
+        console.log(file);
         try {
             const imageName = randomImageName();
             const command = new PutObjectCommand({

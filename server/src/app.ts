@@ -5,6 +5,9 @@ import cors from "cors";
 // const passportSetup = require("./utils/passport");
 import cookieSession from "cookie-session";
 import router from "./presentation/routes";
+import morgan from "morgan";
+import helmet from "helmet";
+import compression from "compression";
 
 const app = express();
 // app.use(cookieParser());
@@ -16,6 +19,9 @@ app.use(
         maxAge: 24 * 60 * 60 * 100,
     })
 );
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(compression());
 
 // app.use(passport.initialize());
 // app.use(passport.session());

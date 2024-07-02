@@ -63,7 +63,7 @@ export class AuthService implements IAuthService {
             lastName,
             password: passwordHash,
             email: emailEdited,
-            roleId: 3,
+            roleId: 2,
         });
 
         console.log(newUser);
@@ -100,10 +100,10 @@ export class AuthService implements IAuthService {
     }
 
     async finalSignup(
-        codeVerify: CodeVerifyDTO
+        body: CodeVerifyDTO
     ): Promise<{ user: User; tokens: Tokens | undefined } | null> {
-        console.log(codeVerify);
-        const userExist = await this._userRepo.findByCodeVerify(codeVerify);
+        console.log(body);
+        const userExist = await this._userRepo.findByCodeVerify(body);
 
         if (!userExist)
             throw new AuthFailureError(

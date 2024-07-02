@@ -44,7 +44,7 @@ export class Auth {
                 req.headers[HEADER.CLIENT_ID] as string,
                 10
             );
-            if (!userId) throw new AuthFailureError("Invalid request!");
+            if (!userId) throw new AuthFailureError("Not permission!");
             console.log("userId", userId);
             //check keystore
             const keyStore = await this._keyStoreRepo.findByUserId(

@@ -192,6 +192,7 @@ export class ProductRepositoryImpl implements IProductRepository {
             skip: skip,
             take: limit,
             select: {
+                id: true,
                 name: true,
                 originalPrice: true,
             },
