@@ -7,6 +7,22 @@ import { ProductService } from "../../application/usecases/product/product.servi
 import { TYPES } from "../../shared/constants/types";
 import { IProductService } from "../../application/usecases/product/product.interface";
 
+interface QueryParams {
+    limit: number;
+    sort: string;
+    page: number;
+    filter: any;
+}
+
+function parseQueryParams(query: any): QueryParams {
+    return {
+        limit: parseInt(query.limit, 10) || 10,
+        sort: query.sort || "ctime",
+        page: parseInt(query.page, 10) || 1,
+        filter: query.filter || {},
+    };
+}
+
 @injectable()
 export default class ProductController {
     private _productService: IProductService;
@@ -102,6 +118,32 @@ export default class ProductController {
                 message: "getDrafts successfully!",
                 metadata: await this._productService.searchs(
                     req.params.keySearch
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProducts(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getProducts successfully!",
+                metadata: await this._productService.getProducts(
+                    parseQueryParams(req.query)
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getProduct successfully!",
+                metadata: await this._productService.getProduct(
+                    +req.params.productId
                 ),
             }).send(res);
         } catch (error) {

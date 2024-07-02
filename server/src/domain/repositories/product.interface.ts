@@ -15,4 +15,11 @@ export interface IProductRepository {
     unPublishProductById(id: number): Promise<any>;
     queryProduct(query: any, limit: number, skip: number): Promise<any>;
     searchProducts(keySearch: string): Promise<any>;
+    findProducts(
+        limit: number,
+        sort: string,
+        page: number,
+        filter: any
+    ): Promise<any>;
+    findProduct(id: number): Promise<any>;
 }

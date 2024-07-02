@@ -12,6 +12,8 @@ router.get(
     "/search/:keySearch",
     asyncHandler(controller.searchs.bind(controller))
 );
+router.get("/", asyncHandler(controller.getProducts.bind(controller)));
+router.get("/:productId", asyncHandler(controller.getProduct.bind(controller)));
 
 //AUTHENTICATION
 router.post("/", controller.createProduct.bind(controller));

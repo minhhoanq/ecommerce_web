@@ -22,15 +22,6 @@ export class ProductService implements IProductService {
         this._productRepo = productRepo;
     }
 
-    getProducts(body: {
-        limit: number;
-        sort: string;
-        page: number;
-        filters: any;
-    }): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
-
     public async createProduct(body: ProductDTO) {
         const { type, ...payload } = body;
         const product = new SmartPhone(
@@ -120,5 +111,23 @@ export class ProductService implements IProductService {
         const data = await this._productRepo.searchProducts(keySearch);
 
         return data;
+    }
+
+    async getProducts({
+        limit,
+        sort,
+        page,
+        filter,
+    }: {
+        limit: number;
+        sort: string;
+        page: number;
+        filter: any;
+    }): Promise<any> {
+        return await this._productRepo.findProducts(limit, sort, page, filter);
+    }
+
+    async getProduct(id: number): Promise<any> {
+        return await this._productRepo.findProduct(id);
     }
 }

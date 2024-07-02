@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { IProductRepository } from "../../domain/repositories/product.interface";
 import "reflect-metadata";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
     ProductDTO,
     UpdateProductDTO,
@@ -165,14 +165,43 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async searchProducts(params: string): Promise<any> {
-        const regexSearch = new RegExp(params);
-        console.log(regexSearch);
-        // return await this._prisma.product.findMany({
-        //     where: {
-        //         name: {
-        //             contains: regexSearch,
-        //         },
-        //     },
-        // });
+        // const regexSearch = new RegExp(params);
+        // console.log(regexSearch);
+        return await this._prisma.product.findMany({
+            where: {
+                name: {
+                    contains: params,
+                },
+            },
+        });
+    }
+
+    async findProducts(
+        limit: number,
+        sort: string,
+        page: number,
+        filter: any
+    ): Promise<any> {
+        const skip = (page - 1) * limit;
+        const sortBy: Prisma.UserOrderByWithRelationInput =
+            sort === "ctime" ? { createdAt: "desc" } : { id: "asc" };
+        return await this._prisma.product.findMany({
+            where: filter,
+            orderBy: [sortBy],
+            skip: skip,
+            take: limit,
+            select: {
+                name: true,
+                originalPrice: true,
+            },
+        });
+    }
+
+    async findProduct(id: number): Promise<any> {
+        return await this._prisma.$queryRaw`
+            SELECT * FROM "products" as p
+            JOIN "smartphones" as sm on p.id = sm."productId"
+            WHERE p.id = ${id}
+        `;
     }
 }
