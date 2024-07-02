@@ -19,15 +19,39 @@ export class ImageController {
         res: Response,
         next: NextFunction
     ) => {
-        console.log("check");
-        const { file } = req;
+        try {
+            console.log("check");
+            const { file } = req;
 
-        console.log(req.file);
+            console.log(req.file);
 
-        if (!file) throw new BadRequestError("File missing!!");
-        new SuccessResponse({
-            message: "Successful Upload",
-            metadata: await this._imageServive.upLoadImageS3({ file }),
-        }).send(res);
+            if (!file) throw new BadRequestError("File missing!!");
+            new SuccessResponse({
+                message: "Successful Upload",
+                metadata: await this._imageServive.upLoadImageS3({ file }),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    uploadImageMultipleFromLocalS3 = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const { files } = req;
+
+            if (!files) throw new BadRequestError("Files missing!!");
+            new SuccessResponse({
+                message: "Successful Upload",
+                metadata: await this._imageServive.upLoadImageMultipleS3({
+                    files: files as Express.Multer.File[],
+                }),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
     };
 }

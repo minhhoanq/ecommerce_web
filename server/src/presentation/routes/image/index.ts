@@ -9,9 +9,15 @@ const router = express.Router();
 const controller = container.get<ImageController>(TYPES.ImageController);
 
 router.post(
-    "/upload/product",
+    "/thumbnail",
     uploadMemory.single("file"),
     asyncHandler(controller.uploadImageFromLocalS3.bind(controller))
+);
+
+router.post(
+    "/thumbnail/multiple",
+    uploadMemory.array("files", 3),
+    asyncHandler(controller.uploadImageMultipleFromLocalS3.bind(controller))
 );
 
 export default router;
