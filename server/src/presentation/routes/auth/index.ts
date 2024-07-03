@@ -1,6 +1,6 @@
 import express from "express";
 import { container } from "../../../infrastructure/di/inversify.config";
-import AuthController from "../../controllers/auth.controller";
+import { AuthController } from "../../controllers/auth.controller";
 import { TYPES } from "../../../shared/constants/types";
 import { Auth } from "../../auth/auth.util";
 import { Access } from "../../auth/rbac";

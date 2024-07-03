@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import User from "../../../domain/entities/user";
 import { Tokens } from "../../../shared/types/tokens";
-import IAuthService from "./auth.interface";
+import { IAuthService } from "./auth.interface";
 import { TYPES } from "../../../shared/constants/types";
 import { IUserRepository } from "../../../domain/repositories/user.interface";
 import {

@@ -1,6 +1,6 @@
 import express from "express";
 import { container } from "../../../infrastructure/di/inversify.config";
-import ProductController from "../../controllers/product.controller";
+import { ProductController } from "../../controllers/product.controller";
 import { TYPES } from "../../../shared/constants/types";
 import { asyncHandler } from "../../../shared/helpers/asyncHandler";
 import { Auth } from "../../auth/auth.util";

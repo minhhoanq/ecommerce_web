@@ -15,7 +15,7 @@ import {
 } from "../../shared/core/error.response";
 
 @injectable()
-export default class UserRepoImpl implements IUserRepository {
+export class UserRepoImpl implements IUserRepository {
     private _prisma: PrismaClient;
 
     constructor() {

@@ -1,10 +1,10 @@
 import { Container } from "inversify";
 import { IUserRepository } from "../../domain/repositories/user.interface";
 import { TYPES } from "../../shared/constants/types";
-import UserRepoImpl from "../repositories/user.repo";
-import IAuthService from "../../application/usecases/auth/auth.interface";
+import { UserRepoImpl } from "../repositories/user.repo";
+import { IAuthService } from "../../application/usecases/auth/auth.interface";
 import { AuthService } from "../../application/usecases/auth/auth.service";
-import AuthController from "../../presentation/controllers/auth.controller";
+import { AuthController } from "../../presentation/controllers/auth.controller";
 import { IKeyStoreRepository } from "../../domain/repositories/keyStore.interface";
 import { KeyStoreRepoImpl } from "../repositories/keyStore.repo";
 import { IKeyStoreService } from "../../application/usecases/keystore/keystore.interface";
@@ -13,7 +13,7 @@ import { IRoleResourceRepository } from "../../domain/repositories/roleResource.
 import { RoleResourceRepoImpl } from "../repositories/roleResource.repo";
 import { Auth } from "../../presentation/auth/auth.util";
 import { Access } from "../../presentation/auth/rbac";
-import ProductController from "../../presentation/controllers/product.controller";
+import { ProductController } from "../../presentation/controllers/product.controller";
 import { IProductRepository } from "../../domain/repositories/product.interface";
 import { ProductRepositoryImpl } from "../repositories/product.repo";
 import { IProductService } from "../../application/usecases/product/product.interface";
@@ -26,6 +26,13 @@ import { CategoryRepositoryImpl } from "../repositories/category.repo";
 import { ICategoryService } from "../../application/usecases/category/category.interface";
 import { CategoryService } from "../../application/usecases/category/category.service";
 import { CategoryController } from "../../presentation/controllers/category.controller";
+import { ICartRepository } from "../../domain/repositories/cart.interface";
+import { CartRepositoryImpl } from "../repositories/cart.repo";
+import { ICartService } from "../../application/usecases/cart/cart.interface";
+import { CartService } from "../../application/usecases/cart/cart.service";
+import { CartController } from "../../presentation/controllers/cart.controller";
+import { ICartItemRepository } from "../../domain/repositories/cartItem.interface";
+import { CartItemRepositoryImpl } from "../repositories/cartItem.repo";
 
 const container = new Container();
 
@@ -59,5 +66,13 @@ container
     .to(CategoryRepositoryImpl);
 container.bind<ICategoryService>(TYPES.CategoryService).to(CategoryService);
 container.bind(TYPES.CategoryController).to(CategoryController);
+//cart
+container.bind<ICartRepository>(TYPES.CartRepository).to(CartRepositoryImpl);
+container.bind<ICartService>(TYPES.CartService).to(CartService);
+container.bind(TYPES.CartController).to(CartController);
+//cart item
+container
+    .bind<ICartItemRepository>(TYPES.CartItemRepository)
+    .to(CartItemRepositoryImpl);
 
 export { container };

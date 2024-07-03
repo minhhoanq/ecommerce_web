@@ -24,7 +24,7 @@ function parseQueryParams(query: any): QueryParams {
 }
 
 @injectable()
-export default class ProductController {
+export class ProductController {
     private _productService: IProductService;
 
     constructor(@inject(TYPES.ProductService) productService: IProductService) {

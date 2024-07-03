@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { TYPES } from "../../shared/constants/types";
-import IAuthService from "../../application/usecases/auth/auth.interface";
+import { IAuthService } from "../../application/usecases/auth/auth.interface";
 import { NextFunction, Request, Response } from "express";
 import { Created, SuccessResponse } from "../../shared/core/success.response";
 
 @injectable()
-export default class AuthController {
+export class AuthController {
     private _authService: IAuthService;
 
     constructor(

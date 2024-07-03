@@ -21,6 +21,12 @@ const TYPES = {
     CategoryRepository: Symbol.for("CategoryRepository"),
     CategoryService: Symbol.for("CategoryService"),
     CategoryController: Symbol.for("CategoryController"),
+    //Cart
+    CartRepository: Symbol.for("CartRepository"),
+    CartService: Symbol.for("CartService"),
+    CartController: Symbol.for("CartController"),
+    //Cart
+    CartItemRepository: Symbol.for("CartItemRepository"),
 };
 
 export { TYPES };
