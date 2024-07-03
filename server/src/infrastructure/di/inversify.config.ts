@@ -33,6 +33,8 @@ import { CartService } from "../../application/usecases/cart/cart.service";
 import { CartController } from "../../presentation/controllers/cart.controller";
 import { ICartItemRepository } from "../../domain/repositories/cartItem.interface";
 import { CartItemRepositoryImpl } from "../repositories/cartItem.repo";
+import { IProductItemRepository } from "../../domain/repositories/productItem.interface";
+import { ProductItemRepositoryImpl } from "../repositories/productItem.repo";
 
 const container = new Container();
 
@@ -57,6 +59,10 @@ container
     .to(ProductRepositoryImpl);
 container.bind<IProductService>(TYPES.ProductService).to(ProductService);
 container.bind(TYPES.ProductController).to(ProductController);
+//product item
+container
+    .bind<IProductItemRepository>(TYPES.ProductItemRepository)
+    .to(ProductItemRepositoryImpl);
 //image
 container.bind<IImageService>(TYPES.ImageService).to(ImageService);
 container.bind(TYPES.ImageController).to(ImageController);

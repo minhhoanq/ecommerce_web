@@ -51,9 +51,47 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
         return await this._prisma.$queryRaw`
             UPDATE "cartitems"
             SET 
-                "quantity"=${quantity},
+                "quantity"= ${quantity},
                 "updatedAt"=${updatedAt}
             WHERE "cartId" = ${cartId} AND "productItemId" = ${productItemId}
+        `;
+    }
+
+    async updateQty(payload: {
+        cartId: number;
+        productItemId: number;
+        quantity: number;
+    }): Promise<any> {
+        const { cartId, productItemId, quantity } = payload;
+        const updatedAt = new Date();
+
+        return await this._prisma.$queryRaw`
+            UPDATE "cartitems"
+            SET 
+                "quantity"= "quantity" + ${quantity},
+                "updatedAt"=${updatedAt}
+            WHERE "cartId" = ${cartId} AND "productItemId" = ${productItemId}
+        `;
+    }
+
+    async delete(userId: number, productItemId: number): Promise<any> {
+        return await this._prisma.$executeRaw`
+            DELETE FROM cartitems
+            USING carts
+            WHERE carts.id = cartitems."cartId"
+            AND carts."userId" = ${userId}
+            AND cartitems."productItemId" = ${productItemId}
+        `;
+    }
+
+    async findByUserId(userId: number): Promise<any> {
+        return await this._prisma.$queryRaw`
+            SELECT p."name", sm."salePrice", ci."quantity" FROM cartitems as ci
+            JOIN smartphones as sm on ci."productItemId" = sm.id
+            JOIN products as p on sm."productId" = p.id
+            JOIN carts as c on ci."cartId" = c.id
+            JOIN users as u on c."userId" = u.id
+            WHERE u."id" = ${userId}
         `;
     }
 }

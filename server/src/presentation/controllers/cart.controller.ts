@@ -26,4 +26,43 @@ export class CartController {
             next(error);
         }
     }
+
+    async updateToCart(req: Request, res: Response, next: NextFunction) {
+        try {
+            new Created({
+                message: "Update cart successfully!",
+                metadata: await this._cartService.updateToCart(
+                    req.user.userId,
+                    req.body
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteToCartItem(req: Request, res: Response, next: NextFunction) {
+        try {
+            new Created({
+                message: "delete cart item successfully!",
+                metadata: await this._cartService.deteleCartItem(
+                    req.user.userId,
+                    req.body
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getCartItems(req: Request, res: Response, next: NextFunction) {
+        try {
+            new Created({
+                message: "get cart item successfully!",
+                metadata: await this._cartService.getCartItems(req.user.userId),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
