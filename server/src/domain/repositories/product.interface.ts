@@ -1,10 +1,6 @@
 export interface IProductRepository {
     create(payload: any): Promise<any>;
-    createProductChildren(
-        type: string,
-        productId: number,
-        payload: any
-    ): Promise<any>;
+    createProductItem(productId: number, payload: any): Promise<any>;
     update(
         productId: number,
         productChildrenId: number,

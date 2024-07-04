@@ -51,6 +51,15 @@ export class ProductService implements IProductService {
         return newProduct;
     }
 
+    //create skus
+    async createProductItem(body: any): Promise<any> {
+        const newProductItem = await this._productRepo.createProductItem(
+            body.productId,
+            { ...body }
+        );
+        return newProductItem;
+    }
+
     async updateProduct(
         productItemId: number,
         body: UpdateProductDTO

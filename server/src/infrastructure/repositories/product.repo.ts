@@ -18,6 +18,23 @@ export class ProductRepositoryImpl implements IProductRepository {
         this._prisma = new PrismaClient();
     }
 
+    attributeMapping: any = {
+        1: "color",
+        2: "ram",
+        3: "storage",
+        // Add more mappings as needed
+    };
+
+    transformAttributes = (attributes: any[]) => {
+        return attributes.reduce((acc, attr: any) => {
+            const key = this.attributeMapping[attr.attributeId];
+            if (key) {
+                acc[key] = attr.attributeValue;
+            }
+            return acc;
+        }, {});
+    };
+
     async create(payload: any): Promise<any> {
         const {
             name,
@@ -34,70 +51,54 @@ export class ProductRepositoryImpl implements IProductRepository {
         const releaseDate = new Date();
 
         try {
-            const transactionResult = await this._prisma.$transaction(
-                async (prisma) => {
-                    const product = await prisma.product.create({
+            await this._prisma.$transaction(async (prisma) => {
+                const product = await prisma.product.create({
+                    data: {
+                        name,
+                        slug,
+                        desc,
+                        thumbnail,
+                        originalPrice,
+                        categoryId,
+                        brandId,
+                        releaseDate,
+                        updatedAt,
+                    },
+                });
+
+                const skuPromises = skus.map(async (sku: any) => {
+                    const attributes = this.transformAttributes(sku.attributes);
+                    const createdSku = await prisma.sku.create({
                         data: {
-                            name,
-                            slug,
-                            desc,
-                            thumbnail,
-                            originalPrice,
-                            categoryId,
-                            brandId,
-                            releaseDate,
+                            skuNo: sku.skuNo,
+                            originalPrice: sku.originalPrice,
+                            salePrice: sku.salePrice,
+                            stock: sku.stock,
+                            thumbnail: sku.thumbnail,
+                            productId: product.id,
                             updatedAt,
+                            attributes: attributes,
                         },
                     });
 
-                    const skuPromises = skus.map(async (sku: any) => {
-                        const createdSku = await prisma.sku.create({
-                            data: {
-                                skuNo: sku.skuNo + "hhh",
-                                originalPrice: sku.originalPrice,
-                                salePrice: sku.salePrice,
-                                stock: sku.stock,
-                                thumbnail: sku.thumbnail,
-                                productId: product.id,
-                                updatedAt,
-                                attributes: {
-                                    createMany: {
-                                        data: sku.attributes.map(
-                                            (attr: any) => ({
-                                                attributeId: attr.attributeId,
-                                                attributeValue:
-                                                    attr.attributeValue,
-                                            })
-                                        ),
-                                    },
+                    const skuAttributePromises = sku.attributes.map(
+                        (attr: any) =>
+                            prisma.skuAttribute.create({
+                                data: {
+                                    skuId: createdSku.id,
+                                    attributeId: attr.attributeId,
+                                    attributeValue: attr.attributeValue,
                                 },
-                            },
-                        });
+                            })
+                    );
 
-                        const skuAttributePromises = sku.attributes.map(
-                            (attr: any) =>
-                                prisma.skuAttribute.create({
-                                    data: {
-                                        skuId: createdSku.id,
-                                        attributeId: attr.attributeId,
-                                        attributeValue: attr.attributeValue,
-                                    },
-                                })
-                        );
+                    await Promise.all(skuAttributePromises);
+                    return createdSku; // Return the created sku
+                });
 
-                        await Promise.all(skuAttributePromises);
-                        return createdSku; // Return the created sku
-                    });
-
-                    await Promise.all(skuPromises);
-                    return product; // Return the created product
-                }
-            );
-
-            console.log(
-                "Transaction completed successfully:",
-                transactionResult
-            );
+                await Promise.all(skuPromises);
+                return product; // Return the created product
+            });
             return true; // Return the transaction result
         } catch (error) {
             console.error("Transaction failed:", error);
@@ -107,37 +108,49 @@ export class ProductRepositoryImpl implements IProductRepository {
         }
     }
 
-    async createProductChildren(
-        type: string,
-        productId: number,
-        payload: ProductItemDTO
-    ): Promise<any> {
+    async createProductItem(productId: number, payload: any): Promise<any> {
         try {
-            console.log(payload);
-            const { colorId, ramId, internalId, originalPrice, salePrice } =
-                payload;
+            const { skus } = payload;
             const updatedAt = new Date();
-            console.log(payload);
+            await this._prisma.$transaction(async (prisma) => {
+                const skuPromises = skus.map(async (sku: any) => {
+                    const attributes = this.transformAttributes(sku.attributes);
+                    const createdSku = await prisma.sku.create({
+                        data: {
+                            skuNo: sku.skuNo,
+                            originalPrice: sku.originalPrice,
+                            salePrice: sku.salePrice,
+                            stock: sku.stock,
+                            thumbnail: sku.thumbnail,
+                            productId: productId,
+                            updatedAt,
+                            attributes: attributes,
+                        },
+                    });
 
-            switch (type) {
-                case "smartphones":
-                    return await this._prisma
-                        .$executeRaw`INSERT INTO smartphones ( 
-                        "productId",
-                        "colorId",
-                        "ramId",
-                        "internalId",
-                        "originalPrice",
-                        "salePrice", "updatedAt") 
-                        VALUES (${productId}, ${colorId}, ${ramId}, ${internalId}, ${originalPrice}, ${salePrice}, ${updatedAt})`;
-                // case "laptop":
-                //     return await this._prisma
-                //         .$executeRaw`INSERT INTO users (name, "updatedAt") VALUES (${name}, ${createdAt})`;
-                default:
-                    return new BadRequestError("Type not valid!");
-            }
+                    const skuAttributePromises = sku.attributes.map(
+                        (attr: any) =>
+                            prisma.skuAttribute.create({
+                                data: {
+                                    skuId: createdSku.id,
+                                    attributeId: attr.attributeId,
+                                    attributeValue: attr.attributeValue,
+                                },
+                            })
+                    );
+
+                    await Promise.all(skuAttributePromises);
+                    return createdSku; // Return the created sku
+                });
+
+                await Promise.all(skuPromises);
+                return skuPromises; // Return the created product
+            });
+
+            return true;
         } catch (error) {
-            throw error;
+            console.error("Transaction failed:", error);
+            throw error; // Optionally handle or rethrow the error
         } finally {
             await this._prisma.$disconnect();
         }
