@@ -11,31 +11,23 @@ const controller = container.get<ProductController>(TYPES.ProductController);
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
 
-//PUBLIC
-router.get(
-    "/search/:keySearch",
-    asyncHandler(controller.searchs.bind(controller))
-);
-router.get("/", asyncHandler(controller.getProducts.bind(controller)));
-router.get("/:productId", asyncHandler(controller.getProduct.bind(controller)));
-
 //AUTHENTICATION
 router.post(
     "/",
-    // auth.authentication,
-    // access.GrantAccess("createAny", "product"),
+    auth.authentication,
+    access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProduct.bind(controller))
 );
 router.post(
     "/item",
-    // auth.authentication,
-    // access.GrantAccess("createAny", "product"),
+    auth.authentication,
+    access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProductItem.bind(controller))
 );
 router.patch(
     "/:productItemId",
-    auth.authentication,
-    access.GrantAccess("updateAny", "product"),
+    // auth.authentication,
+    // access.GrantAccess("updateAny", "product"),
     asyncHandler(controller.updateProduct.bind(controller))
 );
 router.patch(
@@ -58,11 +50,20 @@ router.get(
     access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getPublishs.bind(controller))
 );
+
 router.get(
     "/drafts",
     auth.authentication,
     access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getDrafts.bind(controller))
 );
+
+//PUBLIC
+router.get(
+    "/search/:keySearch",
+    asyncHandler(controller.searchs.bind(controller))
+);
+router.get("/", asyncHandler(controller.getProducts.bind(controller)));
+router.get("/:productId", asyncHandler(controller.getProduct.bind(controller)));
 
 export default router;

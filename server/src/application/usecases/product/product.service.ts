@@ -60,10 +60,7 @@ export class ProductService implements IProductService {
         return newProductItem;
     }
 
-    async updateProduct(
-        productItemId: number,
-        body: UpdateProductDTO
-    ): Promise<any> {
+    async updateProduct(productItemId: number, body: any): Promise<any> {
         const productItem = await this._productRepo.findProductById(
             productItemId
         );
@@ -97,6 +94,7 @@ export class ProductService implements IProductService {
     }): Promise<any> {
         const query = { isPublished: true };
         const data = await this._productRepo.queryProduct(query, limit, skip);
+
         return data;
     }
 

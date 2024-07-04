@@ -3,7 +3,7 @@ export interface IProductRepository {
     createProductItem(productId: number, payload: any): Promise<any>;
     update(
         productId: number,
-        productChildrenId: number,
+        productItemId: number,
         payload: any
     ): Promise<any>;
     findProductById(id: number): Promise<any>;

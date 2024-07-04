@@ -158,11 +158,10 @@ export class ProductRepositoryImpl implements IProductRepository {
 
     async update(
         productId: number,
-        productChildrenId: number,
-        payload: UpdateProductDTO
+        productItemId: number,
+        payload: any
     ): Promise<any> {
         const {
-            type,
             name,
             desc,
             originalPrice,
@@ -171,24 +170,23 @@ export class ProductRepositoryImpl implements IProductRepository {
             releaseDate,
             isDraft,
             isPublished,
-            colorId,
-            ramId,
-            internalId,
-            salePrice,
+            thumbnail,
+            skus,
         } = payload;
-        console.log("payload", { productId, productChildrenId });
+        console.log("payload", { productId, productItemId, skus });
         const updatedAt = new Date();
         let slug;
         if (name) {
             slug = slugify(name, { lower: true });
         }
         const query: any[] = [
-            this._prisma.$queryRaw`
+            await this._prisma.$queryRaw`
             UPDATE "products"
             SET 
                 "name" = COALESCE(${name}, "name"),
                 "slug" = COALESCE(${slug}, "slug"),
                 "desc" = COALESCE(${desc}, "desc"),
+                "thumbnail" = COALESCE(${thumbnail}, "thumbnail"),
                 "originalPrice" = COALESCE(${originalPrice}, "originalPrice"),
                 "categoryId" = COALESCE(${categoryId}, "categoryId"),
                 "brandId" = COALESCE(${brandId}, "brandId"),
@@ -199,25 +197,28 @@ export class ProductRepositoryImpl implements IProductRepository {
             WHERE "id" = ${productId}`,
         ];
 
-        query.push(this._prisma.$queryRaw`
-        UPDATE "smartphones"
-            SET 
-                "colorId" = COALESCE(${colorId}, "colorId"),
-                "ramId" = COALESCE(${ramId}, "ramId"),
-                "internalId" = COALESCE(${internalId}, "internalId"),
-                "originalPrice" = COALESCE(${originalPrice}, "originalPrice"),
-                "salePrice" = COALESCE(${salePrice}, "salePrice"),
-                "updatedAt" = COALESCE(${updatedAt}, "updatedAt")
-            WHERE "id" = ${productChildrenId};
+        query.push(
+            await this._prisma.$queryRaw`
+            UPDATE "skus"
+                SET 
+                    "skuNo" = COALESCE(${skus.skuNo}, "skuNo"),
+                    "productId" = COALESCE(${productId}, "productId"),
+                    "stock" = COALESCE(${skus.stock}, "stock"),
+                    "thumbnail" = COALESCE(${skus.thumbnail}, "thumbnail"),
+                    "attributes" = COALESCE(${skus.attributes}, "attributes"),
+                    "originalPrice" = COALESCE(${skus.originalPrice}, "originalPrice"),
+                    "salePrice" = COALESCE(${skus.salePrice}, "salePrice"),
+                    "updatedAt" = COALESCE(${updatedAt}, "updatedAt")
+                WHERE "id" = ${productItemId};
+            `
+        );
 
-        `);
-
-        return await this._prisma.$transaction(query);
+        return await this._prisma.$transaction(async () => await query);
     }
 
     async findProductById(id: number): Promise<any> {
         const productChildren: any[] = await this._prisma
-            .$queryRaw`SELECT * FROM "smartphones" WHERE "id" = ${id}`;
+            .$queryRaw`SELECT * FROM "skus" WHERE "id" = ${id}`;
 
         return productChildren.length > 0 ? productChildren[0] : null;
     }
@@ -294,7 +295,7 @@ export class ProductRepositoryImpl implements IProductRepository {
     async findProduct(id: number): Promise<any> {
         return await this._prisma.$queryRaw`
             SELECT * FROM "products" as p
-            JOIN "smartphones" as sm on p.id = sm."productId"
+            JOIN "skus" as s on p.id = s."productId"
             WHERE p.id = ${id}
         `;
     }
