@@ -13,7 +13,7 @@ export class ProductItemRepositoryImpl implements IProductItemRepository {
 
     async findById(id: number): Promise<any> {
         const productItem: any[] = await this._prisma.$queryRaw`
-            SELECT id FROM "skus"
+            SELECT id, "salePrice" FROM "skus"
             WHERE "id" = ${id}
         `;
 

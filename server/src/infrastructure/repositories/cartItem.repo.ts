@@ -87,7 +87,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
 
     async findByUserId(userId: number): Promise<any> {
         return await this._prisma.$queryRaw`
-            SELECT p."name", sk."salePrice", ci."quantity" FROM cartitems as ci
+            SELECT sk.id, p."name", sk."salePrice", ci."quantity" FROM cartitems as ci
             JOIN skus as sk on ci."skuId" = sk.id
             JOIN products as p on sk."productId" = p.id
             JOIN carts as c on ci."cartId" = c.id

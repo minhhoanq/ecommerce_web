@@ -35,6 +35,11 @@ import { ICartItemRepository } from "../../domain/repositories/cartItem.interfac
 import { CartItemRepositoryImpl } from "../repositories/cartItem.repo";
 import { IProductItemRepository } from "../../domain/repositories/productItem.interface";
 import { ProductItemRepositoryImpl } from "../repositories/productItem.repo";
+import { ICheckoutRepository } from "../../domain/repositories/checkout.interface";
+import { CheckoutRepositoryImpl } from "../repositories/checkout.repo";
+import { ICheckoutService } from "../../application/usecases/checkout/checkout.interface";
+import { CheckoutService } from "../../application/usecases/checkout/checkout.service";
+import { CheckoutController } from "../../presentation/controllers/checkout.controller";
 
 const container = new Container();
 
@@ -80,5 +85,11 @@ container.bind(TYPES.CartController).to(CartController);
 container
     .bind<ICartItemRepository>(TYPES.CartItemRepository)
     .to(CartItemRepositoryImpl);
+//checkout
+container
+    .bind<ICheckoutRepository>(TYPES.CheckoutRepository)
+    .to(CheckoutRepositoryImpl);
+container.bind<ICheckoutService>(TYPES.CheckoutService).to(CheckoutService);
+container.bind(TYPES.CheckoutController).to(CheckoutController);
 
 export { container };
