@@ -21,7 +21,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
         return await this._prisma.$queryRaw`
             INSERT INTO cartitems (
                 "cartId",
-                "productItemId",
+                "skuId",
                 "quantity",
                 "updatedAt"
             ) VALUES (
@@ -38,7 +38,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
             SELECT * FROM "cartitems"
             WHERE "cartId" = ${cartId}
         `;
-        return cartItem.length > 0 ? cartItem[0] : null;
+        return cartItem;
     }
 
     async update(payload: {
@@ -54,7 +54,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
             SET 
                 "quantity"= ${quantity},
                 "updatedAt"=${updatedAt}
-            WHERE "cartId" = ${cartId} AND "productItemId" = ${productItemId}
+            WHERE "cartId" = ${cartId} AND "skuId" = ${productItemId}
         `;
     }
 
@@ -71,7 +71,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
             SET 
                 "quantity"= "quantity" + ${quantity},
                 "updatedAt"=${updatedAt}
-            WHERE "cartId" = ${cartId} AND "productItemId" = ${productItemId}
+            WHERE "cartId" = ${cartId} AND "skuId" = ${productItemId}
         `;
     }
 
@@ -81,15 +81,15 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
             USING carts
             WHERE carts.id = cartitems."cartId"
             AND carts."userId" = ${userId}
-            AND cartitems."productItemId" = ${productItemId}
+            AND cartitems."skuId" = ${productItemId}
         `;
     }
 
     async findByUserId(userId: number): Promise<any> {
         return await this._prisma.$queryRaw`
-            SELECT p."name", sm."salePrice", ci."quantity" FROM cartitems as ci
-            JOIN smartphones as sm on ci."productItemId" = sm.id
-            JOIN products as p on sm."productId" = p.id
+            SELECT p."name", sk."salePrice", ci."quantity" FROM cartitems as ci
+            JOIN skus as sk on ci."skuId" = sk.id
+            JOIN products as p on sk."productId" = p.id
             JOIN carts as c on ci."cartId" = c.id
             JOIN users as u on c."userId" = u.id
             WHERE u."id" = ${userId}

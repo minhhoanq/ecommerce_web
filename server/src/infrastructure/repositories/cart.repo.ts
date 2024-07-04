@@ -12,7 +12,6 @@ export class CartRepositoryImpl implements ICartRepository {
     }
 
     async findByUserId(userId: number): Promise<any> {
-        console.log("Cjcek find", userId);
         const cart: any[] = await this._prisma.$queryRaw`
             SELECT id FROM "carts"
             WHERE "userId" = ${userId}

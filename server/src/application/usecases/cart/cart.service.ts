@@ -42,15 +42,21 @@ export class CartService implements ICartService {
         userId: number,
         payload: { productItemId: number; quantity: number }
     ): Promise<any> {
+        const product = await this._productItemRepo.findById(
+            payload.productItemId
+        );
+        if (!product) throw new NotFoundError("Product not exists!");
         const cart = await this._cartRepo.findByUserId(userId);
-
+        console.log(cart);
         if (!cart) {
             return await this.createCart(userId, payload);
         }
 
-        const cartItem = await this._cartItemRepo.findByCartId(cart.id);
+        const cartItems = await this._cartItemRepo.findByCartId(cart.id);
+        console.log(cartItems);
+
         //cart is exist but not product item
-        if (!cartItem.length) {
+        if (!cartItems.length) {
             return await this._cartItemRepo.create({
                 cartId: cart.id,
                 productItemId: payload.productItemId,
@@ -58,8 +64,12 @@ export class CartService implements ICartService {
             });
         }
 
-        console.log(cartItem);
-        if (cartItem.productItemId == payload.productItemId) {
+        const contantsValue = cartItems.some(
+            (cartItem: any) => cartItem.skuId === payload.productItemId
+        );
+        console.log(contantsValue);
+
+        if (contantsValue) {
             //product item is already
             return await this._cartItemRepo.update({
                 cartId: cart.id,
