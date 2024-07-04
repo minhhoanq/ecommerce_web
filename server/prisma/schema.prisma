@@ -1,0 +1,229 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int       @id @default(autoincrement())
+  username             String
+  firstName            String?
+  lastName             String?
+  email                String    @unique
+  password             String
+  avatar               String?
+  gender               String?
+  dob                  String?
+  phone                Int?
+  roleId               Int       @default(3)
+  status               Boolean?  @default(true)
+  isVerify             Boolean?  @default(false)
+  passwordChangedAt    String?
+  passwordResetToken   String?
+  passwordResetExpires String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  keyStores            KeyStore?
+  role                 Role      @relation(fields: [roleId], references: [id])
+
+  @@map("users")
+}
+
+model Role {
+  id        Int            @id @default(autoincrement())
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  Resource  RoleResource[]
+  users     User[]
+
+  @@map("roles")
+}
+
+model Resource {
+  id        Int            @id @default(autoincrement())
+  code      String         @db.VarChar(30)
+  name      String         @db.VarChar(50)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  role      RoleResource[]
+
+  @@map("resources")
+}
+
+model RoleResource {
+  roleId     Int
+  resourceId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  action     String
+  attributes String   @default("*")
+  id         Int      @id @default(autoincrement())
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  role       Role     @relation(fields: [roleId], references: [id])
+
+  @@map("roleResources")
+}
+
+model KeyStore {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  publicKey    String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  privateKey   String
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("keystores")
+}
+
+model Session {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  refreshTokenUsed String
+  isBlock          Boolean  @default(false)
+  expiredAt        Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  Products  Product[]
+
+  @@map("categories")
+}
+
+model Brand {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  desc      String    @db.VarChar(50)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  Products  Product[]
+
+  @@map("brands")
+}
+
+model Product {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(255)
+  slug          String   @db.VarChar(255)
+  thumbnail     String
+  desc          String
+  originalPrice Float
+  categoryId    Int
+  brandId       Int
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @db.Timestamp(6)
+  isDraft       Boolean  @default(true)
+  isPublished   Boolean  @default(false)
+  releaseDate   DateTime
+  brand         Brand    @relation(fields: [brandId], references: [id])
+  category      Category @relation(fields: [categoryId], references: [id])
+  skus          Sku[]
+
+  @@map("products")
+}
+
+model Sku {
+  id            Int            @id @default(autoincrement())
+  productId     Int
+  skuNo         String         @unique
+  thumbnail     String
+  originalPrice Float
+  salePrice     Float
+  stock         Int
+  attributes    Json?
+  createdAt     DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime       @updatedAt @db.Timestamp(6)
+  product       Product    @relation(fields: [productId], references: [id])
+  skuAttributes SkuAttribute[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  @@map("skus")
+}
+
+model SkuAttribute {
+  skuId          Int
+  attributeId    Int
+  attributeValue String
+  sku            Sku       @relation(fields: [skuId], references: [id])
+  attribute      Attribute @relation(fields: [attributeId], references: [id])
+
+  @@id([skuId, attributeId]) // Composite primary key
+  @@map("skuattributes")
+}
+
+model Attribute {
+  id        Int            @id @default(autoincrement())
+  name      String         @db.VarChar(30)
+  createdAt DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt DateTime       @updatedAt @db.Timestamp(6)
+  skus      SkuAttribute[]
+
+  @@map("attributes")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @db.Integer
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @updatedAt @db.Timestamp(6)
+  cartitems CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int      @db.Integer
+  skuId     Int      @db.Integer
+  quantity  Int      @db.Integer
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  sku       Sku      @relation(fields: [skuId], references: [id])
+
+  @@map("cartitems")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  userId          Int         @db.Integer
+  paymentMethodId Int         @db.Integer
+  addressId       Int         @db.Integer
+  statusId        Int         @db.Integer
+  date            DateTime    @db.Timestamp(6)
+  total           Float       @db.DoublePrecision
+  createdAt       DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime    @updatedAt @db.Timestamp(6)
+  orderItems      OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @db.Integer
+  skuId     Int      @db.Integer
+  quantity  Int      @db.Integer
+  price     Float    @db.DoublePrecision
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  order     Order    @relation(fields: [orderId], references: [id])
+  sku       Sku      @relation(fields: [skuId], references: [id])
+
+  @@map("orderitems")
+}

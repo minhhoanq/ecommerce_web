@@ -22,16 +22,16 @@ router.get("/:productId", asyncHandler(controller.getProduct.bind(controller)));
 //AUTHENTICATION
 router.post(
     "/",
-    auth.authentication,
-    access.GrantAccess("createAny", "product"),
+    // auth.authentication,
+    // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProduct.bind(controller))
 );
-router.post(
-    "/item",
-    auth.authentication,
-    access.GrantAccess("createAny", "product"),
-    asyncHandler(controller.createProductItem.bind(controller))
-);
+// router.post(
+//     "/item",
+//     auth.authentication,
+//     access.GrantAccess("createAny", "product"),
+//     asyncHandler(controller.createProductItem.bind(controller))
+// );
 router.patch(
     "/:productItemId",
     auth.authentication,

@@ -19,17 +19,92 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async create(payload: any): Promise<any> {
-        const { name, slug, desc, originalPrice, categoryId, brandId } =
-            payload;
-        console.log(payload);
+        const {
+            name,
+            slug,
+            desc,
+            thumbnail,
+            originalPrice,
+            categoryId,
+            brandId,
+            skus,
+        } = payload;
+
         const updatedAt = new Date();
         const releaseDate = new Date();
-        const product: any = await this._prisma
-            .$queryRaw`INSERT INTO products ("name", "slug", "desc", "originalPrice", "categoryId", "brandId", "releaseDate", "updatedAt") VALUES (${name}, 
-            ${slug}, ${desc}, ${originalPrice}, ${categoryId}, ${brandId}, ${releaseDate}, ${updatedAt}) RETURNING *`;
 
-        console.log("product ", product[0]);
-        return product[0];
+        try {
+            const transactionResult = await this._prisma.$transaction(
+                async (prisma) => {
+                    const product = await prisma.product.create({
+                        data: {
+                            name,
+                            slug,
+                            desc,
+                            thumbnail,
+                            originalPrice,
+                            categoryId,
+                            brandId,
+                            releaseDate,
+                            updatedAt,
+                        },
+                    });
+
+                    const skuPromises = skus.map(async (sku: any) => {
+                        const createdSku = await prisma.sku.create({
+                            data: {
+                                skuNo: sku.skuNo + "hhh",
+                                originalPrice: sku.originalPrice,
+                                salePrice: sku.salePrice,
+                                stock: sku.stock,
+                                thumbnail: sku.thumbnail,
+                                productId: product.id,
+                                updatedAt,
+                                attributes: {
+                                    createMany: {
+                                        data: sku.attributes.map(
+                                            (attr: any) => ({
+                                                attributeId: attr.attributeId,
+                                                attributeValue:
+                                                    attr.attributeValue,
+                                            })
+                                        ),
+                                    },
+                                },
+                            },
+                        });
+
+                        const skuAttributePromises = sku.attributes.map(
+                            (attr: any) =>
+                                prisma.skuAttribute.create({
+                                    data: {
+                                        skuId: createdSku.id,
+                                        attributeId: attr.attributeId,
+                                        attributeValue: attr.attributeValue,
+                                    },
+                                })
+                        );
+
+                        await Promise.all(skuAttributePromises);
+                        return createdSku; // Return the created sku
+                    });
+
+                    await Promise.all(skuPromises);
+                    return product; // Return the created product
+                }
+            );
+
+            console.log(
+                "Transaction completed successfully:",
+                transactionResult
+            );
+            return true; // Return the transaction result
+        } catch (error) {
+            console.error("Transaction failed:", error);
+            throw error; // Optionally handle or rethrow the error
+        } finally {
+            await this._prisma.$disconnect();
+        }
     }
 
     async createProductChildren(
@@ -63,6 +138,8 @@ export class ProductRepositoryImpl implements IProductRepository {
             }
         } catch (error) {
             throw error;
+        } finally {
+            await this._prisma.$disconnect();
         }
     }
 

@@ -42,18 +42,18 @@ export class ProductController {
         }
     }
 
-    async createProductItem(req: Request, res: Response, next: NextFunction) {
-        try {
-            new SuccessResponse({
-                message: "get products successfully!",
-                metadata: await this._productService.createProductItem(
-                    req.body
-                ),
-            }).send(res);
-        } catch (error) {
-            next(error);
-        }
-    }
+    // async createProductItem(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         new SuccessResponse({
+    //             message: "get products successfully!",
+    //             metadata: await this._productService.createProductItem(
+    //                 req.body
+    //             ),
+    //         }).send(res);
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
 
     //update product
     async updateProduct(req: Request, res: Response, next: NextFunction) {

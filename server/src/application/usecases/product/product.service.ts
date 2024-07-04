@@ -26,52 +26,29 @@ export class ProductService implements IProductService {
         this._productRepo = productRepo;
     }
 
-    public async createProduct(body: ProductDTO) {
-        const { type, ...payload } = body;
-        const product = new SmartPhone(
-            payload.name,
-            payload.desc,
-            payload.originalPrice,
-            payload.salePrice,
-            payload.categoryId,
-            payload.brandId,
-            true,
-            false,
-            null,
-            payload.colorId,
-            payload.ramId,
-            payload.internalId,
-            null,
-            null
-        );
-        const newProduct = await this._productRepo.create(product);
+    async createProduct(body: any): Promise<any> {
+        const {
+            name,
+            desc,
+            originalPrice,
+            thumbnail,
+            categoryId,
+            brandId,
+            skus,
+        } = body;
+        //create new product
+        const newProduct = await this._productRepo.create({
+            name,
+            slug: slugify(name, { lower: true }),
+            desc,
+            originalPrice,
+            thumbnail,
+            categoryId,
+            brandId,
+            skus,
+        });
 
-        if (!newProduct) throw new BadRequestError("Error create product");
-        console.log(newProduct.id);
-        const newChildren = await this._productRepo.createProductChildren(
-            type,
-            newProduct.id,
-            product
-        );
-
-        if (!newChildren) throw new BadRequestError("Error create product");
-
-        return { newProduct, newChildren };
-    }
-
-    async createProductItem(body: ProductItemDTO): Promise<any> {
-        const findProduct = await this._productRepo.findProductById(
-            body.productId
-        );
-
-        if (!findProduct) throw new NotFoundError("Product not found!");
-        const productChildren = await this._productRepo.createProductChildren(
-            "smartphones",
-            findProduct.id,
-            body
-        );
-
-        return productChildren;
+        return newProduct;
     }
 
     async updateProduct(

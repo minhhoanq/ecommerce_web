@@ -58,8 +58,18 @@ export class CartService implements ICartService {
             });
         }
 
+        console.log(cartItem);
+        if (cartItem.productItemId == payload.productItemId) {
+            //product item is already
+            return await this._cartItemRepo.update({
+                cartId: cart.id,
+                productItemId: payload.productItemId,
+                quantity: payload.quantity,
+            });
+        }
+
         //product item is already
-        return await this._cartItemRepo.update({
+        return await this._cartItemRepo.create({
             cartId: cart.id,
             productItemId: payload.productItemId,
             quantity: payload.quantity,
@@ -81,7 +91,7 @@ export class CartService implements ICartService {
         const cart = await this._cartRepo.findByUserId(userId);
 
         if (quantity == 0) {
-            //delete
+            //delete if quantity = 0
             return await this._cartItemRepo.delete(userId, productItem.id);
         }
 

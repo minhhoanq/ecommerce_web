@@ -34,10 +34,11 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
     }
 
     async findByCartId(cartId: number): Promise<any> {
-        return await this._prisma.$queryRaw`
+        const cartItem: any[] = await this._prisma.$queryRaw`
             SELECT * FROM "cartitems"
             WHERE "cartId" = ${cartId}
         `;
+        return cartItem.length > 0 ? cartItem[0] : null;
     }
 
     async update(payload: {
