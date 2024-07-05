@@ -147,10 +147,11 @@ model Sku {
   attributes    Json?
   createdAt     DateTime       @default(now()) @db.Timestamp(6)
   updatedAt     DateTime       @updatedAt @db.Timestamp(6)
-  product       Product    @relation(fields: [productId], references: [id])
+  product       Product        @relation(fields: [productId], references: [id])
   skuAttributes SkuAttribute[]
   cartItems     CartItem[]
   orderItems    OrderItem[]
+  inventories   Inventory[]
 
   @@map("skus")
 }
@@ -226,4 +227,31 @@ model OrderItem {
   sku       Sku      @relation(fields: [skuId], references: [id])
 
   @@map("orderitems")
+}
+
+model Inventory {
+  id           Int      @id @default(autoincrement())
+  skuId        Int
+  warehouseId  Int
+  stock        Int
+  reservations Json     @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sku       Sku       @relation(fields: [skuId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+
+  @@map("inventories")
+}
+
+model Warehouse {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventories Inventory[]
+
+  @@map("warehouses")
 }

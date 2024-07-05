@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { ICheckoutService } from "./checkout.interface";
+import { IOrderService } from "./order.interface";
 import "reflect-metadata";
-import { ICheckoutRepository } from "../../../domain/repositories/checkout.interface";
+import { IOrderRepository } from "../../../domain/repositories/order.interface";
 import { TYPES } from "../../../shared/constants/types";
 import { ICartRepository } from "../../../domain/repositories/cart.interface";
 import {
@@ -13,20 +13,20 @@ import { ICartItemRepository } from "../../../domain/repositories/cartItem.inter
 import { acquireLock, releaseLock } from "../redis/redis.service";
 
 @injectable()
-export class CheckoutService implements ICheckoutService {
-    private _checkoutRepo: ICheckoutRepository;
+export class OrderService implements IOrderService {
+    private _orderRepo: IOrderRepository;
     private _cartRepo: ICartRepository;
     private _cartItemRepo: ICartItemRepository;
     private _productItemRepo: IProductItemRepository;
 
     constructor(
-        @inject(TYPES.CheckoutRepository) checkoutRepo: ICheckoutRepository,
+        @inject(TYPES.OrderRepository) checkoutRepo: IOrderRepository,
         @inject(TYPES.CartRepository) cartRepo: ICartRepository,
         @inject(TYPES.CartItemRepository) cartItemRepo: ICartItemRepository,
         @inject(TYPES.ProductItemRepository)
         productItemRepo: IProductItemRepository
     ) {
-        this._checkoutRepo = checkoutRepo;
+        this._orderRepo = checkoutRepo;
         this._cartRepo = cartRepo;
         this._productItemRepo = productItemRepo;
         this._cartItemRepo = cartItemRepo;
@@ -82,12 +82,7 @@ export class CheckoutService implements ICheckoutService {
         };
     }
 
-    async order(
-        userId: number,
-        addressId: number,
-        paymentMethodId: number,
-        payload: any
-    ): Promise<any> {
+    async order(userId: number, payload: any): Promise<any> {
         const cart = await this._cartRepo.findByUserId(userId);
 
         if (!cart) throw new NotFoundError("Cart not found!");
@@ -97,13 +92,17 @@ export class CheckoutService implements ICheckoutService {
         );
 
         // payload.listItems
-        const products = payload.listItems;
+        const products = orderItems;
         const acquireProduct: boolean[] = [];
         for (let i = 0; i < products.length; i++) {
-            const { productItemId, quantity } = products[i];
-            const keyLock = await acquireLock(productItemId, quantity, cart.id);
+            const { id, quantity } = products[i];
+            const keyLock = await acquireLock(id, quantity, cart.id);
             acquireProduct.push(keyLock ? true : false);
+            console.log("chjcek");
+
             if (keyLock) {
+                console.log("check");
+
                 await releaseLock(keyLock);
             }
         }
@@ -115,7 +114,17 @@ export class CheckoutService implements ICheckoutService {
         }
 
         // create order
-
-        //if (order) remove cart or ...
+        const order = await this._orderRepo.create(
+            userId,
+            1,
+            1,
+            new Date(),
+            checkoutOrder.total,
+            orderItems
+        );
+        if (!order) {
+            return false;
+        }
+        return true;
     }
 }

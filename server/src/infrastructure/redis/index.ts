@@ -1,4 +1,4 @@
-import redis from "redis";
+import * as redis from "redis";
 
 const redisClient = redis.createClient();
 export default redisClient;

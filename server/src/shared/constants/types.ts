@@ -30,9 +30,9 @@ const TYPES = {
     //Cart item
     CartItemRepository: Symbol.for("CartItemRepository"),
     //Checkout
-    CheckoutRepository: Symbol.for("CheckoutRepository"),
-    CheckoutService: Symbol.for("CheckoutService"),
-    CheckoutController: Symbol.for("CheckoutController"),
+    OrderRepository: Symbol.for("OrderRepository"),
+    OrderService: Symbol.for("OrderService"),
+    OrderController: Symbol.for("OrderController"),
 };
 
 export { TYPES };
