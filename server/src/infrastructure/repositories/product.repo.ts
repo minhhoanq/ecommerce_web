@@ -292,11 +292,40 @@ export class ProductRepositoryImpl implements IProductRepository {
         });
     }
 
-    async findProduct(id: number): Promise<any> {
-        return await this._prisma.$queryRaw`
-            SELECT * FROM "products" as p
-            JOIN "skus" as s on p.id = s."productId"
-            WHERE p.id = ${id}
+    async findAllVariations(productId: number): Promise<any> {
+        const storages: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT sa."attributeValue" FROM skus as sk
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sk."productId" = ${productId} AND sa."attributeId" = 2;
         `;
+
+        return storages;
+    }
+
+    async findProduct(id: number, storage: string): Promise<any> {
+        const colors: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT sa."attributeValue" FROM skus as sk
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sk."productId" = ${id} AND sa."attributeId" = 1;
+        `;
+
+        const products: any[] = await this._prisma.$queryRaw`
+            WITH filtered_skus AS (
+                SELECT sk.id
+                FROM skus as sk
+                JOIN skuattributes as sa ON sk.id = sa."skuId"
+                WHERE sk."productId" = ${id} AND sa."attributeValue" = ${storage}
+            )
+            SELECT p.id, p."name", p."desc", sk."skuNo", sk."stock", sk.id as skuId, sk."originalPrice", sk."salePrice", sa."attributeValue"
+            FROM skus as sk
+            JOIN products as p on sk."productId" = p.id
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sa."skuId" IN (SELECT id FROM filtered_skus) AND sa."attributeId" = 1;
+        `;
+
+        return {
+            colors,
+            products,
+        };
     }
 }

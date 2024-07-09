@@ -12,7 +12,6 @@ import {
     ProductItemDTO,
     UpdateProductDTO,
 } from "../../dtos/product.dto";
-import { Product, SmartPhone } from "../../../domain/entities/product/product";
 import slugify from "slugify";
 
 //Product Factory
@@ -116,6 +115,10 @@ export class ProductService implements IProductService {
         return data;
     }
 
+    async getVariations(productId: number): Promise<any> {
+        return await this._productRepo.findAllVariations(productId);
+    }
+
     async getProducts({
         limit,
         sort,
@@ -130,7 +133,9 @@ export class ProductService implements IProductService {
         return await this._productRepo.findProducts(limit, sort, page, filter);
     }
 
-    async getProduct(id: number): Promise<any> {
-        return await this._productRepo.findProduct(id);
+    async getProduct(id: number, body: { storage: string }): Promise<any> {
+        const product = await this._productRepo.findProduct(id, body.storage);
+
+        return product;
     }
 }

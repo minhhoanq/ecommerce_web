@@ -151,12 +151,26 @@ export class ProductController {
         }
     }
 
+    async getVariations(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getProducts successfully!",
+                metadata: await this._productService.getVariations(
+                    +req.params.productId
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getProduct(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
                 message: "getProduct successfully!",
                 metadata: await this._productService.getProduct(
-                    +req.params.productId
+                    +req.params.productId,
+                    req.body
                 ),
             }).send(res);
         } catch (error) {
