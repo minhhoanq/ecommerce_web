@@ -29,13 +29,10 @@ export const userSlice = createSlice({
             state.mes = "";
         },
         updateCart: (state, action) => {
-            const { pid, color, quantity } = action.payload;
-            const updatingCart = JSON.parse(JSON.stringify(state.currentCart));
-            state.currentCart = updatingCart.map((el) => {
-                if (el.color === color && el.product?._id === pid) {
-                    return { ...el, quantity };
-                } else return el;
-            });
+            console.log(action.payload.metadata);
+            // const { skuid, color, quantity } = action.payload.metadata;
+            // const updatingCart = JSON.parse(JSON.stringify(state.currentCart));
+            state.currentCart = action.payload.metadata;
         },
     },
     extraReducers: (builder) => {
@@ -46,7 +43,7 @@ export const userSlice = createSlice({
             state.isLoading = false;
             state.current = action.payload;
             state.isLoggedIn = true;
-            state.currentCart = action.payload.cart;
+            // state.currentCart = action.payload.cart;
         });
         builder.addCase(actions.getCurrent.rejected, (state, action) => {
             state.isLoading = false;

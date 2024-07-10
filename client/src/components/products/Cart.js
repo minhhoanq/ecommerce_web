@@ -12,15 +12,7 @@ import { toast } from "react-toastify";
 import path from "ultils/path";
 
 const Cart = ({ dispatch, navigate }) => {
-    // const { currentCart } = useSelector(state => state.user)
-    const [currentCart, setCurrentCart] = useState([]);
-
-    useEffect(() => {
-        (async () => {
-            const response = await getCartItems();
-            setCurrentCart(response?.metadata);
-        })();
-    }, []);
+    const { currentCart } = useSelector((state) => state.user);
 
     const removeCart = async (pid, color) => {
         const response = await apiRemoveCart(pid, color);
@@ -55,7 +47,7 @@ const Cart = ({ dispatch, navigate }) => {
                             key={el._id}
                             className="flex justify-between items-center"
                         >
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 min-w-[300px]">
                                 <img
                                     src={
                                         el.thumbnail ||
@@ -64,17 +56,21 @@ const Cart = ({ dispatch, navigate }) => {
                                     alt="thumb"
                                     className="w-16 h-16 object-cover"
                                 />
-                                <div className="flex flex-col gap-1">
+                                <div className="flex flex-col gap-1 w-full">
                                     <span className="text-sm text-main">
-                                        {el.title}
+                                        {el.name}
                                     </span>
                                     <span className="text-[10px]">
-                                        {el.color}
+                                        {el.attributes.color} |{" "}
+                                        {el.attributes.ram} |{" "}
+                                        {el.attributes.storage}
                                     </span>
-                                    <span className="text-[10px]">{`Quantity: ${el.quantity}`}</span>
-                                    <span className="text-sm">
-                                        {formatMoney(el.salePrice) + " VND"}
-                                    </span>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm">
+                                            {formatMoney(el.salePrice) + " VND"}
+                                        </span>
+                                        <span className="text-sm">{`x ${el.quantity}`}</span>
+                                    </div>
                                 </div>
                             </div>
                             <span
@@ -95,7 +91,7 @@ const Cart = ({ dispatch, navigate }) => {
                         {formatMoney(
                             currentCart?.reduce(
                                 (sum, el) =>
-                                    sum + Number(el.price) * el.quantity,
+                                    sum + Number(el.salePrice) * el.quantity,
                                 0
                             )
                         ) + " VND"}

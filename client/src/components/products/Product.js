@@ -122,7 +122,7 @@ const Product = ({
                             >
                                 <SelectOption icon={<AiFillEye />} />
                             </span>
-                            {current?.cart?.some(
+                            {/* {current?.cart?.some(
                                 (el) => el.product === productData.id.toString()
                             ) ? (
                                 <span title="Added to Cart">
@@ -143,7 +143,7 @@ const Product = ({
                                         icon={<BsFillCartPlusFill />}
                                     />
                                 </span>
-                            )}
+                            )} */}
                             <span
                                 title="Add to Wishlist"
                                 onClick={(e) =>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Sidebar,
     Banner,
@@ -9,17 +9,26 @@ import {
     Blogs,
     Product,
 } from "../../components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import icons from "../../ultils/icons";
 import withBaseComponent from "hocs/withBaseComponent";
 import { createSearchParams } from "react-router-dom";
+import { getCartItems } from "apis";
+import { updateCart } from "store/user/userSlice";
 
 const { IoIosArrowForward } = icons;
 const Home = ({ navigate }) => {
     const { newProducts } = useSelector((state) => state.products);
     const { categories } = useSelector((state) => state.app);
+    const dispatch = useDispatch();
 
-    console.log(newProducts);
+    useEffect(() => {
+        (async () => {
+            const carts = await getCartItems();
+            console.log(carts);
+            dispatch(updateCart(carts));
+        })();
+    }, []);
 
     return (
         <div className="w-full px-4">
