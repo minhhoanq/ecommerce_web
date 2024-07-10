@@ -8,7 +8,7 @@ import icons from "ultils/icons";
 import withBaseComponent from "hocs/withBaseComponent";
 import { showModal } from "store/app/appSlice";
 import { DetailProduct } from "pages/public";
-import { apiUpdateCart, apiUpdateWishlist } from "apis";
+import { addToCart, apiUpdateWishlist } from "apis";
 import { toast } from "react-toastify";
 import { getCurrent } from "store/user/asyncActions";
 import { useSelector } from "react-redux";
@@ -52,7 +52,7 @@ const Product = ({
                             }).toString(),
                         });
                 });
-            const response = await apiUpdateCart({
+            const response = await addToCart({
                 pid: productData?._id,
                 color: productData?.color,
                 quantity: 1,

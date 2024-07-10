@@ -57,11 +57,17 @@ export const apiUpdateCurrent = (data) =>
         method: "put",
         data,
     });
-export const apiUpdateCart = (data) =>
+export const addToCart = (data) =>
     axios({
-        url: "/user/cart",
-        method: "put",
+        url: "/cart",
+        method: "post",
         data,
+    });
+
+export const getCartItems = () =>
+    axios({
+        url: "/cart",
+        method: "get",
     });
 export const apiRemoveCart = (pid, color) =>
     axios({

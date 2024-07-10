@@ -4,7 +4,7 @@ import {
     apiGetProduct,
     apiGetProducts,
     apiGetVariations,
-    apiUpdateCart,
+    addToCart,
 } from "apis";
 import {
     Breadcrumb,
@@ -47,15 +47,15 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     const [quantity, setQuantity] = useState(1);
     const [relatedProducts, setRelatedProducts] = useState(null);
     const [update, setUpdate] = useState(false);
-    const [attribute, setAttribute] = useState(null);
+    const [attribute, setAttribute] = useState({
+        storage: null,
+        color: null,
+    });
     const [pid, setPid] = useState(null);
     const [category, setCategory] = useState(null);
     const [currentProduct, setCurrentProduct] = useState({
-        name: "",
-        thumbnail: "",
-        images: [],
-        originalPrice: "",
-        color: "",
+        productItemId: 0,
+        quantity: 1,
     });
     useEffect(() => {
         if (data) {
@@ -70,36 +70,29 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         const response = await apiGetProduct(pid, attributeValue);
         if (response.status === 200) {
             setColors(response.metadata.colors);
+            setAttribute((prev) => ({
+                ...prev,
+                color: response.metadata.products[0]?.attributeValue,
+            }));
+            setCurrentProduct((prev) => ({
+                ...prev,
+                productItemId: response.metadata.products[0]?.skuid,
+            }));
             setProducts(response.metadata.products);
             setCurrentImage(response.productData?.thumbnail);
         }
     };
     useEffect(() => {
         if (attribute) {
-            setCurrentProduct({
-                name: products?.attributes?.find((el) => el.sku === attribute)
-                    ?.name,
-                color: products?.attributes?.find((el) => el.sku === attribute)
-                    ?.color,
-                images: products?.attributes?.find((el) => el.sku === attribute)
-                    ?.images,
-                originalPrice: products?.attributes?.find(
-                    (el) => el.sku === attribute
-                )?.originalPrice,
-                thumbnail: products?.attributes?.find(
-                    (el) => el.sku === attribute
-                )?.thumbnail,
-            });
-        } else {
-            setCurrentProduct({
-                name: products?.name,
-                color: products?.color,
-                images: products?.images || [],
-                originalPrice: products?.originalPrice,
-                thumbnail: products?.thumbnail,
-            });
+            setCurrentProduct((prev) => ({
+                ...prev,
+                productItemId: products.filter(
+                    (product) => product.attributeValue === attribute.color
+                )[0]?.skuid,
+                quantity: quantity,
+            }));
         }
-    }, [attribute, products]);
+    }, [attribute, quantity]);
     const fetchProducts = async () => {
         const response = await apiGetProducts({ category });
         if (response.success) setRelatedProducts(response.products);
@@ -109,6 +102,10 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         if (response.status === 200) {
             setStorages(response.metadata);
             fetchProductData(response.metadata[0]?.attributeValue);
+            setAttribute((prev) => ({
+                ...prev,
+                storage: response.metadata[0]?.attributeValue,
+            }));
         }
     };
     useEffect(() => {
@@ -174,24 +171,16 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                         }).toString(),
                     });
             });
-        const response = await apiUpdateCart({
-            pid,
-            color: currentProduct.color || products?.color,
-            quantity,
-            originalPrice:
-                currentProduct.originalPrice || products.originalPrice,
-            thumbnailnail: currentProduct.thumbnail || products.thumbnail,
-            name: currentProduct.name || products.name,
-        });
-        if (response.success) {
-            toast.success(response.mes);
+        const response = await addToCart(currentProduct);
+        if (response.status === 201) {
+            toast.success(response.message);
             dispatch(getCurrent());
-        } else toast.error(response.mes);
+        } else toast.error(response.message);
+        console.log(currentProduct);
     };
 
-    console.log(colors, storages, products);
-    const handleChooseVariations = (el, index) => {
-        setAttribute(index);
+    const handleChooseVariations = (el) => {
+        setAttribute((prev) => ({ ...prev, storage: el.attributeValue }));
         fetchProductData(el.attributeValue);
     };
 
@@ -335,7 +324,9 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                     }
                                     className={clsx(
                                         "flex items-center gap-2 p-2 border cursor-pointer",
-                                        attribute === index && "border-red-500"
+                                        attribute.storage ===
+                                            el.attributeValue &&
+                                            "border-red-500"
                                     )}
                                 >
                                     {/* <img
@@ -376,16 +367,23 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                 </span>
                             </div> */}
                             {updatedColor?.map((el, index) => (
-                                <div
+                                <button
                                     key={index}
-                                    onClick={() => setAttribute(index)}
+                                    onClick={() =>
+                                        setAttribute((prev) => ({
+                                            ...prev,
+                                            color: el.attributeValue,
+                                        }))
+                                    }
                                     className={clsx(
                                         "flex items-center gap-2 p-2 border cursor-pointer",
-                                        // attribute === index && "border-red-500",
+                                        attribute.color === el.attributeValue &&
+                                            "border-red-500",
                                         el.isCommon
                                             ? "common"
-                                            : "cursor-not-allowed text-gray-200"
+                                            : "text-gray-200 hover:cursor-not-allowed"
                                     )}
+                                    disabled={!el.isCommon}
                                 >
                                     {/* <img
                                         src={el.thumbnail}
@@ -398,7 +396,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                             {el.originalPrice}
                                         </span> */}
                                     </span>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>
