@@ -1,24 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as actions from './asyncActions'
-
+import * as actions from "./asyncActions";
 
 export const appSlice = createSlice({
-    name: 'app',
+    name: "app",
     initialState: {
         categories: null,
         isLoading: false,
         isShowModal: false,
         modalChildren: null,
-        isShowCart: false
+        isShowCart: false,
     },
     reducers: {
         showModal: (state, action) => {
-            state.isShowModal = action.payload.isShowModal
-            state.modalChildren = action.payload.modalChildren
+            state.isShowModal = action.payload.isShowModal;
+            state.modalChildren = action.payload.modalChildren;
         },
         showCart: (state) => {
-            state.isShowCart = state.isShowCart === false ? true : false
-        }
+            state.isShowCart = state.isShowCart === false ? true : false;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(actions.getCategories.pending, (state) => {
@@ -32,8 +31,8 @@ export const appSlice = createSlice({
             state.isLoading = false;
             state.errorMessage = action.payload.message;
         });
-    }
-})
-export const { showModal, showCart } = appSlice.actions
+    },
+});
+export const { showModal, showCart } = appSlice.actions;
 
-export default appSlice.reducer
+export default appSlice.reducer;
