@@ -2,7 +2,7 @@ import Button from "components/buttons/Button";
 import withBaseComponent from "hocs/withBaseComponent";
 import React, { memo, useEffect, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showCart } from "store/app/appSlice";
 import { formatMoney } from "ultils/helpers";
 import { ImBin } from "react-icons/im";
@@ -10,14 +10,17 @@ import { apiRemoveCart, getCartItems } from "apis";
 import { getCurrent } from "store/user/asyncActions";
 import { toast } from "react-toastify";
 import path from "ultils/path";
+import { updateCart } from "store/user/userSlice";
 
 const Cart = ({ dispatch, navigate }) => {
     const { currentCart } = useSelector((state) => state.user);
 
-    const removeCart = async (pid, color) => {
-        const response = await apiRemoveCart(pid, color);
-        if (response.success) {
+    const removeCart = async (id) => {
+        const response = await apiRemoveCart(id);
+        if (response.status === 200) {
             dispatch(getCurrent());
+            const carts = await getCartItems();
+            dispatch(updateCart(carts));
         } else toast.error(response.mes);
     };
 
@@ -62,8 +65,7 @@ const Cart = ({ dispatch, navigate }) => {
                                     </span>
                                     <span className="text-[10px]">
                                         {el.attributes.color} |{" "}
-                                        {el.attributes.ram} |{" "}
-                                        {el.attributes.storage}
+                                        {el.attributes.ram}
                                     </span>
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm">
@@ -74,9 +76,7 @@ const Cart = ({ dispatch, navigate }) => {
                                 </div>
                             </div>
                             <span
-                                onClick={() =>
-                                    removeCart(el.product?._id, el.color)
-                                }
+                                onClick={() => removeCart(el?.id)}
                                 className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer"
                             >
                                 <ImBin size={16} />

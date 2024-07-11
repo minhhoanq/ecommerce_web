@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { ICartService } from "../../application/usecases/cart/cart.interface";
 import { TYPES } from "../../shared/constants/types";
 import { NextFunction, Request, Response } from "express";
-import { Created } from "../../shared/core/success.response";
+import { Created, SuccessResponse } from "../../shared/core/success.response";
 
 @injectable()
 export class CartController {
@@ -29,7 +29,7 @@ export class CartController {
 
     async updateToCart(req: Request, res: Response, next: NextFunction) {
         try {
-            new Created({
+            new SuccessResponse({
                 message: "Update cart successfully!",
                 metadata: await this._cartService.updateToCart(
                     req.user.userId,
@@ -43,7 +43,7 @@ export class CartController {
 
     async deleteToCartItem(req: Request, res: Response, next: NextFunction) {
         try {
-            new Created({
+            new SuccessResponse({
                 message: "delete cart item successfully!",
                 metadata: await this._cartService.deteleCartItem(
                     req.user.userId,
@@ -57,7 +57,7 @@ export class CartController {
 
     async getCartItems(req: Request, res: Response, next: NextFunction) {
         try {
-            new Created({
+            new SuccessResponse({
                 message: "get cart item successfully!",
                 metadata: await this._cartService.getCartItems(req.user.userId),
             }).send(res);

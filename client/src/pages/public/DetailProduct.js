@@ -5,6 +5,7 @@ import {
     apiGetProducts,
     apiGetVariations,
     addToCart,
+    getCartItems,
 } from "apis";
 import {
     Breadcrumb,
@@ -20,12 +21,13 @@ import { formatMoney, fotmatPrice, renderStarFromNumber } from "ultils/helpers";
 import { productExtraInfomation } from "ultils/contants";
 import DOMPurify from "dompurify";
 import clsx from "clsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getCurrent } from "store/user/asyncActions";
 import { toast } from "react-toastify";
 import path from "ultils/path";
 import Swal from "sweetalert2";
+import { updateCart } from "store/user/userSlice";
 
 const settings = {
     dots: false,
@@ -173,10 +175,14 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             });
         const response = await addToCart(currentProduct);
         if (response.status === 201) {
+            const carts = await getCartItems();
+            dispatch(updateCart(carts));
+        }
+        if (response.status === 201) {
             toast.success(response.message);
             dispatch(getCurrent());
         } else toast.error(response.message);
-        console.log(currentProduct);
+        // console.log(currentProduct);
     };
 
     const handleChooseVariations = (el) => {
@@ -190,10 +196,10 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 <div className="h-[81px] flex justify-center items-center bg-gray-100">
                     <div ref={nameRef} className="w-main">
                         <h3 className="font-semibold">
-                            {currentProduct.name || products?.name}
+                            {currentProduct.slug || products?.slug}
                         </h3>
                         <Breadcrumb
-                            title={currentProduct.title || products?.title}
+                            title={currentProduct.name || products?.name}
                             category={category}
                         />
                     </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { formatMoney } from "ultils/helpers";
 import { updateCart } from "store/user/userSlice";
 import withBaseComponent from "hocs/withBaseComponent";
+import { apiUpdateCart, getCartItems } from "apis";
 const OrderItem = ({
     dispatch,
     attributes,
@@ -16,16 +17,29 @@ const OrderItem = ({
     const handleQuantity = (number) => {
         if (+number > 1) setQuantity(number);
     };
-    const handleChangeQuantity = (flag) => {
+    const handleChangeQuantity = async (flag) => {
         if (flag === "minus" && quantity === 1) return;
-        if (flag === "minus") setQuantity((prev) => +prev - 1);
-        if (flag === "plus") setQuantity((prev) => +prev + 1);
+        if (flag === "minus") {
+            setQuantity((prev) => +prev - 1);
+            await apiUpdateCart({
+                productItemId: id,
+                quantity: quantity - 1,
+                oldQuantity: quantity,
+            });
+            const carts = await getCartItems();
+            dispatch(updateCart(carts));
+        }
+        if (flag === "plus") {
+            setQuantity((prev) => +prev + 1);
+            await apiUpdateCart({
+                productItemId: id,
+                quantity: quantity + 1,
+                oldQuantity: quantity,
+            });
+            const carts = await getCartItems();
+            dispatch(updateCart(carts));
+        }
     };
-    // useEffect(() => {
-    //     dispatch(
-    //         updateCart((prev) => [...prev, { id, name, salePrice, quantity }])
-    //     );
-    // }, [quantity]);
     // Set quantity
 
     return (

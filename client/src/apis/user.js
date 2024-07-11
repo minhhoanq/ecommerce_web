@@ -69,10 +69,19 @@ export const getCartItems = () =>
         url: "/cart",
         method: "get",
     });
-export const apiRemoveCart = (pid, color) =>
+export const apiRemoveCart = (id) =>
     axios({
-        url: `/user/remove-cart/${pid}/${color}`,
+        url: `/cart`,
         method: "delete",
+        data: {
+            productItemId: id,
+        },
+    });
+export const apiUpdateCart = (data) =>
+    axios({
+        url: `/cart/update`,
+        method: "patch",
+        data: data,
     });
 export const apiUpdateWishlist = (pid) =>
     axios({

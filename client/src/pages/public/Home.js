@@ -20,15 +20,6 @@ const { IoIosArrowForward } = icons;
 const Home = ({ navigate }) => {
     const { newProducts } = useSelector((state) => state.products);
     const { categories } = useSelector((state) => state.app);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        (async () => {
-            const carts = await getCartItems();
-            console.log(carts);
-            dispatch(updateCart(carts));
-        })();
-    }, []);
 
     return (
         <div className="w-full px-4">
@@ -77,11 +68,14 @@ const Home = ({ navigate }) => {
                         ?.map((el) => (
                             <div key={el.id} className="col-span-1">
                                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
-                                    {/* <img
-                                    src={el?.image}
-                                    alt=""
-                                    className="w-1/2 flex-1 h-[129px] object-cover"
-                                /> */}
+                                    <img
+                                        src={
+                                            // el?.thumbnail |
+                                            `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
+                                        }
+                                        alt=""
+                                        className="w-1/2 flex-1 h-[129px] object-cover"
+                                    />
                                     <div className="w-1/2 flex-1 text-gray-700">
                                         <h4 className="font-semibold uppercase">
                                             {el.name}
@@ -120,11 +114,14 @@ const Home = ({ navigate }) => {
                         ?.map((el) => (
                             <div key={el._id} className="col-span-1">
                                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
-                                    {/* <img
-                                        src={el?.image}
+                                    <img
+                                        src={
+                                            // el?.thumbnail |
+                                            `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
+                                        }
                                         alt=""
                                         className="w-1/2 flex-1 h-[129px] object-cover"
-                                    /> */}
+                                    />
                                     <div className="w-1/2 flex-1 text-gray-700">
                                         <h4 className="font-semibold uppercase">
                                             {el.name}
@@ -158,9 +155,9 @@ const Home = ({ navigate }) => {
                         ))}
                 </div>
             </div>
-            <div className="my-8 w-main m-auto">
+            {/* <div className="my-8 w-main m-auto">
                 <Blogs />
-            </div>
+            </div> */}
         </div>
     );
 };

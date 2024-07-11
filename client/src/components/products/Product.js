@@ -79,8 +79,9 @@ const Product = ({
                     modalChildren: (
                         <DetailProduct
                             data={{
-                                pid: productData?._id,
-                                category: productData?.category,
+                                pid: productData?.id,
+                                category:
+                                    productData?.categoryBrand?.category.name,
                             }}
                             isQuickView
                         />
@@ -97,9 +98,9 @@ const Product = ({
                 className="w-full border p-[15px] flex flex-col items-center"
                 onClick={(e) =>
                     navigate(
-                        `/${productData?.category?.toLowerCase()}/${
+                        `/${productData?.categorybrand?.category?.name.toLowerCase()}/${
                             productData?.id
-                        }/${productData?.name}`
+                        }/${productData?.slug}`
                     )
                 }
                 onMouseEnter={(e) => {

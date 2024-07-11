@@ -37,12 +37,22 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Cart, Modal } from "components";
 import { showCart } from "store/app/appSlice";
+import { updateCart } from "store/user/userSlice";
+import { getCartItems } from "apis";
 
 function App() {
     const dispatch = useDispatch();
     const { isShowModal, modalChildren, isShowCart } = useSelector(
         (state) => state.app
     );
+
+    useEffect(() => {
+        (async () => {
+            const carts = await getCartItems();
+            console.log(carts);
+            dispatch(updateCart(carts));
+        })();
+    }, []);
 
     useEffect(() => {
         dispatch(getCategories());

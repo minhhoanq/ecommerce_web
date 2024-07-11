@@ -283,7 +283,18 @@ export class ProductRepositoryImpl implements IProductRepository {
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 originalPrice: true,
+                categorybrand: {
+                    select: {
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
     }

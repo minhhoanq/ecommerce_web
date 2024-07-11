@@ -30,6 +30,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
                 ${quantity},
                 ${updatedAt}
             )
+            RETURNING *
         `;
     }
 
