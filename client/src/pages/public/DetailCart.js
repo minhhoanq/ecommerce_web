@@ -30,7 +30,7 @@ const DetailCart = ({ location, navigate }) => {
         //             });
         //     });
         // else
-        window.open(`/${path.CHECKOUT}`, "_blank");
+        navigate(`/${path.CHECKOUT}`, "_blank");
     };
     return (
         <div className="w-full px-4">

@@ -31,7 +31,7 @@ export class ProductService implements IProductService {
             desc,
             originalPrice,
             thumbnail,
-            categoryId,
+            categoryBrandId,
             brandId,
             skus,
         } = body;
@@ -42,7 +42,7 @@ export class ProductService implements IProductService {
             desc,
             originalPrice,
             thumbnail,
-            categoryId,
+            categoryBrandId,
             brandId,
             skus,
         });

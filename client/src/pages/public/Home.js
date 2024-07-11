@@ -72,47 +72,51 @@ const Home = ({ navigate }) => {
                     HOT COLLECTIONS
                 </h3>
                 <div className="w-screen lg:hidden pr-4">
-                    {categories?.map((el) => (
-                        <div key={el.id} className="col-span-1">
-                            <div className="border w-full flex p-4 gap-4 min-h-[190px]">
-                                {/* <img
+                    {categories
+                        ?.filter((el) => el.brands.length > 0)
+                        ?.map((el) => (
+                            <div key={el.id} className="col-span-1">
+                                <div className="border w-full flex p-4 gap-4 min-h-[190px]">
+                                    {/* <img
                                     src={el?.image}
                                     alt=""
                                     className="w-1/2 flex-1 h-[129px] object-cover"
                                 /> */}
-                                <div className="w-1/2 flex-1 text-gray-700">
-                                    <h4 className="font-semibold uppercase">
-                                        {el.name}
-                                    </h4>
-                                    {/* <ul className="text-sm">
-                                        {el?.brand?.map((item) => (
-                                            <span
-                                                key={item}
-                                                className="flex cursor-pointer hover:underline gap-1 items-center text-gray-500"
-                                                onClick={() =>
-                                                    navigate({
-                                                        pathname: `/${el.title.toLowerCase()}`,
-                                                        search: createSearchParams(
-                                                            {
-                                                                brand: item,
-                                                            }
-                                                        ).toString(),
-                                                    })
-                                                }
-                                            >
-                                                <IoIosArrowForward size={14} />
-                                                <li>{item}</li>
-                                            </span>
-                                        ))}
-                                    </ul> */}
+                                    <div className="w-1/2 flex-1 text-gray-700">
+                                        <h4 className="font-semibold uppercase">
+                                            {el.name}
+                                        </h4>
+                                        <ul className="text-sm">
+                                            {el?.brands?.map((item) => (
+                                                <span
+                                                    key={item}
+                                                    className="flex cursor-pointer hover:underline gap-1 items-center text-gray-500"
+                                                    onClick={() =>
+                                                        navigate({
+                                                            pathname: `/${el.name.toLowerCase()}`,
+                                                            search: createSearchParams(
+                                                                {
+                                                                    brand: item,
+                                                                }
+                                                            ).toString(),
+                                                        })
+                                                    }
+                                                >
+                                                    <IoIosArrowForward
+                                                        size={14}
+                                                    />
+                                                    <li>{item.name}</li>
+                                                </span>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
                 <div className="lg:grid hidden lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-4">
                     {categories
-                        // ?.filter((el) => el.brand.length > 0)
+                        ?.filter((el) => el.brands.length > 0)
                         ?.map((el) => (
                             <div key={el._id} className="col-span-1">
                                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
@@ -125,14 +129,14 @@ const Home = ({ navigate }) => {
                                         <h4 className="font-semibold uppercase">
                                             {el.name}
                                         </h4>
-                                        {/* <ul className="text-sm">
-                                            {el?.brand?.map((item) => (
+                                        <ul className="text-sm">
+                                            {el?.brands?.map((item) => (
                                                 <span
                                                     key={item}
                                                     className="flex cursor-pointer hover:underline gap-1 items-center text-gray-500"
                                                     onClick={() =>
                                                         navigate({
-                                                            pathname: `/${el.title.toLowerCase()}`,
+                                                            pathname: `/${el.name.toLowerCase()}`,
                                                             search: createSearchParams(
                                                                 {
                                                                     brand: item,
@@ -144,10 +148,10 @@ const Home = ({ navigate }) => {
                                                     <IoIosArrowForward
                                                         size={14}
                                                     />
-                                                    <li>{item}</li>
+                                                    <li>{item.name}</li>
                                                 </span>
                                             ))}
-                                        </ul> */}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

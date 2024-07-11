@@ -97,11 +97,25 @@ model Session {
 model Category {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(50)
+  thumbnail      String?    @db.VarChar(50)
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
-  Products  Product[]
+  CategoryBrands  CategoryBrand[]
 
   @@map("categories")
+}
+
+model CategoryBrand {
+  id        Int       @id @default(autoincrement())
+  categoryId      Int    @db.Integer
+  brandId      Int    @db.Integer
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  brand         Brand    @relation(fields: [brandId], references: [id])
+  category      Category @relation(fields: [categoryId], references: [id])
+  Products  Product[]
+
+  @@map("categorybrands")
 }
 
 model Brand {
@@ -110,7 +124,8 @@ model Brand {
   desc      String    @db.VarChar(50)
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
-  Products  Product[]
+  CategoryBrands  CategoryBrand[]
+
 
   @@map("brands")
 }
@@ -122,15 +137,13 @@ model Product {
   thumbnail     String
   desc          String
   originalPrice Float
-  categoryId    Int
-  brandId       Int
+  categoryBrandId       Int
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   updatedAt     DateTime @updatedAt @db.Timestamp(6)
   isDraft       Boolean  @default(true)
   isPublished   Boolean  @default(false)
   releaseDate   DateTime
-  brand         Brand    @relation(fields: [brandId], references: [id])
-  category      Category @relation(fields: [categoryId], references: [id])
+  categorybrand         CategoryBrand    @relation(fields: [categoryBrandId], references: [id])
   skus          Sku[]
 
   @@map("products")

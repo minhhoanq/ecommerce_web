@@ -17,7 +17,14 @@ export class CategoryRepositoryImpl implements ICategoryRepository {
 
     async findAll(): Promise<any> {
         return await this._prisma.$queryRaw`
-            SELECT id, name FROM "categories"
+            SELECT
+                c.id AS categoryId,
+                c."name" AS categoryName,
+                b.id AS brandId,
+                b."name" AS brandName
+            FROM categories c
+            LEFT JOIN categorybrands cb ON c.id = cb."categoryId"
+            LEFT JOIN brands b ON cb."brandId" = b.id;
         `;
     }
 

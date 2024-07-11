@@ -19,7 +19,7 @@ const Checkout = ({ dispatch, navigate }) => {
         if (paymentMethod === "OFFLINE") {
             const total = Math.round(
                 +currentCart?.reduce(
-                    (sum, el) => +el?.price * el.quantity + sum,
+                    (sum, el) => +el?.salePrice * el.quantity + sum,
                     0
                 )
             );
@@ -47,7 +47,7 @@ const Checkout = ({ dispatch, navigate }) => {
             products: currentCart,
             total: Math.round(
                 +currentCart?.reduce(
-                    (sum, el) => +el?.price * el.quantity + sum,
+                    (sum, el) => +el?.salePrice * el.quantity + sum,
                     0
                 ) / 23500
             ),
@@ -71,13 +71,13 @@ const Checkout = ({ dispatch, navigate }) => {
     return (
         <div className="p-8 w-full grid grid-cols-10 h-full max-h-screen overflow-y-auto gap-6">
             {isSuccess && <Congrat />}
-            <div className="w-full flex justify-center items-center col-span-4">
+            {/* <div className="w-full flex justify-center items-center col-span-4">
                 <img
                     src={payment}
                     alt="payment"
                     className="h-[70%] object-contain"
                 />
-            </div>
+            </div> */}
             <div className="flex w-full flex-col justify-center col-span-6 gap-6">
                 <h2 className="text-3xl mb-6 font-bold">Checkout your order</h2>
                 <div className="flex w-full gap-6">
@@ -96,13 +96,13 @@ const Checkout = ({ dispatch, navigate }) => {
                                 {currentCart?.map((el) => (
                                     <tr className="border" key={el._id}>
                                         <td className="text-left p-2">
-                                            {el.title}
+                                            {el.name}
                                         </td>
                                         <td className="text-center p-2">
                                             {el.quantity}
                                         </td>
                                         <td className="text-right p-2">
-                                            {formatMoney(el.price) + " VND"}
+                                            {formatMoney(el.salePrice) + " VND"}
                                         </td>
                                     </tr>
                                 ))}
@@ -116,7 +116,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                 <span className="text-main font-bold">{`${formatMoney(
                                     currentCart?.reduce(
                                         (sum, el) =>
-                                            +el?.price * el.quantity + sum,
+                                            +el?.salePrice * el.quantity + sum,
                                         0
                                     )
                                 )} VND`}</span>
@@ -154,7 +154,8 @@ const Checkout = ({ dispatch, navigate }) => {
                                         total: Math.round(
                                             +currentCart?.reduce(
                                                 (sum, el) =>
-                                                    +el?.price * el.quantity +
+                                                    +el?.salePrice *
+                                                        el.quantity +
                                                     sum,
                                                 0
                                             ) / 23500
@@ -165,7 +166,8 @@ const Checkout = ({ dispatch, navigate }) => {
                                     amount={Math.round(
                                         +currentCart?.reduce(
                                             (sum, el) =>
-                                                +el?.price * el.quantity + sum,
+                                                +el?.salePrice * el.quantity +
+                                                sum,
                                             0
                                         ) / 23500
                                     )}
