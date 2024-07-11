@@ -6,7 +6,7 @@ import { Congrat, InputForm, Paypal } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getCurrent } from "store/user/asyncActions";
 import Swal from "sweetalert2";
-import { apiCheckout, apiCreateOrder } from "apis";
+import { apiCheckout, apiCreateOrder, apiPayment } from "apis";
 
 const Checkout = ({ dispatch, navigate }) => {
     const { currentCart, current } = useSelector((state) => state.user);
@@ -59,30 +59,32 @@ const Checkout = ({ dispatch, navigate }) => {
         })();
     }, []);
     const handleSaveOrder = async () => {
-        const payload = {
-            products: currentCart,
-            total: Math.round(
-                +currentCart?.reduce(
-                    (sum, el) => +el?.salePrice * el.quantity + sum,
-                    0
-                ) / 23500
-            ),
-            address: current?.address,
-        };
-        const response = await apiCreateOrder({
-            ...payload,
-            status: "Pending",
-        });
-        if (response.success) {
-            setIsSuccess(true);
-            setTimeout(() => {
-                Swal.fire("Congrat!", "Order was created.", "success").then(
-                    () => {
-                        navigate("/");
-                    }
-                );
-            }, 1500);
-        }
+        // const payload = {
+        //     products: currentCart,
+        //     total: Math.round(
+        //         +currentCart?.reduce(
+        //             (sum, el) => +el?.salePrice * el.quantity + sum,
+        //             0
+        //         ) / 23500
+        //     ),
+        //     address: current?.address,
+        // };
+        // const response = await apiCreateOrder({
+        //     ...payload,
+        //     status: "Pending",
+        // });
+        // if (response.success) {
+        //     setIsSuccess(true);
+        //     setTimeout(() => {
+        //         Swal.fire("Congrat!", "Order was created.", "success").then(
+        //             () => {
+        //                 navigate("/");
+        //             }
+        //         );
+        //     }, 1500);
+        // }
+        const response = await apiPayment();
+        window.location.href = response.vnpUrl;
     };
     return (
         <div className="p-8 w-full  h-full max-h-screen overflow-y-auto gap-6">
