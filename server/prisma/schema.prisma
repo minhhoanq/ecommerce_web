@@ -95,56 +95,55 @@ model Session {
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(50)
-  thumbnail      String?    @db.VarChar(50)
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
-  CategoryBrands  CategoryBrand[]
+  id             Int             @id @default(autoincrement())
+  name           String          @db.VarChar(50)
+  thumbnail      String?         @db.VarChar(50)
+  createdAt      DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime        @updatedAt @db.Timestamp(6)
+  CategoryBrands CategoryBrand[]
 
   @@map("categories")
 }
 
 model CategoryBrand {
-  id        Int       @id @default(autoincrement())
-  categoryId      Int    @db.Integer
-  brandId      Int    @db.Integer
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
-  brand         Brand    @relation(fields: [brandId], references: [id])
-  category      Category @relation(fields: [categoryId], references: [id])
-  Products  Product[]
+  id         Int       @id @default(autoincrement())
+  categoryId Int       @db.Integer
+  brandId    Int       @db.Integer
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime  @updatedAt @db.Timestamp(6)
+  brand      Brand     @relation(fields: [brandId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
+  Products   Product[]
 
   @@map("categorybrands")
 }
 
 model Brand {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(50)
-  desc      String    @db.VarChar(50)
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
-  CategoryBrands  CategoryBrand[]
-
+  id             Int             @id @default(autoincrement())
+  name           String          @db.VarChar(50)
+  desc           String          @db.VarChar(50)
+  createdAt      DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime        @updatedAt @db.Timestamp(6)
+  CategoryBrands CategoryBrand[]
 
   @@map("brands")
 }
 
 model Product {
-  id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(255)
-  slug          String   @db.VarChar(255)
-  thumbnail     String
-  desc          String
-  originalPrice Float
-  categoryBrandId       Int
-  createdAt     DateTime @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime @updatedAt @db.Timestamp(6)
-  isDraft       Boolean  @default(true)
-  isPublished   Boolean  @default(false)
-  releaseDate   DateTime
-  categorybrand         CategoryBrand    @relation(fields: [categoryBrandId], references: [id])
-  skus          Sku[]
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(255)
+  slug            String        @db.VarChar(255)
+  thumbnail       String
+  desc            String
+  originalPrice   Float
+  categoryBrandId Int
+  createdAt       DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamp(6)
+  isDraft         Boolean       @default(true)
+  isPublished     Boolean       @default(false)
+  releaseDate     DateTime
+  categorybrand   CategoryBrand @relation(fields: [categoryBrandId], references: [id])
+  skus            Sku[]
 
   @@map("products")
 }
@@ -214,18 +213,40 @@ model CartItem {
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
-  userId          Int         @db.Integer
-  paymentMethodId Int         @db.Integer
-  addressId       Int         @db.Integer
-  statusId        Int         @db.Integer
-  date            DateTime    @db.Timestamp(6)
-  total           Float       @db.DoublePrecision
-  createdAt       DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime    @updatedAt @db.Timestamp(6)
+  id              Int           @id @default(autoincrement())
+  userId          Int           @db.Integer
+  paymentMethodId Int           @db.Integer
+  addressId       Int           @db.Integer
+  orderStatusId   Int           @default(1) @db.Integer
+  dateOrder            DateTime      @db.Timestamp(6)
+  total           Float         @db.DoublePrecision
+  createdAt       DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamp(6)
   orderItems      OrderItem[]
+  paymentmethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  orderstatus     OrderStatus   @relation(fields: [orderStatusId], references: [id])
 
   @@map("orders")
+}
+
+model PaymentMethod {
+  id        Int      @id @default(autoincrement())
+  type      String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  orders    Order[]
+
+  @@map("paymentmethods")
+}
+
+model OrderStatus {
+  id        Int      @id @default(autoincrement())
+  type      String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  orders    Order[]
+
+  @@map("orderstatus")
 }
 
 model OrderItem {

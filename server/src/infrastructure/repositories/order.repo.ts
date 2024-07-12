@@ -14,34 +14,39 @@ export class OrderRepositoryImpl implements IOrderRepository {
         userId: number,
         paymentMethodId: number,
         addressId: number,
-        date: Date,
         total: number,
         payload: [
             {
-                productItemId: number;
+                id: number;
                 quantity: number;
-                price: number;
+                salePrice: number;
             }
         ]
     ): Promise<any> {
+        console.log(payload);
+
         try {
+            const dateNow = new Date();
             await this._prisma.$transaction(async (prisma) => {
-                await prisma.$executeRaw`
+                const order: any[] = await prisma.$queryRaw`
                     INSERT INTO orders (
                         "userId",
                         "paymentMethodId",
                         "addressId",
-                        "date",
+                        "dateOrder",
                         "total",
                         "updatedAt"
-                    ) VALUES (${userId}, ${paymentMethodId}, ${addressId}, "now()", ${total}, "now()") 
+                    ) VALUES (${userId}, ${paymentMethodId}, ${addressId}, ${dateNow}, ${total}, ${dateNow})
+                    RETURNING *
                 `;
+
+                console.log(order);
 
                 const orderItems = payload.map(
                     async (el: {
-                        productItemId: number;
+                        id: number;
                         quantity: number;
-                        price: number;
+                        salePrice: number;
                     }) => {
                         await prisma.$executeRaw`
                             INSERT INTO orderitems (
@@ -50,7 +55,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
                                 "quantity",
                                 "price",
                                 "updatedAt"
-                            ) VALUES (lastval(), ${el.productItemId}, ${el.quantity}, ${el.price}, "now()")
+                            ) VALUES (${order[0].id}, ${el.id}, ${el.quantity}, ${el.salePrice}, ${dateNow})
                         `;
                     }
                 );

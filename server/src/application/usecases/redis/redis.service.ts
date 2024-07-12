@@ -22,13 +22,13 @@ const acquireLock = async (
         console.log("result", result);
         if (result === 1) {
             // Thay doi thoi gian xac nhan
-            const isRevervation = await invenRepo.revervation(
-                productItemId,
-                quantity,
-                userId
-            );
-            console.log(isRevervation);
-            if (isRevervation) {
+            // const isRevervation = await invenRepo.revervation(
+            //     productItemId,
+            //     quantity,
+            //     userId
+            // );
+            // console.log(isRevervation);
+            if (1) {
                 await pexpire(key, exprireTime);
                 return key;
             }

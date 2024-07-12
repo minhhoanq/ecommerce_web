@@ -3,13 +3,12 @@ export interface IOrderRepository {
         userId: number,
         paymentMethod: number,
         addressId: number,
-        date: Date,
         total: number,
         payload: [
             {
-                productItemId: number;
+                id: number;
                 quantity: number;
-                price: number;
+                salePrice: number;
             }
         ]
     ): Promise<any>;
