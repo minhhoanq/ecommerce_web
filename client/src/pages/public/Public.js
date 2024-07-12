@@ -6,7 +6,7 @@ import TopHeaders from "components/headers/TopHeader";
 import { getCategories } from "store/app/asyncActions";
 import { useDispatch } from "react-redux";
 const Public = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     useEffect(() => {
         (async () => {

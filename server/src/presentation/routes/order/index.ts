@@ -67,7 +67,7 @@ router.post(
 
         let createDate = moment(date).format("YYYYMMDDHHmmss");
         const orderId = moment(date).format("DDHHmmss");
-        const amount = req.body.amount || 1000000;
+        const amount = req.body.amount || 10000;
         const bankCode = req.body.bankCode || "VNBANK";
 
         const orderInfo = req.body.orderDescription || "descpayment";

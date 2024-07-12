@@ -6,8 +6,9 @@ export const apiCheckout = (data) =>
         method: "post",
         data,
     });
-export const apiPayment = () =>
+export const apiPayment = (data) =>
     axios({
         url: "order/create_payment_url",
         method: "POST",
+        data,
     });

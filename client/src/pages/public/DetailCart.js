@@ -33,21 +33,24 @@ const DetailCart = ({ location, navigate }) => {
         navigate(`/${path.CHECKOUT}`, "_blank");
     };
     return (
-        <div className="w-full px-4">
+        <div className="w-full">
             <div className="h-[81px] flex justify-center items-center bg-gray-100">
-                <div className="w-full">
-                    <h3 className="font-semibold text-2xl uppercase">
-                        My Cart
-                    </h3>
-                    {/* <Breadcrumb category={location?.pathname?.replace('/', '')?.split('-')?.join(' ')} /> */}
+                <div className="lg:w-main w-screen px-4 lg:px-0">
+                    <h3 className="font-semibold uppercase">My Cart</h3>
+                    <Breadcrumb
+                        category={location?.pathname
+                            ?.replace("/", "")
+                            ?.split("-")
+                            ?.join(" ")}
+                    />
                 </div>
             </div>
-            <div className="flex flex-col border w-full mx-auto my-8">
+            <div className="flex flex-col border lg:w-main mx-auto my-8">
                 <div className="w-full mx-auto bg-gray-200  font-bold py-3 grid grid-cols-10">
                     <span className="col-span-6 w-full text-center">
-                        Products
+                        {/* Products */}
                     </span>
-                    <span className="col-span-1 w-full text-center">
+                    <span className="col-span-1 w-full text-left">
                         Quantity
                     </span>
                     <span className="col-span-3 w-full text-center">Price</span>
@@ -64,20 +67,29 @@ const DetailCart = ({ location, navigate }) => {
                     />
                 ))}
             </div>
-            <div className="w-full mx-auto flex flex-col mb-12 justify-center items-end gap-3">
-                <span className="flex items-center gap-8 text-sm">
-                    <span>Subtotal:</span>
-                    <span className="text-main font-bold">{`${formatMoney(
+            <div className="lg:w-main mx-auto flex flex-col mb-12 justify-center items-end gap-3">
+                <span className="flex items-center gap-8 ">
+                    <span className="text-sm font-semibold">Subtotal:</span>
+                    <span className="text-main font-bold text-xl">{`${formatMoney(
                         currentCart?.reduce(
                             (sum, el) => +el?.salePrice * el.quantity + sum,
                             0
                         )
                     )} VND`}</span>
                 </span>
-                <span className="text-xs italic">
+                <span className="text-sm italic text-gray-400">
                     Shipping, taxes, and discounts calculated at checkout
                 </span>
-                <Button handleOnClick={handleSubmit}>Checkout</Button>
+
+                <div className="flex space-x-2 text-sm">
+                    <Button
+                        style={`bg-black px-4 py-2 rounded-none text-white flex items-center justify-center text-semibold my-2 hover:bg-main`}
+                        handleOnClick={handleSubmit}
+                    >
+                        Update cart
+                    </Button>
+                    <Button handleOnClick={handleSubmit}>CHECKOUT</Button>
+                </div>
             </div>
         </div>
     );
