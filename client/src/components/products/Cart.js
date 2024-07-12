@@ -1,7 +1,7 @@
 import Button from "components/buttons/Button";
 import withBaseComponent from "hocs/withBaseComponent";
 import React, { memo, useEffect, useState } from "react";
-import { AiFillCloseCircle } from "react-icons/ai";
+import { IoIosClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { showCart } from "store/app/appSlice";
 import { formatMoney } from "ultils/helpers";
@@ -29,18 +29,20 @@ const Cart = ({ dispatch, navigate }) => {
     return (
         <div
             onClick={(e) => e.stopPropagation()}
-            className="w-[400px] h-screen bg-black grid grid-rows-10 text-white p-6"
+            className="w-[380px] h-screen bg-[#1c1d1d] grid grid-rows-10 text-white p-6 pt-0"
         >
-            <header className="border-b border-gray-500 flex justify-between items-center row-span-1 h-full font-bold text-2xl">
-                <span>Your Cart</span>
+            <header className="border-b border-gray-500 flex justify-between items-center row-span-1 h-full font-bold ">
+                <span className="text-base font-semibold uppercase">
+                    Your cart
+                </span>
                 <span
                     onClick={() => dispatch(showCart())}
                     className="p-2 cursor-pointer"
                 >
-                    <AiFillCloseCircle size={24} />
+                    <IoIosClose size={24} />
                 </span>
             </header>
-            <section className="row-span-7 flex flex-col gap-3 h-full max-h-full overflow-y-auto py-3">
+            <section className="row-span-7 flex flex-col gap-4 h-full max-h-full overflow-y-auto py-3">
                 {!currentCart && (
                     <span className="text-xs italic">Your cart is empty.</span>
                 )}
@@ -79,13 +81,13 @@ const Cart = ({ dispatch, navigate }) => {
                                 onClick={() => removeCart(el?.id)}
                                 className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer"
                             >
-                                <ImBin size={16} />
+                                <ImBin size={14} />
                             </span>
                         </div>
                     ))}
             </section>
             <div className="row-span-2 flex flex-col justify-between h-full">
-                <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-500">
                     <span>Subtotal:</span>
                     <span>
                         {formatMoney(

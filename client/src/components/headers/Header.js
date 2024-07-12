@@ -58,15 +58,15 @@ const Header = () => {
                             onClick={() => dispatch(showCart())}
                             className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r"
                         >
-                            <span className="relative md:hidden inline-block">
-                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 flex items-center justify-center text-[10px] text-white rounded-full">
+                            <span className="relative inline-block">
+                                <span className="absolute -top-2 -right-2 w-4 h-4 bg-white flex items-center justify-center text-[10px] text-main rounded-full border border-main">
                                     {currentCart?.length || 0}
                                 </span>
                                 <BsHandbagFill size={20} color="red" />
                             </span>
-                            <span className="hidden md:inline-block">{`${
+                            {/* <span className="hidden md:inline-block">{`${
                                 currentCart?.length || 0
-                            } item(s)`}</span>
+                            } item(s)`}</span> */}
                         </div>
                         <div
                             className="flex cursor-pointer items-center justify-center px-6 gap-2 relative"
