@@ -6,7 +6,7 @@ import { Breadcrumb, Congrat, InputForm, Paypal } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getCurrent } from "store/user/asyncActions";
 import Swal from "sweetalert2";
-import { apiCheckout, apiCreateOrder, apiPayment } from "apis";
+import { apiCheckout, apiCreateOrder, apiOrder, apiPayment } from "apis";
 import { IoLocationOutline } from "react-icons/io5";
 import { BsClock } from "react-icons/bs";
 import { MdOutlineDiscount } from "react-icons/md";
@@ -52,7 +52,7 @@ const Checkout = ({ dispatch, navigate }) => {
     useEffect(() => {
         (async () => {
             const data = {
-                listItems: currentCart.map((el) => {
+                listItems: currentCart?.map((el) => {
                     return {
                         productItemId: el.id,
                         quantity: el.quantity,
@@ -73,6 +73,20 @@ const Checkout = ({ dispatch, navigate }) => {
             };
             const response = await apiPayment(payload);
             window.location.href = response.vnpUrl;
+        }
+        if (paymentMethod === 1) {
+            const data = {
+                paymentMethodId: 1,
+                listItems: reviewCheckout?.orderItems.map((el) => {
+                    return {
+                        productItemId: el.id,
+                        quantity: el.quantity,
+                    };
+                }),
+            };
+            const order = await apiOrder(data);
+            if (order.status === 201)
+                window.location = "http://localhost:3000/order-result";
         }
         //Payment upon delivery
     };
@@ -145,9 +159,9 @@ const Checkout = ({ dispatch, navigate }) => {
                                         paymentMethod === 1
                                             ? "bg-main text-white hover:bg-red-500"
                                             : "text-red-600 outline outline-1 hover:bg-red-50"
-                                    }  rounded-sm text-sm p-2 outline outline-1 hover:bg-red-50`}
+                                    }  text-sm p-2 outline outline-1 hover:bg-red-50`}
                                 >
-                                    Payment upon delirery
+                                    Cash On Delivery
                                 </button>
                                 <button
                                     onClick={() => setPaymentMethod(2)}
@@ -155,7 +169,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                         paymentMethod === 2
                                             ? "bg-main text-white hover:bg-red-500"
                                             : "text-red-600 outline outline-1 hover:bg-red-50"
-                                    }  rounded-sm text-sm p-2 `}
+                                    }   text-sm p-2 `}
                                 >
                                     Banking
                                 </button>
@@ -176,7 +190,7 @@ const Checkout = ({ dispatch, navigate }) => {
                     <div className="w-[350px] flex flex-col justify-between gap-[30px] ">
                         <div className="space-y-4 border-b border-solid border-gray-300 pb-8">
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold text-md">
+                                <span className="font-semibold text-sm">
                                     HOW TO GET IT
                                 </span>
                                 <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 hover:bg-red-50">
@@ -199,7 +213,7 @@ const Checkout = ({ dispatch, navigate }) => {
                         </div>
                         <div className="space-y-4 border-b border-solid border-gray-300 pb-8">
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold text-md">
+                                <span className="font-semibold text-sm">
                                     COUPONS
                                 </span>
                                 <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 hover:bg-red-50">
@@ -243,7 +257,7 @@ const Checkout = ({ dispatch, navigate }) => {
                             </span>
                         </div>
                         <button
-                            className="bg-main h-[40px] rounded text-white"
+                            className="bg-main h-[40px] text-white"
                             onClick={handleSaveOrder}
                         >
                             ORDER

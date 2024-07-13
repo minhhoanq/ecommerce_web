@@ -39,6 +39,7 @@ import { Cart, Modal } from "components";
 import { showCart } from "store/app/appSlice";
 import { updateCart } from "store/user/userSlice";
 import { getCartItems } from "apis";
+import OrderResult from "pages/member/OrderResult";
 
 function App() {
     const dispatch = useDispatch();
@@ -68,7 +69,10 @@ function App() {
                 </div>
             )}
             {isShowModal && <Modal>{modalChildren}</Modal>}
+
             <Routes>
+                <Route path={path.ORDERRESULT} element={<OrderResult />} />
+
                 <Route path={path.PUBLIC} element={<Public />}>
                     <Route path={path.HOME} element={<Home />} />
                     <Route

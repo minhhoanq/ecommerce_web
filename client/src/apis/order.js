@@ -12,3 +12,10 @@ export const apiPayment = (data) =>
         method: "POST",
         data,
     });
+
+export const apiOrder = (data) =>
+    axios({
+        url: "/order",
+        method: "POST",
+        data,
+    });
