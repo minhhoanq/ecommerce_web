@@ -91,27 +91,29 @@ export class OrderService implements IOrderService {
             payload
         );
 
-        // payload.listItems
-        // const products = orderItems;
-        // const acquireProduct: boolean[] = [];
-        // for (let i = 0; i < products.length; i++) {
-        //     const { id, quantity } = products[i];
-        //     const keyLock = await acquireLock(id, quantity, cart.id);
-        //     acquireProduct.push(keyLock ? true : false);
-        //     console.log("chjcek");
+        // payload.listItems;
+        console.log(orderItems);
 
-        //     if (keyLock) {
-        //         console.log("check");
+        const products = orderItems;
+        const acquireProduct: boolean[] = [];
+        for (let i = 0; i < products.length; i++) {
+            const { id, quantity } = products[i];
+            const keyLock = await acquireLock(id, quantity, cart.id);
+            acquireProduct.push(keyLock ? true : false);
+            console.log("chjcek 1", keyLock);
 
-        //         await releaseLock(keyLock);
-        //     }
-        // }
+            if (keyLock) {
+                console.log("check");
 
-        // if (acquireProduct.includes(false)) {
-        //     throw new BadRequestError(
-        //         "Some products have been updated, Please return to the cart..."
-        //     );
-        // }
+                await releaseLock(keyLock);
+            }
+        }
+
+        if (acquireProduct.includes(false)) {
+            throw new BadRequestError(
+                "Some products have been updated, Please return to the cart..."
+            );
+        }
 
         // create order
         const order = await this._orderRepo.create(

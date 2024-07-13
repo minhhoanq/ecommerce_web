@@ -13,24 +13,34 @@ export class InventoryRepositoryImpl implements IInventoryRepository {
         quantity: number,
         userId: number
     ): Promise<any> {
-        const query: any = {
+        console.log({ productItemId, quantity, userId });
+
+        const inventoryItem = await this._prisma.inventory.findFirst({
+            where: {
                 skuId: productItemId,
                 stock: {
                     gte: quantity,
                 },
             },
-            update = {
-                stock: {
-                    decrement: quantity,
-                },
-                reservations: {
-                    userId,
-                    quantity,
-                    createdAt: new Date(),
-                },
-            };
+        });
+
+        if (!inventoryItem) {
+            throw new Error("Not enough stock or item not found");
+        }
+
+        const update = {
+            stock: {
+                decrement: quantity,
+            },
+            reservations: {
+                userId,
+                quantity,
+                createdAt: new Date(),
+            },
+        };
+
         const updateInventory = await this._prisma.inventory.update({
-            where: query,
+            where: { id: inventoryItem.id }, // Use unique identifier
             data: update,
         });
 

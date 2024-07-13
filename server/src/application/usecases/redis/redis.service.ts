@@ -2,8 +2,8 @@ import { promisify } from "util";
 import redisClient from "../../../infrastructure/redis";
 import { InventoryRepositoryImpl } from "../../../infrastructure/repositories/inventory.repo";
 
-const pexpire = promisify(redisClient.pExpire).bind(redisClient);
-const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
+// const pexpire = promisify(redisClient.pExpire).bind(redisClient);
+// const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
 
 const invenRepo = new InventoryRepositoryImpl();
 
@@ -18,18 +18,18 @@ const acquireLock = async (
 
     for (let i = 0; i < retryTimes; i++) {
         //Tao 1 key de nam giu thanh toan
-        const result = await setnxAsync(key, exprireTime);
+        const result = await redisClient.setNX(key, exprireTime.toString());
         console.log("result", result);
-        if (result === 1) {
+        if (result === true) {
             // Thay doi thoi gian xac nhan
-            // const isRevervation = await invenRepo.revervation(
-            //     productItemId,
-            //     quantity,
-            //     userId
-            // );
-            // console.log(isRevervation);
-            if (1) {
-                await pexpire(key, exprireTime);
+            const isRevervation = await invenRepo.revervation(
+                productItemId,
+                quantity,
+                userId
+            );
+            console.log(isRevervation);
+            if (isRevervation) {
+                await redisClient.pExpire(key, exprireTime);
                 return key;
             }
             return null;
@@ -40,8 +40,8 @@ const acquireLock = async (
 };
 
 const releaseLock = async (keyLock: string) => {
-    const delAsyncKey = promisify(redisClient.del).bind(redisClient);
-    return await delAsyncKey(keyLock);
+    // const delAsyncKey = promisify(redisClient.del).bind(redisClient);
+    return await redisClient.del(keyLock);
 };
 
 export { acquireLock, releaseLock };

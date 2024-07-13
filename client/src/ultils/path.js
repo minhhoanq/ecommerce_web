@@ -32,7 +32,7 @@ const path = {
     MY_CART: "my-cart",
     HISTORY: "buy-history",
     WISHLIST: "wishlist",
-    ORDERRESULT: "order-result",
+    ORDERRESULT: "order/result",
 };
 
 export default path;
