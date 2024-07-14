@@ -1,4 +1,4 @@
-import { apiGetOrders, apiGetUserOrders } from "apis";
+import { apiGetUserOrders } from "apis";
 import { CustomSelect, InputForm, Pagination } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
 import moment from "moment";
@@ -6,10 +6,17 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import { statusOrders } from "ultils/contants";
+import { formatMoney } from "ultils/helpers";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 
 const History = ({ navigate, location }) => {
     const [orders, setOrders] = useState([]);
     const [counts, setCounts] = useState(0);
+    const [showOrderDetail, setShowOrderDetail] = useState({
+        open: false,
+        orderId: 0,
+    });
     const [params] = useSearchParams();
     const {
         register,
@@ -41,12 +48,14 @@ const History = ({ navigate, location }) => {
         });
     };
 
-    console.log(orders);
+    const handleShowOrderDetail = (orderId) => {
+        setShowOrderDetail({ open: !showOrderDetail.open, orderId: orderId });
+    };
 
     return (
         <div className="w-full relative px-4">
-            <header className="text-3xl font-semibold py-4 border-b border-b-blue-200">
-                History
+            <header className="text-xl font-semibold py-4 border-b border-b-blue-200">
+                <h3 className="uppercase">History</h3>
             </header>
             <div className="flex justify-end items-center px-4">
                 <form className="w-[45%] grid grid-cols-2 gap-4">
@@ -72,62 +81,99 @@ const History = ({ navigate, location }) => {
             <table className="table-auto w-full">
                 <thead>
                     <tr className="border bg-sky-900 text-white border-white">
-                        <th className="text-center py-2">#</th>
-                        <th className="text-center py-2">Products</th>
+                        <th className="text-center py-2">STT</th>
                         <th className="text-center py-2">Total</th>
                         <th className="text-center py-2">Status</th>
                         <th className="text-center py-2">Created At</th>
+                        <th className="text-center py-2"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders?.map((el, idx) => (
-                        <tr className="border-b" key={el._id}>
-                            <td className="text-center py-2">
-                                {(+params.get("page") > 1
-                                    ? +params.get("page") - 1
-                                    : 0) *
-                                    process.env.REACT_APP_LIMIT +
-                                    idx +
-                                    1}
-                            </td>
-                            <td className="text-center max-w-[500px] py-2">
-                                <span className="grid grid-cols-4 gap-4">
-                                    {/* {el?.map((item) => (
-                                        <span
-                                            className="flex col-span-1 items-center gap-2"
-                                            key={item.id}
-                                        >
-                                            <img
-                                                src={item.thumbnail}
-                                                alt="thumb"
-                                                className="w-8 h-8 rounded-md object-cover"
-                                            />
-                                            <span className="flex flex-col">
-                                                <span className="text-main text-sm">
-                                                    {item.title} adasda
-                                                </span>
-                                                <span className="flex items-center text-xs gap-2">
-                                                    <span>Quantity:</span>
-                                                    <span className="text-main">
-                                                        {item.quantity} asadssd
-                                                    </span>
-                                                </span>
-                                            </span>
-                                        </span>
-                                    ))} */}
-                                    ...
-                                </span>
-                            </td>
-                            <td className="text-center py-2">
-                                {el.total + " VND"}
-                            </td>
-                            <td className="text-center py-2">
-                                {el.orderStatusId}
-                            </td>
-                            <td className="text-center py-2">
-                                {moment(el.createdAt)?.format("DD/MM/YYYY")}
-                            </td>
-                        </tr>
+                        <React.Fragment key={el.orderId}>
+                            <tr className="border-b">
+                                <td className="text-center py-2">
+                                    {(+params.get("page") > 1
+                                        ? (+params.get("page") - 1) *
+                                          process.env.REACT_APP_LIMIT
+                                        : 0) +
+                                        idx +
+                                        1}
+                                </td>
+                                <td className="text-center py-2">
+                                    {el.total + " VND"}
+                                </td>
+                                <td className="text-center py-2">Success</td>
+                                <td className="text-center py-2">
+                                    {moment(el.createdAt)?.format("DD/MM/YYYY")}
+                                </td>
+                                <td
+                                    className="text-center flex justify-center py-2 hover:cursor-pointer"
+                                    onClick={() =>
+                                        handleShowOrderDetail(el.orderId)
+                                    }
+                                >
+                                    {showOrderDetail.open === true &&
+                                    showOrderDetail.orderId === el.orderId ? (
+                                        <IoIosArrowUp />
+                                    ) : (
+                                        <IoIosArrowDown />
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    colSpan="5"
+                                    className={`${
+                                        showOrderDetail.open === true &&
+                                        showOrderDetail.orderId === el.orderId
+                                            ? ""
+                                            : "hidden"
+                                    }`}
+                                >
+                                    <div className="p-4">
+                                        {el?.orderitems?.map((item) => (
+                                            <div
+                                                className="flex justify-between my-2"
+                                                key={item.id}
+                                            >
+                                                <div>
+                                                    <img
+                                                        className="h-[70px]"
+                                                        src="https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png"
+                                                    />
+                                                </div>
+                                                <div className="text-left p-2">
+                                                    <div className="flex-col">
+                                                        <span>
+                                                            {item.productName}
+                                                        </span>
+                                                        <p className="text-sm">
+                                                            {
+                                                                item.attributes
+                                                                    ?.color
+                                                            }{" "}
+                                                            |{" "}
+                                                            {
+                                                                item.attributes
+                                                                    ?.ram
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-center p-2">
+                                                    x {item.quantity}
+                                                </div>
+                                                <div className="text-right p-2">
+                                                    {formatMoney(item.price) +
+                                                        " VND"}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </td>
+                            </tr>
+                        </React.Fragment>
                     ))}
                 </tbody>
             </table>

@@ -82,10 +82,33 @@ export class OrderRepositoryImpl implements IOrderRepository {
     }
 
     async findMany(userId: number): Promise<any> {
-        return await this._prisma.$queryRaw`
-            SELECT * FROM orders as o
-            JOIN orderitems as oi on oi."orderId" = o.id
-            WHERE o."userId" = ${userId}
-        `;
+        const orders: any[] = await this._prisma.$queryRaw`
+            SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."createdAt", o."updatedAt",
+            json_agg(
+                    json_build_object(
+                        'id', oi.id,
+                        'orderId', oi."orderId",
+                        'productName', p."name",
+                        'attributes', sk."attributes",
+                        'quantity', oi."quantity",
+                        'price', oi."price",
+                        'createdAt', oi."createdAt",
+                        'updatedAt', oi."updatedAt"
+                    )
+                ) AS orderitems
+            FROM
+                orders o
+            JOIN
+                orderitems oi ON o.id = oi."orderId"
+            JOIN skus sk on oi."skuId" = sk.id
+            JOIN products p ON sk."productId" = p.id
+            WHERE
+                o."userId" = ${userId}
+            GROUP BY
+                o.id
+            LIMIT 7
+            `;
+
+        return orders;
     }
 }
