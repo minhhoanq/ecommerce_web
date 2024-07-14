@@ -19,3 +19,16 @@ export const apiOrder = (data) =>
         method: "POST",
         data,
     });
+
+export const apiGetUserOrders = (params) =>
+    axios({
+        url: "/order",
+        method: "get",
+        params,
+    });
+
+export const apiGetOrder = (orderId) =>
+    axios({
+        url: `/order/${orderId}`,
+        method: "GET",
+    });

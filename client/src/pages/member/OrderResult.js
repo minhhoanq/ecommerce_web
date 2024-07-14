@@ -1,4 +1,4 @@
-import { apiCheckout } from "apis";
+import { apiCheckout, apiGetOrder } from "apis";
 import { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -8,24 +8,21 @@ import { BsClock } from "react-icons/bs";
 import { MdOutlineDiscount } from "react-icons/md";
 import { Button, Footer } from "components";
 import TopHeaders from "components/headers/TopHeader";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
 
 const OrderResult = () => {
-    const { currentCart, current } = useSelector((state) => state.user);
-    const [reviewCheckout, setReviewCheckout] = useState(null);
+    const { current } = useSelector((state) => state.user);
+    const [order, setOrder] = useState([]);
+    const [searchParams] = useSearchParams();
+    const orderId = searchParams.get("orderId");
+
+    console.log(orderId);
 
     useEffect(() => {
         (async () => {
-            const data = {
-                listItems: currentCart.map((el) => {
-                    return {
-                        productItemId: el.id,
-                        quantity: el.quantity,
-                    };
-                }),
-            };
-            console.log(data);
-            const checkout = await apiCheckout(data);
-            setReviewCheckout(checkout.metadata);
+            const orderDetail = await apiGetOrder(orderId);
+            console.log(orderDetail);
+            setOrder(orderDetail.metadata);
         })();
     }, []);
     return (
@@ -46,8 +43,8 @@ const OrderResult = () => {
                         <div className="w-full max-h-[350px] overflow-y-auto">
                             <table className="table-auto w-full ">
                                 <tbody>
-                                    {reviewCheckout?.orderItems?.map((el) => (
-                                        <tr className="" key={el._id}>
+                                    {order?.map((el) => (
+                                        <tr className="" key={el.id}>
                                             <td className="">
                                                 <img
                                                     className="h-[80px]"
@@ -56,7 +53,9 @@ const OrderResult = () => {
                                             </td>
                                             <td className="text-left p-2">
                                                 <div className="flex-col">
-                                                    <span>{el.name}</span>
+                                                    <span>
+                                                        {el.productName}
+                                                    </span>
                                                     <p className="text-sm">
                                                         {el.attributes.color} |{" "}
                                                         {el.attributes.ram}
@@ -71,8 +70,7 @@ const OrderResult = () => {
                                                 x {el.quantity}
                                             </td>
                                             <td className="text-right p-2">
-                                                {formatMoney(el.salePrice) +
-                                                    " VND"}
+                                                {formatMoney(el.price) + " VND"}
                                             </td>
                                         </tr>
                                     ))}
@@ -90,7 +88,7 @@ const OrderResult = () => {
                             <div className="space-y-1">
                                 <div className="flex flex-col items-start space-y-2">
                                     <span className="text-sm">
-                                        Full name: Trần Minh Hoàng
+                                        Full name: {order[0]?.username}
                                     </span>
                                     <span className="text-sm">
                                         Phone: 0353727257
@@ -108,7 +106,9 @@ const OrderResult = () => {
                                     Payment method:
                                 </span>
                                 <span className="text-main font-bold">
-                                    Banking
+                                    {order[0]?.paymentMethodId === 1
+                                        ? "Cash on delivery"
+                                        : "Banking"}
                                 </span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
@@ -116,35 +116,40 @@ const OrderResult = () => {
                                     Transport fee:
                                 </span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    reviewCheckout?.checkoutOrder?.feeShip
+                                    order?.checkoutOrder?.feeShip
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">Total:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    reviewCheckout?.checkoutOrder?.total
+                                    order?.checkoutOrder?.total
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">Discount:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    reviewCheckout?.checkoutOrder?.totalDiscount
+                                    order?.checkoutOrder?.totalDiscount
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">Subtotal:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    reviewCheckout?.checkoutOrder?.totalCheckout
+                                    order[0]?.total
                                 )} VND`}</span>
                             </span>
                         </div>
                         <div className="flex space-x-2 text-sm justify-end">
-                            <Button
-                                style={`bg-black px-4 py-2 rounded-none text-white flex items-center justify-center text-semibold my-2 flex-1 hover:bg-main`}
-                            >
-                                Order history
-                            </Button>
-                            <Button>HOME</Button>
+                            <NavLink to={"/member/order/history"}>
+                                <Button
+                                    style={`bg-black px-4 py-2 rounded-none text-white flex items-center justify-center text-semibold my-2 flex-1 hover:bg-main`}
+                                >
+                                    Order history
+                                </Button>
+                            </NavLink>
+
+                            <NavLink to={"/"}>
+                                <Button>HOME</Button>
+                            </NavLink>
                         </div>
                     </div>
                 </div>

@@ -12,4 +12,7 @@ export interface IOrderRepository {
             }
         ]
     ): Promise<any>;
+
+    findFirst(userId: number, orderId: number): Promise<any>;
+    findMany(userId: number): Promise<any>;
 }

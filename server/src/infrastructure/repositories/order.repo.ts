@@ -27,7 +27,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
         try {
             const dateNow = new Date();
-            await this._prisma.$transaction(async (prisma) => {
+            return await this._prisma.$transaction(async (prisma) => {
                 const order: any[] = await prisma.$queryRaw`
                     INSERT INTO orders (
                         "userId",
@@ -61,14 +61,31 @@ export class OrderRepositoryImpl implements IOrderRepository {
                 );
 
                 await Promise.all(orderItems);
-                return orderItems;
+                return order.length > 0 ? order[0] : null;
             });
-
-            return true;
         } catch (error) {
             throw error;
         } finally {
             await this._prisma.$disconnect();
         }
+    }
+
+    async findFirst(userId: number, orderId: number): Promise<any> {
+        return await this._prisma.$queryRaw`
+            SELECT oi.id, u."username", u."phone", o."paymentMethodId", o."total", p."name" as "productName", sk."attributes", oi."quantity", oi."price" FROM users as u
+            JOIN orders as o on u.id = o."userId"
+            JOIN orderitems as oi on o.id = oi."orderId"
+            JOIN skus as sk on oi."skuId" = sk.id
+            JOIN products as p on sk."productId" = p.id
+            WHERE o.id = ${orderId} AND o."userId" = ${userId}
+        `;
+    }
+
+    async findMany(userId: number): Promise<any> {
+        return await this._prisma.$queryRaw`
+            SELECT * FROM orders as o
+            JOIN orderitems as oi on oi."orderId" = o.id
+            WHERE o."userId" = ${userId}
+        `;
     }
 }

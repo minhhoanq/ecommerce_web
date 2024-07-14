@@ -40,4 +40,29 @@ export class OrderController {
             next(error);
         }
     };
+
+    getOrder = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            new SuccessResponse({
+                message: "Order successfully!",
+                metadata: await this._orderService.getOrderDetail(
+                    +req.user.userId,
+                    +req.params.orderId
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getOrders = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            new SuccessResponse({
+                message: "Order successfully!",
+                metadata: await this._orderService.getOrders(+req.user.userId),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
 }

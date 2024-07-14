@@ -29,6 +29,20 @@ router.post(
     asyncHandler(controller.checkout.bind(controller))
 );
 
+router.get(
+    "/",
+    auth.authentication,
+    access.GrantAccess("readOwn", "order"),
+    asyncHandler(controller.getOrders.bind(controller))
+);
+
+router.get(
+    "/:orderId",
+    auth.authentication,
+    access.GrantAccess("readOwn", "order"),
+    asyncHandler(controller.getOrder.bind(controller))
+);
+
 function sortObject(obj: any) {
     const sorted: any = {};
     const str = [];

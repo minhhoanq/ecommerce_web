@@ -72,6 +72,7 @@ const Checkout = ({ dispatch, navigate }) => {
                 orderDescription: "Order payment",
             };
             const response = await apiPayment(payload);
+            console.log(response);
             window.location.href = response.vnpUrl;
         }
         if (paymentMethod === 1) {
@@ -85,8 +86,7 @@ const Checkout = ({ dispatch, navigate }) => {
                 }),
             };
             const order = await apiOrder(data);
-            if (order.status === 201)
-                window.location = "http://localhost:3000/order-result";
+            if (order.status === 201) window.location = order.metadata;
         }
         //Payment upon delivery
     };

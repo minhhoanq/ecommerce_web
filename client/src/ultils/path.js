@@ -30,7 +30,7 @@ const path = {
     MEMBER: "member",
     PERSONAL: "personal",
     MY_CART: "my-cart",
-    HISTORY: "buy-history",
+    HISTORY: "order/history",
     WISHLIST: "wishlist",
     ORDERRESULT: "order/result",
 };

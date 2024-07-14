@@ -60,12 +60,7 @@ export const apiGetOrders = (params) =>
         method: "get",
         params,
     });
-export const apiGetUserOrders = (params) =>
-    axios({
-        url: "/order/",
-        method: "get",
-        params,
-    });
+
 export const apiUpdateStatus = (oid, data) =>
     axios({
         url: "/order/status/" + oid,
