@@ -129,20 +129,43 @@ model Brand {
   @@map("brands")
 }
 
+model ImageProduct {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  src       Float
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("imageproducts")
+}
+
+model Price {
+  id        Int      @id @default(autoincrement())
+  skuId     Int
+  price     Float
+  startDate DateTime // Ngày bắt đầu áp dụng giá
+  endDate   DateTime // Ngày bắt đầu áp dụng giá
+  active    Boolean  @default(false) // Trạng thái: false là chưa được áp dụng, true là được áp dụng
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  sku       Sku      @relation(fields: [skuId], references: [id])
+
+  @@map("prices")
+}
+
 model Product {
-  id              Int           @id @default(autoincrement())
-  name            String        @db.VarChar(255)
-  slug            String        @db.VarChar(255)
-  thumbnail       String
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(255)
+  imageProducts   ImageProduct[]
   desc            String
-  originalPrice   Float
   categoryBrandId Int
-  createdAt       DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime      @updatedAt @db.Timestamp(6)
-  isDraft         Boolean       @default(true)
-  isPublished     Boolean       @default(false)
+  createdAt       DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamp(6)
+  // isDraft         Boolean       @default(true)
+  // isPublished     Boolean       @default(false)
   releaseDate     DateTime
-  categorybrand   CategoryBrand @relation(fields: [categoryBrandId], references: [id])
+  categorybrand   CategoryBrand  @relation(fields: [categoryBrandId], references: [id])
   skus            Sku[]
 
   @@map("products")
@@ -151,11 +174,9 @@ model Product {
 model Sku {
   id            Int            @id @default(autoincrement())
   productId     Int
+  name          String         @db.VarChar(255)
+  slug          String         @db.VarChar(255)
   skuNo         String         @unique
-  thumbnail     String
-  originalPrice Float
-  salePrice     Float
-  stock         Int
   attributes    Json?
   createdAt     DateTime       @default(now()) @db.Timestamp(6)
   updatedAt     DateTime       @updatedAt @db.Timestamp(6)
@@ -164,6 +185,7 @@ model Sku {
   cartItems     CartItem[]
   orderItems    OrderItem[]
   inventories   Inventory[]
+  prices        Price[]
 
   @@map("skus")
 }
@@ -218,7 +240,7 @@ model Order {
   paymentMethodId Int           @db.Integer
   addressId       Int           @db.Integer
   orderStatusId   Int           @default(1) @db.Integer
-  dateOrder            DateTime      @db.Timestamp(6)
+  dateOrder       DateTime      @db.Timestamp(6)
   total           Float         @db.DoublePrecision
   createdAt       DateTime      @default(now()) @db.Timestamp(6)
   updatedAt       DateTime      @updatedAt @db.Timestamp(6)
@@ -254,7 +276,7 @@ model OrderItem {
   orderId   Int      @db.Integer
   skuId     Int      @db.Integer
   quantity  Int      @db.Integer
-  price     Float    @db.DoublePrecision
+  // price     Float    @db.DoublePrecision
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
   order     Order    @relation(fields: [orderId], references: [id])
