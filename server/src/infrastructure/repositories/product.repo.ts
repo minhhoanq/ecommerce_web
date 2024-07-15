@@ -36,15 +36,8 @@ export class ProductRepositoryImpl implements IProductRepository {
     };
 
     async create(payload: any): Promise<any> {
-        const {
-            name,
-            slug,
-            desc,
-            thumbnail,
-            originalPrice,
-            categoryBrandId,
-            skus,
-        } = payload;
+        const { name, desc, thumbnail, originalPrice, categoryBrandId, skus } =
+            payload;
 
         const updatedAt = new Date();
         const releaseDate = new Date();
@@ -54,10 +47,7 @@ export class ProductRepositoryImpl implements IProductRepository {
                 const product = await prisma.product.create({
                     data: {
                         name,
-                        slug,
                         desc,
-                        thumbnail,
-                        originalPrice,
                         categoryBrandId,
                         releaseDate,
                         updatedAt,
@@ -69,10 +59,8 @@ export class ProductRepositoryImpl implements IProductRepository {
                     const createdSku = await prisma.sku.create({
                         data: {
                             skuNo: sku.skuNo,
-                            originalPrice: sku.originalPrice,
-                            salePrice: sku.salePrice,
-                            stock: sku.stock,
-                            thumbnail: sku.thumbnail,
+                            name: sku.name,
+                            slug: slugify(sku.name, { lower: true }),
                             productId: product.id,
                             updatedAt,
                             attributes: attributes,
@@ -115,11 +103,9 @@ export class ProductRepositoryImpl implements IProductRepository {
                     const attributes = this.transformAttributes(sku.attributes);
                     const createdSku = await prisma.sku.create({
                         data: {
+                            name: sku.name,
+                            slug: slugify(sku.name, { lower: true }),
                             skuNo: sku.skuNo,
-                            originalPrice: sku.originalPrice,
-                            salePrice: sku.salePrice,
-                            stock: sku.stock,
-                            thumbnail: sku.thumbnail,
                             productId: productId,
                             updatedAt,
                             attributes: attributes,
@@ -275,24 +261,59 @@ export class ProductRepositoryImpl implements IProductRepository {
         const skip = (page - 1) * limit;
         const sortBy: Prisma.UserOrderByWithRelationInput =
             sort === "ctime" ? { createdAt: "desc" } : { id: "asc" };
+        // return await this._prisma.sku.findMany({
+        //     where: filter,
+        //     orderBy: [sortBy],
+        //     skip: skip,
+        //     take: limit,
+        //     select: {
+        //         id: true,
+        //         name: true,
+        //         slug: true,
+        //         attributes: true,
+        //         product: {
+        //             select: {
+        //                 releaseDate: true,
+        //                 categorybrand: {
+        //                     select: {
+        //                         category: {
+        //                             select: {
+        //                                 id: true,
+        //                                 name: true,
+        //                             },
+        //                         },
+        //                     },
+        //                 },
+        //             },
+        //         },
+        //         // categorybrand: {
+        //         //     select: {
+        //         //         category: {
+        //         //             select: {
+        //         //                 id: true,
+        //         //                 name: true,
+        //         //             },
+        //         //         },
+        //         //     },
+        //         // },
+        //     },
+        // });
         return await this._prisma.product.findMany({
             where: filter,
             orderBy: [sortBy],
             skip: skip,
-            take: limit,
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                originalPrice: true,
-                categorybrand: {
+            take: 20,
+            include: {
+                skus: {
+                    take: 1, // Lấy 1 SKU đại diện cho mỗi sản phẩm
                     select: {
-                        category: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
+                        id: true,
+                        name: true,
+                        slug: true,
+                        skuNo: true,
+                        attributes: true,
+                        createdAt: true,
+                        updatedAt: true,
                     },
                 },
             },

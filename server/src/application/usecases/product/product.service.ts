@@ -38,7 +38,6 @@ export class ProductService implements IProductService {
         //create new product
         const newProduct = await this._productRepo.create({
             name,
-            slug: slugify(name, { lower: true }),
             desc,
             originalPrice,
             thumbnail,

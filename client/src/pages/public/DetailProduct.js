@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { createSearchParams, useParams } from "react-router-dom";
+import { createSearchParams, useLocation, useParams } from "react-router-dom";
 import {
     apiGetProduct,
     apiGetProducts,
@@ -37,6 +37,13 @@ const settings = {
     slidesToScroll: 1,
 };
 
+const images = [
+    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-timultra-22.png",
+    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-vang-222.png",
+    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-xam-222.png",
+    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-den-600.png",
+];
+
 const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     const nameRef = useRef();
     const params = useParams();
@@ -53,6 +60,18 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         storage: null,
         color: null,
     });
+
+    const test = {
+        ram: "12GB",
+        storage: "512GB",
+    };
+
+    // const location = useLocation();
+    const attributes = location.state?.attributes;
+    const productId = location.state?.productId;
+
+    console.log("test", attributes);
+
     const [pid, setPid] = useState(null);
     const [category, setCategory] = useState(null);
     const [currentProduct, setCurrentProduct] = useState({
@@ -69,7 +88,8 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         }
     }, [data, params]);
     const fetchProductData = async (attributeValue) => {
-        const response = await apiGetProduct(pid, attributeValue);
+        const attrString = attributes.ram;
+        const response = await apiGetProduct(productId, attributeValue);
         if (response.status === 200) {
             setColors(response.metadata.colors);
             setAttribute((prev) => ({
@@ -95,15 +115,18 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             }));
         }
     }, [attribute, quantity]);
-    const fetchProducts = async () => {
-        const response = await apiGetProducts({ category });
-        if (response.success) setRelatedProducts(response.products);
-    };
+    // const fetchProducts = async () => {
+    //     const response = await apiGetProducts({ category });
+    //     if (response.success) setRelatedProducts(response.products);
+    // };
     const fetchVariations = async () => {
         const response = await apiGetVariations(pid);
         if (response.status === 200) {
             setStorages(response.metadata);
-            fetchProductData(response.metadata[0]?.attributeValue);
+            const attrString = attributes.ram;
+            fetchProductData(
+                response.metadata[0]?.attributeValue || attrString
+            );
             setAttribute((prev) => ({
                 ...prev,
                 storage: response.metadata[0]?.attributeValue,
@@ -113,7 +136,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     useEffect(() => {
         if (pid) {
             fetchVariations();
-            fetchProducts();
+            // fetchProducts();
         }
         nameRef.current.scrollIntoView({ block: "center" });
     }, [pid]);
@@ -220,35 +243,45 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                         isQuickView && "w-1/2"
                     )}
                 >
-                    <div className="w-[458px] h-[458px] border flex items-center overflow-hidden">
+                    <div className="w-[458px] h-[458px] flex justify-center items-center relative">
                         <ReactImageMagnify
                             {...{
                                 smallImage: {
                                     alt: "",
-                                    isFluidWidth: true,
+                                    isFluidWidth: false,
+                                    width: 458,
+                                    height: 458,
                                     src:
-                                        // currentProduct.thumbnail ||
-                                        // currentImage,
+                                        currentImage ||
                                         `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`,
                                 },
                                 largeImage: {
                                     src:
-                                        // currentProduct.thumbnail ||
-                                        // currentImage,
+                                        currentImage ||
                                         `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`,
-                                    width: 1800,
-                                    height: 1500,
+                                    width: 458,
+                                    height: 600,
                                 },
+                                enlargedImageContainerStyle: {
+                                    zIndex: 999,
+                                },
+                                enlargedImageContainerDimensions: {
+                                    width: "100%",
+                                    height: "100%",
+                                },
+                                enlargedImagePosition: "beside",
                             }}
                         />
                     </div>
+
                     <div className="w-[458px]">
                         <Slider
                             className="image-slider flex gap-2 justify-between"
                             {...settings}
                         >
-                            {currentProduct.images?.length === 0 &&
-                                products?.images?.map((el) => (
+                            {/* currentProduct. */}
+                            {images?.length === 0 &&
+                                images?.map((el) => (
                                     <div className="flex-1" key={el}>
                                         <img
                                             onClick={(e) =>
@@ -260,8 +293,8 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                         />
                                     </div>
                                 ))}
-                            {currentProduct.images?.length > 0 &&
-                                currentProduct.images?.map((el) => (
+                            {images?.length > 0 &&
+                                images?.map((el) => (
                                     <div className="flex-1" key={el}>
                                         <img
                                             onClick={(e) =>

@@ -15,31 +15,31 @@ const access = container.get<Access>(TYPES.Access);
 router.post(
     "/",
     auth.authentication,
-    access.GrantAccess("createAny", "product"),
+    // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProduct.bind(controller))
 );
 router.post(
     "/item",
     auth.authentication,
-    access.GrantAccess("createAny", "product"),
+    // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProductItem.bind(controller))
 );
 router.patch(
     "/:productItemId",
-    // auth.authentication,
+    auth.authentication,
     // access.GrantAccess("updateAny", "product"),
     asyncHandler(controller.updateProduct.bind(controller))
 );
 router.patch(
     "/publish/:productId",
     auth.authentication,
-    access.GrantAccess("createAny", "product"),
+    // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.publishProduct.bind(controller))
 );
 router.patch(
     "/unpublish/:productId",
     auth.authentication,
-    access.GrantAccess("createAny", "product"),
+    // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.unPublishProduct.bind(controller))
 );
 
@@ -47,14 +47,14 @@ router.patch(
 router.get(
     "/publishs",
     auth.authentication,
-    access.GrantAccess("readAny", "product"),
+    // access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getPublishs.bind(controller))
 );
 
 router.get(
     "/drafts",
     auth.authentication,
-    access.GrantAccess("readAny", "product"),
+    // access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getDrafts.bind(controller))
 );
 

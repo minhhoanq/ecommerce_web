@@ -98,9 +98,18 @@ const Product = ({
                 className="w-full border p-[15px] flex flex-col items-center"
                 onClick={(e) =>
                     navigate(
-                        `/${productData?.categorybrand?.category?.name.toLowerCase()}/${
-                            productData?.id
-                        }/${productData?.slug}`
+                        `/${
+                            productData?.categorybrand?.category?.name.toLowerCase() ||
+                            "smartphone"
+                        }/${productData?.skus[0].id}/${
+                            productData?.skus[0].slug
+                        }`,
+                        {
+                            state: {
+                                productId: productData?.id,
+                                attributes: productData?.skus[0]?.attributes,
+                            },
+                        }
                     )
                 }
                 onMouseEnter={(e) => {
@@ -191,7 +200,9 @@ const Product = ({
                             )
                         )}
                     </span>
-                    <span className="line-clamp-1">{productData?.name}</span>
+                    <span className="line-clamp-1">
+                        {productData?.skus[0].name}
+                    </span>
                     <span>{`${formatMoney(
                         productData?.originalPrice
                     )} VNĐ`}</span>
