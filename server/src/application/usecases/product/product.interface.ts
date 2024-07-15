@@ -22,7 +22,7 @@ export interface IProductService {
         filter: any;
     }): Promise<any>;
 
-    getVariations(productId: number): Promise<any>;
+    getVariations(slug: string): Promise<any>;
 
-    getProduct(id: number, body: { storage: string }): Promise<any>;
+    getProduct(slug: string): Promise<any>;
 }

@@ -6,18 +6,15 @@ export const apiGetProducts = (params) =>
         method: "get",
         params,
     });
-export const apiGetVariations = (pid) =>
+export const apiGetVariations = (slug) =>
     axios({
-        url: "/product/" + pid + "/variations",
+        url: "/product/" + slug + "/variations",
         method: "get",
     });
-export const apiGetProduct = (pid, storage) =>
+export const apiGetProduct = (slug) =>
     axios({
-        url: "/product/" + pid,
-        method: "post",
-        data: {
-            storage,
-        },
+        url: "/product/" + slug,
+        method: "get",
     });
 export const apiRatings = (data) =>
     axios({

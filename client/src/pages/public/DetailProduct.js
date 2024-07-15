@@ -61,16 +61,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         color: null,
     });
 
-    const test = {
-        ram: "12GB",
-        storage: "512GB",
-    };
-
-    // const location = useLocation();
-    const attributes = location.state?.attributes;
-    const productId = location.state?.productId;
-
-    console.log("test", attributes);
+    console.log(params);
 
     const [pid, setPid] = useState(null);
     const [category, setCategory] = useState(null);
@@ -87,11 +78,9 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             setCategory(params.category);
         }
     }, [data, params]);
-    const fetchProductData = async (attributeValue) => {
-        const attrString = attributes.ram;
-        const response = await apiGetProduct(productId, attributeValue);
+    const fetchProductData = async (slug) => {
+        const response = await apiGetProduct(slug);
         if (response.status === 200) {
-            setColors(response.metadata.colors);
             setAttribute((prev) => ({
                 ...prev,
                 color: response.metadata.products[0]?.attributeValue,
@@ -120,22 +109,24 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     //     if (response.success) setRelatedProducts(response.products);
     // };
     const fetchVariations = async () => {
-        const response = await apiGetVariations(pid);
+        const response = await apiGetVariations(params.title);
         if (response.status === 200) {
-            setStorages(response.metadata);
-            const attrString = attributes.ram;
-            fetchProductData(
-                response.metadata[0]?.attributeValue || attrString
-            );
+            setStorages(response.metadata.storages);
+            setColors(response.metadata.colors);
+
+            console.log(response.metadata.sku[0].attributeValue);
+
             setAttribute((prev) => ({
                 ...prev,
-                storage: response.metadata[0]?.attributeValue,
+                storage: response.metadata.sku[0].attributeValue,
             }));
         }
     };
     useEffect(() => {
         if (pid) {
             fetchVariations();
+            fetchProductData(params.title);
+
             // fetchProducts();
         }
         nameRef.current.scrollIntoView({ block: "center" });
@@ -208,9 +199,18 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         // console.log(currentProduct);
     };
 
-    const handleChooseVariations = (el) => {
+    const handleChooseVariations = async (el) => {
         setAttribute((prev) => ({ ...prev, storage: el.attributeValue }));
-        fetchProductData(el.attributeValue);
+        console.log(el);
+        // Tách URL để lấy phần base URL
+        const currentUrl = window.location.href;
+        const urlParts = currentUrl.split("/");
+        const baseUrl = urlParts.slice(0, urlParts.length - 1).join("/");
+        // // Tạo URL mới với SKU đã chọn
+        const newUrl = `${baseUrl}/${el.slug}`;
+
+        // // Cập nhật URL mà không tải lại trang
+        window.location.href = newUrl;
     };
 
     return (

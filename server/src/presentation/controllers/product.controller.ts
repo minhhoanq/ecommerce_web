@@ -156,7 +156,7 @@ export class ProductController {
             new SuccessResponse({
                 message: "getProducts successfully!",
                 metadata: await this._productService.getVariations(
-                    +req.params.productId
+                    req.params.slug
                 ),
             }).send(res);
         } catch (error) {
@@ -169,8 +169,7 @@ export class ProductController {
             new SuccessResponse({
                 message: "getProduct successfully!",
                 metadata: await this._productService.getProduct(
-                    +req.params.productId,
-                    req.body
+                    req.params.slug
                 ),
             }).send(res);
         } catch (error) {

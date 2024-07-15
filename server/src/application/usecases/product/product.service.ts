@@ -114,8 +114,8 @@ export class ProductService implements IProductService {
         return data;
     }
 
-    async getVariations(productId: number): Promise<any> {
-        return await this._productRepo.findAllVariations(productId);
+    async getVariations(slug: string): Promise<any> {
+        return await this._productRepo.findAllVariations(slug);
     }
 
     async getProducts({
@@ -132,8 +132,8 @@ export class ProductService implements IProductService {
         return await this._productRepo.findProducts(limit, sort, page, filter);
     }
 
-    async getProduct(id: number, body: { storage: string }): Promise<any> {
-        const product = await this._productRepo.findProduct(id, body.storage);
+    async getProduct(slug: string): Promise<any> {
+        const product = await this._productRepo.findProduct(slug);
 
         return product;
     }

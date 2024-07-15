@@ -320,31 +320,41 @@ export class ProductRepositoryImpl implements IProductRepository {
         });
     }
 
-    async findAllVariations(productId: number): Promise<any> {
-        const storages: any[] = await this._prisma.$queryRaw`
-            SELECT DISTINCT sa."attributeValue" FROM skus as sk
+    async findAllVariations(slug: string): Promise<any> {
+        const sku: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
             JOIN skuattributes as sa ON sk.id = sa."skuId"
-            WHERE sk."productId" = ${productId} AND sa."attributeId" = 2;
+            WHERE sk."slug" = ${slug} AND sa."attributeId" = 2;
         `;
 
-        return storages;
+        const colors: any[] = await this._prisma.$queryRaw`
+        SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
+        JOIN skuattributes as sa ON sk.id = sa."skuId"
+        WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 1;
+    `;
+
+        const storages: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT sk."productId", sk."slug", sa."attributeValue" FROM skus as sk
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 2;
+        `;
+
+        return {
+            sku,
+            colors,
+            storages,
+        };
     }
 
-    async findProduct(id: number, storage: string): Promise<any> {
-        const colors: any[] = await this._prisma.$queryRaw`
-            SELECT DISTINCT sa."attributeValue" FROM skus as sk
-            JOIN skuattributes as sa ON sk.id = sa."skuId"
-            WHERE sk."productId" = ${id} AND sa."attributeId" = 1;
-        `;
-
+    async findProduct(slug: string): Promise<any> {
         const products: any[] = await this._prisma.$queryRaw`
             WITH filtered_skus AS (
                 SELECT sk.id
                 FROM skus as sk
                 JOIN skuattributes as sa ON sk.id = sa."skuId"
-                WHERE sk."productId" = ${id} AND sa."attributeValue" = ${storage}
+                WHERE sk."slug" = ${slug}
             )
-            SELECT p.id, p."name", p."desc", sk."skuNo", sk."stock", sk.id as skuId, sk."originalPrice", sk."salePrice", sa."attributeValue"
+            SELECT p.id, p."name", sk."slug", p."desc", sk."skuNo", sk.id as skuId, sa."attributeValue"
             FROM skus as sk
             JOIN products as p on sk."productId" = p.id
             JOIN skuattributes as sa ON sk.id = sa."skuId"
@@ -352,7 +362,6 @@ export class ProductRepositoryImpl implements IProductRepository {
         `;
 
         return {
-            colors,
             products,
         };
     }
