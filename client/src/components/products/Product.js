@@ -101,15 +101,15 @@ const Product = ({
                         `/${
                             productData?.categorybrand?.category?.name.toLowerCase() ||
                             "smartphone"
-                        }/${productData?.skus[0].id}/${
-                            productData?.skus[0].slug
-                        }`,
-                        {
-                            state: {
-                                productId: productData?.id,
-                                attributes: productData?.skus[0]?.attributes,
-                            },
-                        }
+                        }/${
+                            productData?._source && productData?._source?.id
+                                ? productData?._source.id
+                                : productData?.skus[0].id
+                        }/${
+                            productData?._source && productData?._source?.slug
+                                ? productData?._source.slug
+                                : productData?.skus[0].slug
+                        }`
                     )
                 }
                 onMouseEnter={(e) => {
@@ -201,10 +201,14 @@ const Product = ({
                         )}
                     </span>
                     <span className="line-clamp-1">
-                        {productData?.skus[0].name}
+                        {productData?._source && productData?._source?.name
+                            ? productData?._source.name
+                            : productData?.skus[0].name}
                     </span>
                     <span>{`${formatMoney(
-                        productData?.originalPrice
+                        productData?._source && productData?._source?.price
+                            ? productData?._source.price
+                            : productData?.skus[0].price
                     )} VNĐ`}</span>
                 </div>
             </div>

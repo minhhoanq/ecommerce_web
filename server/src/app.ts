@@ -8,6 +8,7 @@ import router from "./presentation/routes";
 import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
+import initEs from "./infrastructure/elasticsearch/index";
 
 const app = express();
 // app.use(cookieParser());
@@ -25,7 +26,6 @@ app.use(compression());
 
 // app.use(passport.initialize());
 // app.use(passport.session());
-
 app.use(
     cors({
         origin: "http://localhost:3000",
@@ -39,6 +39,11 @@ app.use(
         extended: true,
     })
 );
+
+//init elasticsearch
+initEs.init({
+    ELASTICSEARCH_IS_ENABLED: true,
+});
 
 app.use("/api/v1", router);
 

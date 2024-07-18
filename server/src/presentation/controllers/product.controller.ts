@@ -176,4 +176,15 @@ export class ProductController {
             next(error);
         }
     }
+
+    async searchProducts(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "search successfully!",
+                metadata: await this._productService.searchProducts(req.query),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

@@ -7,7 +7,7 @@ import { Access } from "../../auth/rbac";
 import { asyncHandler } from "../../../shared/helpers/asyncHandler";
 import querystring from "qs";
 import crypto from "crypto";
-import moment from "moment";
+// import moment from "moment";
 
 const router = express.Router();
 
@@ -79,8 +79,10 @@ router.post(
 
         const date = new Date();
 
-        let createDate = moment(date).format("YYYYMMDDHHmmss");
-        const orderId = moment(date).format("DDHHmmss");
+        // let createDate = moment(date).format("YYYYMMDDHHmmss");
+        // const orderId = moment(date).format("DDHHmmss");
+        let createDate = "";
+        const orderId = "";
         const amount = req.body.amount || 10000;
         const bankCode = req.body.bankCode || "VNBANK";
 

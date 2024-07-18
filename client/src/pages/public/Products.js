@@ -12,7 +12,7 @@ import {
     InputSelect,
     Pagination,
 } from "../../components";
-import { apiGetProducts } from "../../apis";
+import { apiGetProducts, apiSearchProducts } from "../../apis";
 import Masonry from "react-masonry-css";
 import { sorts } from "../../ultils/contants";
 
@@ -25,7 +25,7 @@ const breakpointColumnsObj = {
 
 const Products = () => {
     const navigate = useNavigate();
-    const [products, setProducts] = useState(null);
+    const [products, setProducts] = useState([]);
     const [activeClick, setActiveClick] = useState(null);
     const [params] = useSearchParams();
     const [sort, setSort] = useState("");
@@ -33,8 +33,9 @@ const Products = () => {
 
     const fetchProductsByCategory = async (queries) => {
         if (category && category !== "products") queries.category = category;
-        const response = await apiGetProducts(queries);
-        if (response.status === 200) setProducts(response.metadata);
+        const response = await apiSearchProducts(queries);
+        console.log(response);
+        if (response.status === 200) setProducts(response?.metadata);
     };
     useEffect(() => {
         const queries = Object.fromEntries([...params]);
@@ -117,14 +118,18 @@ const Products = () => {
                 </div>
             </div>
             <div className="mt-8 w-main m-auto grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-4">
-                {products?.map((el) => (
-                    <Product
-                        key={el.id}
-                        pid={el.id}
-                        productData={el}
-                        normal={true}
-                    />
-                ))}
+                {products.length > 0 ? (
+                    products?.map((el) => (
+                        <Product
+                            key={el.id}
+                            pid={el.id}
+                            productData={el}
+                            normal={true}
+                        />
+                    ))
+                ) : (
+                    <>Not found products</>
+                )}
             </div>
             <div className="w-main m-auto my-4 flex justify-end">
                 <Pagination totalCount={products?.counts | 10} />

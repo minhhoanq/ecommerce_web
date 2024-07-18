@@ -69,6 +69,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         productItemId: 0,
         quantity: 1,
     });
+
     useEffect(() => {
         if (data) {
             setPid(data.pid);
@@ -102,6 +103,14 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 )[0]?.skuid,
                 quantity: quantity,
             }));
+            const matchedProduct = products.find(
+                (product) => product?.attributeValue === attribute?.color
+            );
+            const quantityHTML = matchedProduct ? matchedProduct.quantity : 0;
+            console.log(quantityHTML);
+            document.getElementById(
+                "quantityDisplay"
+            ).textContent = `In stock: ${quantityHTML}`;
         }
     }, [attribute, quantity]);
     // const fetchProducts = async () => {
@@ -209,7 +218,6 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         // // Tạo URL mới với SKU đã chọn
         const newUrl = `${baseUrl}/${el.slug}`;
 
-        // // Cập nhật URL mà không tải lại trang
         window.location.href = newUrl;
     };
 
@@ -319,10 +327,13 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                         <h2 className="text-[30px] font-semibold">{`${formatMoney(
                             fotmatPrice(
                                 currentProduct.originalPrice ||
-                                    products[0]?.originalPrice
+                                    products[0]?.price
                             )
                         )} VNĐ`}</h2>
-                        <span className="text-sm text-main">{`In stock: ${products[0]?.stock}`}</span>
+                        <span
+                            className="text-sm text-main"
+                            id="quantityDisplay"
+                        ></span>
                     </div>
                     <div className="flex items-center gap-1">
                         {renderStarFromNumber(products?.totalRatings)?.map(

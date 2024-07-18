@@ -9,6 +9,7 @@ import {
 } from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
 import slugify from "slugify";
+import { sendProductsByKafka } from "../kafka/producer";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {
@@ -261,44 +262,7 @@ export class ProductRepositoryImpl implements IProductRepository {
         const skip = (page - 1) * limit;
         const sortBy: Prisma.UserOrderByWithRelationInput =
             sort === "ctime" ? { createdAt: "desc" } : { id: "asc" };
-        // return await this._prisma.sku.findMany({
-        //     where: filter,
-        //     orderBy: [sortBy],
-        //     skip: skip,
-        //     take: limit,
-        //     select: {
-        //         id: true,
-        //         name: true,
-        //         slug: true,
-        //         attributes: true,
-        //         product: {
-        //             select: {
-        //                 releaseDate: true,
-        //                 categorybrand: {
-        //                     select: {
-        //                         category: {
-        //                             select: {
-        //                                 id: true,
-        //                                 name: true,
-        //                             },
-        //                         },
-        //                     },
-        //                 },
-        //             },
-        //         },
-        //         // categorybrand: {
-        //         //     select: {
-        //         //         category: {
-        //         //             select: {
-        //         //                 id: true,
-        //         //                 name: true,
-        //         //             },
-        //         //         },
-        //         //     },
-        //         // },
-        //     },
-        // });
-        return await this._prisma.product.findMany({
+        const products = await this._prisma.product.findMany({
             where: filter,
             orderBy: [sortBy],
             skip: skip,
@@ -318,6 +282,16 @@ export class ProductRepositoryImpl implements IProductRepository {
                 },
             },
         });
+
+        const productSkus: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT ON (sk."name") sk.id, sk."name", sk."slug", pr."price" FROM products as p
+            JOIN skus AS sk ON p.id = sk."productId"
+            JOIN prices AS pr ON sk.id = pr."skuId"
+        `;
+
+        await sendProductsByKafka(productSkus);
+
+        return products;
     }
 
     async findAllVariations(slug: string): Promise<any> {
@@ -354,10 +328,12 @@ export class ProductRepositoryImpl implements IProductRepository {
                 JOIN skuattributes as sa ON sk.id = sa."skuId"
                 WHERE sk."slug" = ${slug}
             )
-            SELECT p.id, p."name", sk."slug", p."desc", sk."skuNo", sk.id as skuId, sa."attributeValue"
+            SELECT p.id, p."name", sk."slug", p."desc", sk."skuNo", pr."price", i."stock" as quantity, sk.id as skuId, sa."attributeValue"
             FROM skus as sk
             JOIN products as p on sk."productId" = p.id
             JOIN skuattributes as sa ON sk.id = sa."skuId"
+            JOIN prices as pr ON sk.id = pr."skuId"
+            JOIN inventories as i ON sk.id = i."skuId"
             WHERE sa."skuId" IN (SELECT id FROM filtered_skus) AND sa."attributeId" = 1;
         `;
 

@@ -6,6 +6,12 @@ export const apiGetProducts = (params) =>
         method: "get",
         params,
     });
+export const apiSearchProducts = (params) =>
+    axios({
+        url: "/product/search",
+        method: "get",
+        params,
+    });
 export const apiGetVariations = (slug) =>
     axios({
         url: "/product/" + slug + "/variations",

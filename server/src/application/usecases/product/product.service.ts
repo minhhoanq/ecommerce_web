@@ -13,6 +13,9 @@ import {
     UpdateProductDTO,
 } from "../../dtos/product.dto";
 import slugify from "slugify";
+import initEs from "../../../infrastructure/elasticsearch/index";
+
+const clientEs = initEs.getClients();
 
 //Product Factory
 @injectable()
@@ -136,5 +139,30 @@ export class ProductService implements IProductService {
         const product = await this._productRepo.findProduct(slug);
 
         return product;
+    }
+
+    async searchProducts(query: any): Promise<any> {
+        console.log("query: ", query);
+
+        const esQuery = query.q
+            ? {
+                  query: {
+                      match_phrase_prefix: {
+                          name: query.q,
+                      },
+                  },
+              }
+            : {
+                  query: {
+                      match_all: {},
+                  },
+              };
+
+        const resultEs = await clientEs.elasticClient?.search({
+            index: "products_idx",
+            body: esQuery,
+        });
+
+        return resultEs?.body?.hits?.hits;
     }
 }
