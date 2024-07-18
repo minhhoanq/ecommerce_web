@@ -65,7 +65,7 @@ export class OrderService implements IOrderService {
 
         //review total price
         const total = commonItems.reduce(
-            (acc: number, item: any) => acc + item.salePrice * item.quantity,
+            (acc: number, item: any) => acc + item.price * item.quantity,
             0
         );
 

@@ -29,20 +29,11 @@ export class ProductService implements IProductService {
     }
 
     async createProduct(body: any): Promise<any> {
-        const {
-            name,
-            desc,
-            originalPrice,
-            thumbnail,
-            categoryBrandId,
-            brandId,
-            skus,
-        } = body;
+        const { name, desc, thumbnail, categoryBrandId, brandId, skus } = body;
         //create new product
         const newProduct = await this._productRepo.create({
             name,
             desc,
-            originalPrice,
             thumbnail,
             categoryBrandId,
             brandId,

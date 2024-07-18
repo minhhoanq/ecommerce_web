@@ -142,8 +142,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                                 x {el.quantity}
                                             </td>
                                             <td className="text-right p-2">
-                                                {formatMoney(el.salePrice) +
-                                                    " VND"}
+                                                {formatMoney(el.price) + " VND"}
                                             </td>
                                         </tr>
                                     ))}

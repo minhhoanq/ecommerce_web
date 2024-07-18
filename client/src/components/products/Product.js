@@ -208,7 +208,7 @@ const Product = ({
                     <span>{`${formatMoney(
                         productData?._source && productData?._source?.price
                             ? productData?._source.price
-                            : productData?.skus[0].price
+                            : productData?.skus[0]?.prices[0]?.price
                     )} VNĐ`}</span>
                 </div>
             </div>

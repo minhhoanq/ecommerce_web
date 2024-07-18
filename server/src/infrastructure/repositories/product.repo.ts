@@ -37,8 +37,7 @@ export class ProductRepositoryImpl implements IProductRepository {
     };
 
     async create(payload: any): Promise<any> {
-        const { name, desc, thumbnail, originalPrice, categoryBrandId, skus } =
-            payload;
+        const { name, desc, price, categoryBrandId, skus } = payload;
 
         const updatedAt = new Date();
         const releaseDate = new Date();
@@ -68,7 +67,7 @@ export class ProductRepositoryImpl implements IProductRepository {
                         },
                     });
 
-                    const skuAttributePromises = sku.attributes.map(
+                    const skuAttributePromises = await sku.attributes.map(
                         (attr: any) =>
                             prisma.skuAttribute.create({
                                 data: {
@@ -78,6 +77,26 @@ export class ProductRepositoryImpl implements IProductRepository {
                                 },
                             })
                     );
+
+                    console.log(createdSku.id);
+
+                    await prisma.price.create({
+                        data: {
+                            skuId: createdSku.id,
+                            price: sku.price,
+                            startDate: updatedAt,
+                            endDate: updatedAt,
+                            active: true,
+                        },
+                    });
+
+                    await prisma.inventory.create({
+                        data: {
+                            skuId: createdSku.id,
+                            warehouseId: 1,
+                            stock: sku.stock,
+                        },
+                    });
 
                     await Promise.all(skuAttributePromises);
                     return createdSku; // Return the created sku
@@ -278,6 +297,20 @@ export class ProductRepositoryImpl implements IProductRepository {
                         attributes: true,
                         createdAt: true,
                         updatedAt: true,
+                        prices: {
+                            select: {
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                categorybrand: {
+                    select: {
+                        category: {
+                            select: {
+                                name: true,
+                            },
+                        },
                     },
                 },
             },

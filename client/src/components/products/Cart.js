@@ -71,7 +71,7 @@ const Cart = ({ dispatch, navigate }) => {
                                     </span>
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm">
-                                            {formatMoney(el.salePrice) + " VND"}
+                                            {formatMoney(el.price) + " VND"}
                                         </span>
                                         <span className="text-sm">{`x ${el.quantity}`}</span>
                                     </div>
@@ -93,7 +93,7 @@ const Cart = ({ dispatch, navigate }) => {
                         {formatMoney(
                             currentCart?.reduce(
                                 (sum, el) =>
-                                    sum + Number(el.salePrice) * el.quantity,
+                                    sum + Number(el.price) * el.quantity,
                                 0
                             )
                         ) + " VND"}

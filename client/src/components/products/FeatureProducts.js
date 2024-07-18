@@ -27,6 +27,7 @@ const FeatureProducts = () => {
                         key={el.id}
                         id={el.id}
                         // image={el.thumb}
+                        productData={el}
                         {...el}
                     />
                 ))}

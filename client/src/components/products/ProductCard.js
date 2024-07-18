@@ -3,21 +3,15 @@ import React, { memo } from "react";
 import { renderStarFromNumber, formatMoney } from "ultils/helpers";
 import path from "ultils/path";
 
-const ProductCard = ({
-    originalPrice,
-    totalRatings,
-    name,
-    slug,
-    image,
-    pid,
-    navigate,
-    category,
-}) => {
+const ProductCard = ({ totalRatings, navigate, productData }) => {
     return (
         <div
             onClick={(e) =>
                 navigate(
-                    `/${category?.toLowerCase() | "smartphones"}/${pid}/${slug}`
+                    `/${
+                        productData?.categorybrand?.category?.name.toLowerCase() ||
+                        "smartphones"
+                    }/${productData?.id}/${productData.skus[0]?.slug}`
                 )
             }
             className="col-span-1 cursor-pointer"
@@ -33,7 +27,7 @@ const ProductCard = ({
                 />
                 <div className="flex flex-col mt-[15px] items-start gap-1 w-full text-xs">
                     <span className="line-clamp-1 capitalize text-sm">
-                        {name?.toLowerCase()}
+                        {productData?.skus[0]?.name.toLowerCase()}
                     </span>
                     <span className="flex h-4">
                         {renderStarFromNumber(totalRatings, 14)?.map(
@@ -42,7 +36,9 @@ const ProductCard = ({
                             )
                         )}
                     </span>
-                    <span>{`${formatMoney(originalPrice)} VNĐ`}</span>
+                    <span>{`${formatMoney(
+                        productData?.skus[0]?.prices[0]?.price
+                    )} VNĐ`}</span>
                 </div>
             </div>
         </div>

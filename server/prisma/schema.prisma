@@ -145,7 +145,7 @@ model Price {
   skuId     Int
   price     Float
   startDate DateTime // Ngày bắt đầu áp dụng giá
-  endDate   DateTime // Ngày bắt đầu áp dụng giá
+  endDate   DateTime // Ngày ket thuc áp dụng giá
   active    Boolean  @default(false) // Trạng thái: false là chưa được áp dụng, true là được áp dụng
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)

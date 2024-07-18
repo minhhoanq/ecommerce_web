@@ -62,7 +62,7 @@ const DetailCart = ({ location, navigate }) => {
                         attributes={el.attributes}
                         name={el.name}
                         // thumbnail={el.thumbnail}
-                        salePrice={el.salePrice}
+                        salePrice={el.price}
                         id={el?.id}
                     />
                 ))}
@@ -72,7 +72,7 @@ const DetailCart = ({ location, navigate }) => {
                     <span className="text-sm font-semibold">Subtotal:</span>
                     <span className="text-main font-bold text-xl">{`${formatMoney(
                         currentCart?.reduce(
-                            (sum, el) => +el?.salePrice * el.quantity + sum,
+                            (sum, el) => +el?.price * el.quantity + sum,
                             0
                         )
                     )} VND`}</span>

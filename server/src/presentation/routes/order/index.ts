@@ -18,28 +18,28 @@ const access = container.get<Access>(TYPES.Access);
 router.post(
     "",
     auth.authentication,
-    access.GrantAccess("createOwn", "order"),
+    // access.GrantAccess("createOwn", "order"),
     asyncHandler(controller.order.bind(controller))
 );
 
 router.post(
     "/checkout",
     auth.authentication,
-    access.GrantAccess("createOwn", "order"),
+    // access.GrantAccess("createOwn", "order"),
     asyncHandler(controller.checkout.bind(controller))
 );
 
 router.get(
     "/",
     auth.authentication,
-    access.GrantAccess("readOwn", "order"),
+    // access.GrantAccess("readOwn", "order"),
     asyncHandler(controller.getOrders.bind(controller))
 );
 
 router.get(
     "/:orderId",
     auth.authentication,
-    access.GrantAccess("readOwn", "order"),
+    // access.GrantAccess("readOwn", "order"),
     asyncHandler(controller.getOrder.bind(controller))
 );
 
