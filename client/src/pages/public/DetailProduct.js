@@ -28,6 +28,9 @@ import { toast } from "react-toastify";
 import path from "ultils/path";
 import Swal from "sweetalert2";
 import { updateCart } from "store/user/userSlice";
+import io from "socket.io-client";
+
+const SOCKET_SERVER_URL = "http://localhost:7000";
 
 const settings = {
     dots: false,
@@ -60,8 +63,23 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         storage: null,
         color: null,
     });
+    const [socket, setSocket] = useState(null);
 
     console.log(params);
+
+    useEffect(() => {
+        const socket = io(SOCKET_SERVER_URL, {
+            transports: ["websocket"],
+        });
+
+        setSocket(socket);
+
+        socket.emit("joinRoom", params.title);
+
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
 
     const [pid, setPid] = useState(null);
     const [category, setCategory] = useState(null);
@@ -480,6 +498,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             {!isQuickView && (
                 <div className="w-main m-auto mt-8">
                     <ProductInfomation
+                        socket={socket}
                         totalRatings={products?.totalRatings}
                         ratings={products?.ratings}
                         nameProduct={products?.title}

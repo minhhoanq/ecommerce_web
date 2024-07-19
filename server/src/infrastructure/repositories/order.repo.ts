@@ -19,7 +19,6 @@ export class OrderRepositoryImpl implements IOrderRepository {
             {
                 id: number;
                 quantity: number;
-                salePrice: number;
             }
         ]
     ): Promise<any> {
@@ -43,19 +42,14 @@ export class OrderRepositoryImpl implements IOrderRepository {
                 console.log(order);
 
                 const orderItems = payload.map(
-                    async (el: {
-                        id: number;
-                        quantity: number;
-                        salePrice: number;
-                    }) => {
+                    async (el: { id: number; quantity: number }) => {
                         await prisma.$executeRaw`
                             INSERT INTO orderitems (
                                 "orderId",
                                 "skuId",
                                 "quantity",
-                                "price",
                                 "updatedAt"
-                            ) VALUES (${order[0].id}, ${el.id}, ${el.quantity}, ${el.salePrice}, ${dateNow})
+                            ) VALUES (${order[0].id}, ${el.id}, ${el.quantity}, ${dateNow})
                         `;
                     }
                 );
@@ -72,10 +66,15 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
     async findFirst(userId: number, orderId: number): Promise<any> {
         return await this._prisma.$queryRaw`
-            SELECT oi.id, u."username", u."phone", o."paymentMethodId", o."total", p."name" as "productName", sk."attributes", oi."quantity", oi."price" FROM users as u
+            SELECT 
+                oi.id, u."username", u."phone", o."paymentMethodId", 
+                o."total", p."name" as "productName", sk."attributes", 
+                oi."quantity", pr."price" 
+            FROM users as u
             JOIN orders as o on u.id = o."userId"
             JOIN orderitems as oi on o.id = oi."orderId"
             JOIN skus as sk on oi."skuId" = sk.id
+            JOIN prices as pr on sk.id = pr."skuId"
             JOIN products as p on sk."productId" = p.id
             WHERE o.id = ${orderId} AND o."userId" = ${userId}
         `;
@@ -91,7 +90,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
                         'productName', p."name",
                         'attributes', sk."attributes",
                         'quantity', oi."quantity",
-                        'price', oi."price",
+                        'price', pr."price",
                         'createdAt', oi."createdAt",
                         'updatedAt', oi."updatedAt"
                     )
@@ -101,6 +100,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             JOIN
                 orderitems oi ON o.id = oi."orderId"
             JOIN skus sk on oi."skuId" = sk.id
+            JOIN prices as pr on sk.id = pr."skuId"
             JOIN products p ON sk."productId" = p.id
             WHERE
                 o."userId" = ${userId}

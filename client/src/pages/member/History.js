@@ -9,6 +9,9 @@ import { statusOrders } from "ultils/contants";
 import { formatMoney } from "ultils/helpers";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import { showModal } from "store/app/appSlice";
+import { useDispatch } from "react-redux";
+import InputFeedback from "components/common/InputFeedback";
 
 const History = ({ navigate, location }) => {
     const [orders, setOrders] = useState([]);
@@ -17,6 +20,7 @@ const History = ({ navigate, location }) => {
         open: false,
         orderId: 0,
     });
+    const dispatch = useDispatch();
     const [params] = useSearchParams();
     const {
         register,
@@ -50,6 +54,15 @@ const History = ({ navigate, location }) => {
 
     const handleShowOrderDetail = (orderId) => {
         setShowOrderDetail({ open: !showOrderDetail.open, orderId: orderId });
+    };
+
+    const showModalFeedback = (item) => {
+        dispatch(
+            showModal({
+                isShowModal: true,
+                modalChildren: <InputFeedback item={item} />,
+            })
+        );
     };
 
     return (
@@ -167,6 +180,19 @@ const History = ({ navigate, location }) => {
                                                 <div className="text-right p-2">
                                                     {formatMoney(item.price) +
                                                         " VND"}
+                                                </div>
+
+                                                <div className="text-right p-2 flex justify-center items-center">
+                                                    <button
+                                                        onClick={() =>
+                                                            showModalFeedback(
+                                                                item
+                                                            )
+                                                        }
+                                                        className="border h-[35px] w-[100px] border-main text-main hover:bg-red-50"
+                                                    >
+                                                        Feedback
+                                                    </button>
                                                 </div>
                                             </div>
                                         ))}
