@@ -17,6 +17,7 @@ class SocketServices {
         });
 
         socket.on("userComment", (data) => {
+            console.log(data);
             _io.sockets.in(socket.room).emit("serverComment", data);
         });
         // on room..

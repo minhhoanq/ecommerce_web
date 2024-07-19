@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from "react";
+import React, { memo, useState, useCallback, useEffect } from "react";
 import { productInfoTabs } from "../../ultils/contants";
 import { Votebar, Button, VoteOption, Comment } from "..";
 import { renderStarFromNumber } from "../../ultils/helpers";
@@ -18,46 +18,54 @@ const ProductInfomation = ({
     socket,
 }) => {
     const [activedTab, setActivedTab] = useState(1);
-    const [feedback, setFeedback] = useState("");
+    const [feedback, setFeedback] = useState([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
     const { isLoggedIn } = useSelector((state) => state.user);
 
-    const handleSubmitVoteOption = async ({ comment, score }) => {
-        if (!comment || !pid || !score) {
-            alert("Please vote when click submit");
-            return;
-        }
-        await apiRatings({ star: score, comment, pid, updatedAt: Date.now() });
-        dispatch(showModal({ isShowModal: false, modalChildren: null }));
-        rerender();
-    };
-    const handleVoteNow = () => {
-        // if (!isLoggedIn) {
-        //     Swal.fire({
-        //         text: 'Login to vote',
-        //         cancelButtonText: 'Cancel',
-        //         confirmButtonText: 'Go login',
-        //         title: 'Oops!',
-        //         showCancelButton: true,
-        //     }).then((rs) => {
-        //         if (rs.isConfirmed) navigate(`/${path.LOGIN}`)
-        //     })
-        // } else {
-        //     dispatch(showModal({
-        //         isShowModal: true, modalChildren: <VoteOption
-        //             nameProduct={nameProduct}
-        //             handleSubmitVoteOption={handleSubmitVoteOption}
-        //         />
-        //     }))
-        // }
-        socket.emit("userComment", `Test room: ` + params.title);
-    };
+    // const handleSubmitVoteOption = async ({ comment, score }) => {
+    //     if (!comment || !pid || !score) {
+    //         alert("Please vote when click submit");
+    //         return;
+    //     }
+    //     await apiRatings({ star: score, comment, pid, updatedAt: Date.now() });
+    //     dispatch(showModal({ isShowModal: false, modalChildren: null }));
+    //     rerender();
+    // };
+    // const handleVoteNow = () => {
+    //     if (!isLoggedIn) {
+    //         Swal.fire({
+    //             text: 'Login to vote',
+    //             cancelButtonText: 'Cancel',
+    //             confirmButtonText: 'Go login',
+    //             title: 'Oops!',
+    //             showCancelButton: true,
+    //         }).then((rs) => {
+    //             if (rs.isConfirmed) navigate(`/${path.LOGIN}`)
+    //         })
+    //     } else {
+    //         dispatch(showModal({
+    //             isShowModal: true, modalChildren: <VoteOption
+    //                 nameProduct={nameProduct}
+    //                 handleSubmitVoteOption={handleSubmitVoteOption}
+    //             />
+    //         }))
+    //     }
+    // };
 
-    socket?.on("serverComment", (msg) => {
-        setFeedback(msg);
-    });
+    useEffect(() => {
+        socket?.on("serverComment", (msg) => {
+            setFeedback((prev) => [...prev, { ...msg }]);
+        });
+
+        // Cleanup khi component unmount
+        return () => {
+            socket?.disconnect();
+        };
+    }, [socket]);
+
+    console.log(feedback);
     return (
         <div>
             <div className="flex items-center gap-2 relative bottom-[-1px]">
@@ -92,7 +100,8 @@ const ProductInfomation = ({
                             )}
                         </span>
                         <span className="text-sm">{`${
-                            ratings?.length || feedback
+                            ratings?.length ||
+                            feedback.star + " " + feedback.comment
                         } reviewers and commentors`}</span>
                     </div>
                     <div className="flex-6 flex gap-2 flex-col p-4">
@@ -112,18 +121,18 @@ const ProductInfomation = ({
                             ))}
                     </div>
                 </div>
-                <div className="p-4 flex items-center justify-center text-sm flex-col gap-2">
+                {/* <div className="p-4 flex items-center justify-center text-sm flex-col gap-2">
                     <span>Do you review this product?</span>
                     <Button handleOnClick={handleVoteNow}>Vote now!</Button>
-                </div>
-                <div className="flex flex-col gap-4">
-                    {ratings?.map((el) => (
+                </div> */}
+                <div className="flex flex-col gap-4 pt-4">
+                    {feedback?.map((el, index) => (
                         <Comment
-                            key={el._id}
+                            key={index}
                             star={el.star}
-                            updatedAt={el.updatedAt}
+                            // updatedAt={el.updatedAt}
                             comment={el.comment}
-                            name={`${el.postedBy?.lastname} ${el.postedBy?.firstname}`}
+                            // name={`${el.postedBy?.lastname} ${el.postedBy?.firstname}`}
                         />
                     ))}
                 </div>

@@ -415,25 +415,6 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     <div className="my-4 flex gap-4">
                         <span className="font-bold">Color:</span>
                         <div className="flex flex-wrap gap-4 items-center w-full">
-                            {/* <div
-                                onClick={() => setAttribute(null)}
-                                className={clsx(
-                                    "flex items-center gap-2 p-2 border cursor-pointer",
-                                    !attribute && "border-red-500"
-                                )}
-                            >
-                                <img
-                                    src={product?.thumbnail}
-                                    alt="thumbnail"
-                                    className="w-8 h-8 rounded-md object-cover"
-                                />
-                                <span className="flex flex-col">
-                                    <span>{product?.color}</span>
-                                    <span className="text-sm">
-                                        {product?.originalPrice}
-                                    </span>
-                                </span>
-                            </div> */}
                             {updatedColor?.map((el, index) => (
                                 <button
                                     key={index}

@@ -114,14 +114,14 @@ const History = ({ navigate, location }) => {
                                         1}
                                 </td>
                                 <td className="text-center py-2">
-                                    {el.total + " VND"}
+                                    {formatMoney(el.total) + " VND"}
                                 </td>
                                 <td className="text-center py-2">Success</td>
                                 <td className="text-center py-2">
                                     {moment(el.createdAt)?.format("DD/MM/YYYY")}
                                 </td>
                                 <td
-                                    className="text-center flex justify-center py-2 hover:cursor-pointer"
+                                    className="text-center flex justify-center py-3 hover:cursor-pointer"
                                     onClick={() =>
                                         handleShowOrderDetail(el.orderId)
                                     }
