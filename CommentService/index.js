@@ -1,11 +1,18 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const SocketServices = require("./src/services/comment.service");
+const FeedbackServices = require("./src/services/feedback.service");
 const dotenv = require("dotenv");
+const router = require("./src/routes/feedback.route");
 dotenv.config();
 
 const app = express();
+app.use(express.json());
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -13,16 +20,16 @@ const io = new Server(server, {
     },
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 7000;
 
 global.__basedir = __dirname;
 global._io = io;
 
 // Router
-app.use("/api/v1", require("./src/routes/comment.route"));
+app.use("/", router);
 
 // Connect socket
-global._io.on("connection", SocketServices.connection);
+global._io.on("connection", FeedbackServices.connection);
 
 server.listen(port, () => {
     console.log(`Socket.IO server running at http://localhost:${port}`);

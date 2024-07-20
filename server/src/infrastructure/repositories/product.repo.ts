@@ -9,7 +9,7 @@ import {
 } from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
 import slugify from "slugify";
-import { sendProductsByKafka } from "../kafka/producer";
+import { sendProductsByKafka } from "../kafka";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {

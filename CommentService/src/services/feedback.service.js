@@ -1,4 +1,6 @@
-class SocketServices {
+const { getProducer, RPCRequest } = require("../utils/kafka");
+
+class FeedbackService {
     //connection socket
     connection(socket) {
         console.log("User connection with id: ", socket.id);
@@ -22,6 +24,15 @@ class SocketServices {
         });
         // on room..
     }
+
+    async createFeedback(body) {
+        console.log("body", body);
+
+        // const producer = await getProducer();
+        const response = await RPCRequest("FEED_BACK", body);
+
+        return response;
+    }
 }
 
-module.exports = new SocketServices();
+module.exports = new FeedbackService();

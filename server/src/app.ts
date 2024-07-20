@@ -9,6 +9,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 import initEs from "./infrastructure/elasticsearch/index";
+import { RPCObserver } from "./infrastructure/kafka";
 
 const app = express();
 // app.use(cookieParser());
@@ -44,7 +45,7 @@ app.use(
 initEs.init({
     ELASTICSEARCH_IS_ENABLED: true,
 });
-
+RPCObserver("FEED_BACK", "null");
 app.use("/api/v1", router);
 
 // handling error

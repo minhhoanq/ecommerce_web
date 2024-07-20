@@ -77,7 +77,7 @@ const InputFeedback = (props) => {
         // const data = { star, comment };
         // setValue("star", star);
         console.log(data);
-        // socket.emit("userComment", data);
+        socket.emit("userComment", data);
     };
 
     return (
