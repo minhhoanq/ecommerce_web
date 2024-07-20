@@ -112,4 +112,13 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
         return orders;
     }
+
+    async findFirstOrderItem(orderItemId: number): Promise<any> {
+        const orderItem: any[] = await this._prisma.$queryRaw`
+            SELECT * FROM orderitems as oi
+            WHERE oi.id = ${orderItemId}
+        `;
+
+        return orderItem.length > 0 ? orderItem[0] : null;
+    }
 }

@@ -1,3 +1,4 @@
+const feedbackRepo = require("../repositories/feedback.repo");
 const { getProducer, RPCRequest } = require("../utils/kafka");
 
 class FeedbackService {
@@ -30,8 +31,15 @@ class FeedbackService {
 
         // const producer = await getProducer();
         const response = await RPCRequest("FEED_BACK", body);
+        const data = {
+            userId: response.userId,
+            orderItemId: response.orderItemId,
+            star: +body.data.star,
+            content: body.data.content,
+        };
+        const createFeedback = await feedbackRepo.createFeedback(data);
 
-        return response;
+        return createFeedback;
     }
 }
 

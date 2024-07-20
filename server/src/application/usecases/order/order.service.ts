@@ -139,4 +139,34 @@ export class OrderService implements IOrderService {
     async getOrders(userId: number): Promise<any> {
         return await this._orderRepo.findMany(userId);
     }
+
+    async checkInfoFeedback(data: {
+        userId: number;
+        orderItemId: number;
+    }): Promise<any> {
+        const { userId, orderItemId } = data;
+        const orderItem = await this._orderRepo.findFirstOrderItem(orderItemId);
+        console.log(orderItem);
+
+        if (!orderItem) {
+            return null;
+        }
+        return {
+            userId,
+            orderItemId: orderItem.id,
+        };
+    }
+
+    async serverRPCRequest(payload: { event: string; data: any }) {
+        const { event, data } = payload;
+        console.log("chgeck");
+
+        switch (event) {
+            case "CHECK_INFO_FEEDBACK":
+                return await this.checkInfoFeedback(data);
+
+            default:
+                break;
+        }
+    }
 }

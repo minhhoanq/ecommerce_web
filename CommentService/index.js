@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const FeedbackServices = require("./src/services/feedback.service");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const router = require("./src/routes/feedback.route");
 dotenv.config();
@@ -11,6 +12,13 @@ app.use(express.json());
 app.use(
     express.urlencoded({
         extended: true,
+    })
+);
+
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
     })
 );
 const server = http.createServer(app);

@@ -8,6 +8,7 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { showModal } from "store/app/appSlice";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 // import { FaStar } from "react-icons/fa6";
 
 const SOCKET_SERVER_URL = "http://localhost:7000";
@@ -73,11 +74,28 @@ const InputFeedback = (props) => {
             handlePreviewThumb(watch("images")[0]);
     }, [watch("images")]);
 
-    const handleFeedback = (data) => {
+    const handleFeedback = async (data) => {
         // const data = { star, comment };
         // setValue("star", star);
         console.log(data);
-        socket.emit("userComment", data);
+        data.userId = 1;
+        data.orderItemId = orderItem.id;
+        const createFeedback = await axios({
+            url: "http://localhost:7000/api/v1/feedback",
+            method: "POST",
+            data: {
+                event: "CHECK_INFO_FEEDBACK",
+                data: {
+                    userId: data.userId,
+                    orderItemId: data.orderItemId,
+                    star: data.starValue,
+                    content: data.comment,
+                },
+            },
+        });
+        if (createFeedback.status === 200) {
+            socket.emit("userComment", data);
+        }
     };
 
     return (

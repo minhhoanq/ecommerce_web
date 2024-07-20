@@ -107,6 +107,7 @@ const requestData = async (RPC_TOPIC_NAME, requestPayload, uuid) => {
         consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 if (message.headers.correlationId.toString() === uuid) {
+                    console.log("cehcek feed");
                     resolve(JSON.parse(message.value.toString()));
                     await consumer.disconnect();
                     await producer.disconnect();

@@ -10,6 +10,9 @@ import helmet from "helmet";
 import compression from "compression";
 import initEs from "./infrastructure/elasticsearch/index";
 import { RPCObserver } from "./infrastructure/kafka";
+import { container } from "./infrastructure/di/inversify.config";
+import { TYPES } from "./shared/constants/types";
+import { OrderService } from "./application/usecases/order/order.service";
 
 const app = express();
 // app.use(cookieParser());
@@ -45,7 +48,9 @@ app.use(
 initEs.init({
     ELASTICSEARCH_IS_ENABLED: true,
 });
-RPCObserver("FEED_BACK", "null");
+
+const service = container.get<OrderService>(TYPES.OrderService);
+RPCObserver("FEED_BACK", service);
 app.use("/api/v1", router);
 
 // handling error

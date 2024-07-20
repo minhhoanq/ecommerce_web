@@ -93,13 +93,13 @@ export const RPCObserver = async (RPC_TOPIC_NAME: string, service: any) => {
             message: any;
         }) => {
             const payload = JSON.parse(message.value.toString());
-            // const response = await service.serverRPCRequest(payload);
             console.log(payload);
+            const response = await service.serverRPCRequest(payload);
             await producer.send({
                 topic: message.headers.replyTo.toString(),
                 messages: [
                     {
-                        value: JSON.stringify(payload),
+                        value: JSON.stringify(response),
                         headers: {
                             correlationId:
                                 message.headers.correlationId.toString(),
