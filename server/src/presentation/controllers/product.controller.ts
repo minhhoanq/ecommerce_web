@@ -128,7 +128,7 @@ export class ProductController {
     async searchs(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
-                message: "getDrafts successfully!",
+                message: "search successfully!",
                 metadata: await this._productService.searchs(
                     req.params.keySearch
                 ),

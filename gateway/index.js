@@ -19,16 +19,7 @@ app.use(
 //     })
 // );
 
-app.use(
-    "/feedback",
-    createProxyMiddleware({
-        target: "http://localhost:7000/api/v1/feedback",
-        changeOrigin: true,
-        // pathRewrite: {
-        //     "^/feedback": "", // Loại bỏ /product khỏi đường dẫn yêu cầu khi chuyển tiếp
-        // },
-    })
-);
+app.use("/", require("./api/index"));
 
 app.listen(port, () => {
     console.log(`Gateway runing on port: ${port}`);

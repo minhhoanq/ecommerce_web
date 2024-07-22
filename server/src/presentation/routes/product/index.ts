@@ -14,31 +14,31 @@ const access = container.get<Access>(TYPES.Access);
 //AUTHENTICATION
 router.post(
     "/",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProduct.bind(controller))
 );
 router.post(
     "/item",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.createProductItem.bind(controller))
 );
 router.patch(
     "/:productItemId",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("updateAny", "product"),
     asyncHandler(controller.updateProduct.bind(controller))
 );
 router.patch(
     "/publish/:productId",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.publishProduct.bind(controller))
 );
 router.patch(
     "/unpublish/:productId",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("createAny", "product"),
     asyncHandler(controller.unPublishProduct.bind(controller))
 );
@@ -46,14 +46,14 @@ router.patch(
 //QUERY
 router.get(
     "/publishs",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getPublishs.bind(controller))
 );
 
 router.get(
     "/drafts",
-    auth.authentication,
+    // auth.authentication,
     // access.GrantAccess("readAny", "product"),
     asyncHandler(controller.getDrafts.bind(controller))
 );

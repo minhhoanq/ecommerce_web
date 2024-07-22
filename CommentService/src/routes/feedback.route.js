@@ -10,4 +10,8 @@ router.post(
     asyncHandler(FeedbackController.createFeedback)
 );
 
+router.get("/api/v1/feedback", (req, res) => {
+    return res.json("check api gateway 2");
+});
+
 module.exports = router;
