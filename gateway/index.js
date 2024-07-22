@@ -19,7 +19,7 @@ app.use(
 //     })
 // );
 
-app.use("/", require("./api/index"));
+app.use("/", require("./src/api/index"));
 
 app.listen(port, () => {
     console.log(`Gateway runing on port: ${port}`);

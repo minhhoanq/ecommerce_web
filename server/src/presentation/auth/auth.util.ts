@@ -40,6 +40,8 @@ export class Auth {
                 6 - ok => return next()
             */
 
+            console.log("check");
+
             const userId = parseInt(
                 req.headers[HEADER.CLIENT_ID] as string,
                 10
