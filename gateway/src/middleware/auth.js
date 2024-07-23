@@ -13,17 +13,35 @@ const authentication = asyncHandler(async (req, res, next) => {
     const accessToken = req.headers[HEADER.AUTHORIZATION];
     const refreshToken = req.headers[HEADER.REFRESHTOKEN];
 
-    console.log("userId: ", userId);
-    console.log(accessToken + " | " + refreshToken);
-
     const rs = await axios.post("http://localhost:8002/verify", {
         userId,
         accessToken,
         refreshToken,
     });
 
-    console.log(rs.data);
-    next();
+    if (rs.data?.authen) {
+        (req.user = rs.data?.authen.decodeUser),
+            (req.keyStore = rs.data?.authen.keyStore),
+            (req.refreshToken = rs.data?.authen?.refreshToken);
+        return next();
+    }
+    return res.status(403).json(rs.data);
 });
 
-module.exports = authentication;
+const grantAccess = (action, resource) => {
+    return async (req, res, next) => {
+        const rs = await axios.post("http://localhost:8002/access", {
+            action,
+            resource,
+            user: req.user,
+        });
+
+        console.log(rs.data);
+        if (rs.data) return next();
+        return res
+            .status(403)
+            .json(rs.data === false && "You don't have enough permissions");
+    };
+};
+
+module.exports = { authentication, grantAccess };

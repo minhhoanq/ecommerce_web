@@ -26,11 +26,20 @@ app.use(
                 },
             }
         );
+        return res.json(rs.data);
+    })
+);
 
-        return res.json({
-            msg: "Check auth service!",
-            data: rs.data,
+app.use(
+    "/access",
+    asyncHandler(async (req, res) => {
+        const rs = await axios.post("http://localhost:8000/api/v1/access", {
+            action: req.body.action,
+            resource: req.body.resource,
+            user: req.body.user,
         });
+        console.log(rs.data);
+        return res.json(rs.data);
     })
 );
 

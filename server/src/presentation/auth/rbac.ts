@@ -22,34 +22,35 @@ export class Access {
         this._RResourceRepo = RResourceRepo;
     }
 
-    GrantAccess = (action: string, resource: string) => {
-        return async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                // console.log(req.user.roleId + " | " + resource);
-                const access = await this._RResourceRepo.getResource(
-                    req.user.roleId,
-                    resource
-                );
+    GrantAccess = async (action: string, resource: string, user: any) => {
+        // return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // console.log(req.user.roleId + " | " + resource);
+            const access = await this._RResourceRepo.getResource(
+                user.roleId,
+                resource
+            );
 
-                // console.log("access: ", access);
-                if (!access.roleName)
-                    return res.json("You dont have enough permissions");
+            // console.log("access: ", access);
+            if (!access.roleName) return false;
 
-                const ac = new AccessControl(access.grantList);
-                const permissions = ac.can(access.roleName);
-                const isPermitted = permissions[
-                    action as keyof typeof permissions
-                ](resource) as Permission;
+            const ac = new AccessControl(access.grantList);
+            const permissions = ac.can(access.roleName);
+            const isPermitted = permissions[action as keyof typeof permissions](
+                resource
+            ) as Permission;
+            console.log("cehechucahaiue");
 
-                // const permissions = ac.;
-                // console.log("check 3", isPermitted.granted);
-                if (!isPermitted.granted) {
-                    return res.json("You dont have enough permissions");
-                }
-                next();
-            } catch (error) {
-                console.log(error);
+            // const permissions = ac.;
+            // console.log("check 3", isPermitted.granted);
+            if (!isPermitted.granted) {
+                return false;
             }
-        };
+            // next();
+            return true;
+        } catch (error) {
+            console.log(error);
+        }
+        // };
     };
 }

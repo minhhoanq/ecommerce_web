@@ -13,20 +13,19 @@ import { Access } from "../auth/rbac";
 const router = express.Router();
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
-router.use(
-    "/verify",
-    auth.authentication,
-    (req: Request, res: Response, next: NextFunction) => {
-        return res.json({
-            msg: "Dang o main service",
-            data: {
-                user: req.user,
-                keyStore: req.keyStore,
-                refreshToken: req?.refreshToken,
-            },
-        });
-    }
-);
+router.use("/verify", auth.authentication);
+router.use("/access", async (req, res) => {
+    console.log(req.body);
+    const rs = await access.GrantAccess(
+        req.body.action,
+        req.body.resource,
+        req.body.user
+    );
+
+    console.log(rs);
+
+    return await res.status(200).json(rs);
+});
 
 router.use("/auth", authRouter);
 router.use("/product", productRouter);

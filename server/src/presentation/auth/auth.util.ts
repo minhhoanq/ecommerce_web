@@ -40,19 +40,19 @@ export class Auth {
                 6 - ok => return next()
             */
 
-            console.log("check");
+            console.log("check1");
 
             const userId = parseInt(
                 req.headers[HEADER.CLIENT_ID] as string,
                 10
             );
-            if (!userId) throw new AuthFailureError("Not permission!");
-            console.log("userId", userId);
+            if (!userId) return res.status(200).json("Not permission!");
             //check keystore
             const keyStore = await this._keyStoreRepo.findByUserId(
                 userId as number
             );
-            if (!keyStore) throw new NotFoundError("Not found Keystore!");
+            if (!keyStore) return res.status(200).json("Not found Keystore!");
+            console.log("check3");
             //verify token
             if (req.headers[HEADER.REFRESHTOKEN]) {
                 const token = req.headers[HEADER.REFRESHTOKEN] as string;
@@ -62,32 +62,43 @@ export class Auth {
                         await JWT.verify(refreshToken, keyStore.privateKey)
                     );
                     if (userId !== decodeUser.userId)
-                        throw new AuthFailureError("Invalid User");
-                    req.keyStore = keyStore;
-                    req.user = decodeUser;
-                    req.refreshToken = refreshToken as string;
-                    return next();
+                        return res.status(200).json("Invalid User");
+                    // req.keyStore = keyStore;
+                    // req.user = decodeUser;
+                    // req.refreshToken = refreshToken as string;
+                    // return next();
+                    return res.status(200).json({
+                        keyStore,
+                        decodeUser,
+                        refreshToken,
+                    });
                 } catch (error) {
                     throw error;
                 }
             }
 
             const token = req.headers[HEADER.AUTHORIZATION] as string;
+            if (!token) return res.status(200).json("Invalid Access token!");
             const accessToken = token.split(" ")[1];
             if (!accessToken)
-                throw new AuthFailureError("Invalid Access token!");
+                return res.status(200).json("Invalid Access token!");
             try {
                 // console.log(accessToken + " | " + keyStore.publicKey);
                 const decodeUser = <TokenData>(
                     await JWT.verify(accessToken, keyStore.publicKey)
                 );
-                console.log("accessToken", decodeUser);
 
                 if (userId !== decodeUser.userId)
-                    throw new AuthFailureError("Invalid userId");
-                req.keyStore = keyStore;
-                req.user = decodeUser;
-                return next();
+                    return res.status(200).json("Invalid userId");
+                // req.keyStore = keyStore;
+                // req.user = decodeUser;
+                // return next();
+                return res.status(200).json({
+                    authen: {
+                        keyStore,
+                        decodeUser,
+                    },
+                });
             } catch (error) {
                 throw error;
             }
