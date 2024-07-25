@@ -29,10 +29,10 @@ model Feedback {
 model ImageFeedback {
   id        Int      @id @default(autoincrement())
   feedbackId Int
-  src       Float
+  src       String
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
   feedback   Feedback  @relation(fields: [feedbackId], references: [id])
 
-  @@map("imageproducts")
+  @@map("imagefeedbacks")
 }

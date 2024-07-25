@@ -15,7 +15,14 @@ class FeedbackController {
     };
 
     createFeedback = async (req, res, next) => {
-        new SuccessResponse({
+        new CREATED({
+            message: "create feedback successfully!",
+            metadata: await FeedbackService.createFeedback(req.body),
+        }).send(res);
+    };
+
+    getFeedback = async (req, res, next) => {
+        new CREATED({
             message: "create feedback successfully!",
             metadata: await FeedbackService.createFeedback(req.body),
         }).send(res);

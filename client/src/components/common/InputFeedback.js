@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { showModal } from "store/app/appSlice";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { uploadImages } from "apis/image";
 // import { FaStar } from "react-icons/fa6";
 
 const SOCKET_SERVER_URL = "http://localhost:7000";
@@ -20,10 +21,7 @@ const InputFeedback = (props) => {
     const [socket, setSocket] = useState();
     const [star, setStar] = useState(null);
     const [hover, setHover] = useState(null);
-    const [preview, setPreview] = useState({
-        images: null,
-        // images: [],
-    });
+    const [preview, setPreview] = useState([]);
     const {
         register,
         handleSubmit,
@@ -34,7 +32,7 @@ const InputFeedback = (props) => {
         defaultValues: {
             starValue: 0,
             comment: "",
-            images: "",
+            images: null,
         },
     });
 
@@ -63,26 +61,36 @@ const InputFeedback = (props) => {
 
         return () => socket.disconnect();
     }, []);
+    const handlePreviewThumb = async () => {
+        const formData = new FormData();
+        const fileImages = watch("images"); // Assuming `watch` returns the list of selected files
+        if (fileImages.length > 0) {
+            for (let image of fileImages) {
+                formData.append("files", image); // Append files to FormData with the key "files"
+            }
+        }
 
-    const handlePreviewThumb = async (file) => {
-        const base64Thumb = await getBase64(file);
-        setPreview((prev) => ({ ...prev, images: base64Thumb }));
+        const uploadInmage = await uploadImages(formData);
+        let imagesArray = uploadInmage.metadata.map((el) => el.url);
+        setPreview(imagesArray);
     };
 
+    console.log(preview);
     useEffect(() => {
         if (watch("images") instanceof FileList && watch("images").length > 0)
-            handlePreviewThumb(watch("images")[0]);
+            handlePreviewThumb();
     }, [watch("images")]);
 
     const handleFeedback = async (data) => {
         // const data = { star, comment };
         // setValue("star", star);
-        console.log(data);
         data.userId = 1;
         data.orderItemId = orderItem.id;
+        data.images = preview;
+        console.log(data);
         const createFeedback = await axios({
             url: "http://localhost:7000/api/v1/feedback",
-            method: "POST",
+            method: "post",
             data: {
                 event: "CHECK_INFO_FEEDBACK",
                 data: {
@@ -90,12 +98,14 @@ const InputFeedback = (props) => {
                     orderItemId: data.orderItemId,
                     star: data.starValue,
                     content: data.comment,
+                    images: data.images,
                 },
             },
         });
-        if (createFeedback.status === 200) {
-            socket.emit("userComment", data);
-        }
+        // console.log(createFeedback);
+        // if (createFeedback.status === 200) {
+        //     socket.emit("userComment", data);
+        // }
     };
 
     return (
@@ -190,14 +200,20 @@ const InputFeedback = (props) => {
                                 required: true,
                             })}
                             className="hidden"
+                            multiple
                         />
                         <label htmlFor="images" className="cursor-pointer">
-                            {preview?.images ? (
-                                <img
-                                    src={preview?.images}
-                                    alt="feedback"
-                                    className="h-[100px] w-[100px] object-cover"
-                                />
+                            {preview?.length > 0 ? (
+                                <div className="flex space-x-2">
+                                    {preview.map((el, index) => (
+                                        <img
+                                            key={index}
+                                            src={el}
+                                            alt="feedback"
+                                            className="h-[100px] w-[100px] object-cover"
+                                        />
+                                    ))}
+                                </div>
                             ) : (
                                 <div className="h-[100px] w-[100px] border-2 border-dashed border-gray-400 flex justify-center items-center">
                                     <IoImagesOutline

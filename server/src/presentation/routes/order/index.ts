@@ -7,6 +7,7 @@ import { Access } from "../../auth/rbac";
 import { asyncHandler } from "../../../shared/helpers/asyncHandler";
 import querystring from "qs";
 import crypto from "crypto";
+import { middle } from "../../auth/middle";
 // import moment from "moment";
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.post(
 router.post(
     "/checkout",
     auth.authentication,
+
     // access.GrantAccess("createOwn", "order"),
     asyncHandler(controller.checkout.bind(controller))
 );

@@ -11,6 +11,7 @@ import {
 import { IProductItemRepository } from "../../../domain/repositories/productItem.interface";
 import { ICartItemRepository } from "../../../domain/repositories/cartItem.interface";
 import { acquireLock, releaseLock } from "../redis/redis.service";
+import { IUserRepository } from "../../../domain/repositories/user.interface";
 
 @injectable()
 export class OrderService implements IOrderService {
@@ -18,18 +19,21 @@ export class OrderService implements IOrderService {
     private _cartRepo: ICartRepository;
     private _cartItemRepo: ICartItemRepository;
     private _productItemRepo: IProductItemRepository;
+    private _userRepo: IUserRepository;
 
     constructor(
         @inject(TYPES.OrderRepository) checkoutRepo: IOrderRepository,
         @inject(TYPES.CartRepository) cartRepo: ICartRepository,
         @inject(TYPES.CartItemRepository) cartItemRepo: ICartItemRepository,
         @inject(TYPES.ProductItemRepository)
-        productItemRepo: IProductItemRepository
+        productItemRepo: IProductItemRepository,
+        @inject(TYPES.UserRepository) userRepo: IUserRepository
     ) {
         this._orderRepo = checkoutRepo;
         this._cartRepo = cartRepo;
         this._productItemRepo = productItemRepo;
         this._cartItemRepo = cartItemRepo;
+        this._userRepo = userRepo;
     }
 
     //checkout review all product items for user
@@ -147,12 +151,12 @@ export class OrderService implements IOrderService {
         const { userId, orderItemId } = data;
         const orderItem = await this._orderRepo.findFirstOrderItem(orderItemId);
         console.log(orderItem);
-
+        const user = await this._userRepo.findById(userId);
         if (!orderItem) {
             return null;
         }
         return {
-            userId,
+            user,
             orderItemId: orderItem.id,
         };
     }

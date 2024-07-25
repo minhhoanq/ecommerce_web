@@ -17,6 +17,8 @@ export class AuthController {
     }
 
     async me(req: Request, res: Response, next: NextFunction) {
+        console.log("Vo day ko");
+
         try {
             new SuccessResponse({
                 message: "OK!",
@@ -52,6 +54,8 @@ export class AuthController {
     }
 
     async signin(req: Request, res: Response, next: NextFunction) {
+        console.log("vo day ko vay");
+
         try {
             new SuccessResponse({
                 message: "OK!",

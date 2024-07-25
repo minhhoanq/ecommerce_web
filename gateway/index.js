@@ -1,6 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { createProxyMiddleware } = require("http-proxy-middleware");
+const cors = require("cors");
 dotenv.config();
 const port = process.env.PORT || 6000;
 const app = express();
@@ -12,12 +12,12 @@ app.use(
     })
 );
 
-// app.use(
-//     cors({
-//         origin: "http://localhost:3000",
-//         credentials: true,
-//     })
-// );
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 
 app.use("/", require("./src/api/index"));
 

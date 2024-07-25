@@ -1,4 +1,5 @@
 const feedbackRepo = require("../repositories/feedback.repo");
+const imageFeedbackRepo = require("../repositories/imageFeedback.repo");
 const { getProducer, RPCRequest } = require("../utils/kafka");
 
 class FeedbackService {
@@ -31,15 +32,69 @@ class FeedbackService {
 
         // const producer = await getProducer();
         const response = await RPCRequest("FEED_BACK", body);
+        console.log(response);
         const data = {
-            userId: response.userId,
+            userId: response.user.id,
             orderItemId: response.orderItemId,
             star: +body.data.star,
             content: body.data.content,
         };
         const createFeedback = await feedbackRepo.createFeedback(data);
 
-        return createFeedback;
+        const createImageFeedback = body.data.images.map(async (image) => {
+            await imageFeedbackRepo.createImageFeedback({
+                feedbackId: createFeedback.id,
+                src: image,
+            });
+        });
+
+        await Promise.all(createImageFeedback);
+
+        if (createFeedback) {
+            return {
+                user: response.user,
+                orderItemId: response.orderItemId,
+                star: +body.data.star,
+                content: body.data.content,
+                images: body.data.images,
+            };
+        }
+        return null;
+    }
+
+    async createFeedback(body) {
+        console.log("body", body);
+
+        // const producer = await getProducer();
+        const response = await RPCRequest("FEED_BACK", body);
+        console.log(response);
+        const data = {
+            userId: response.user.id,
+            orderItemId: response.orderItemId,
+            star: +body.data.star,
+            content: body.data.content,
+        };
+        const createFeedback = await feedbackRepo.createFeedback(data);
+
+        const createImageFeedback = body.data.images.map(async (image) => {
+            await imageFeedbackRepo.createImageFeedback({
+                feedbackId: createFeedback.id,
+                src: image,
+            });
+        });
+
+        await Promise.all(createImageFeedback);
+
+        if (createFeedback) {
+            return {
+                user: response.user,
+                orderItemId: response.orderItemId,
+                star: +body.data.star,
+                content: body.data.content,
+                images: body.data.images,
+            };
+        }
+        return null;
     }
 }
 
