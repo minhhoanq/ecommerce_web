@@ -25,5 +25,6 @@ export interface IProductService {
     getVariations(slug: string): Promise<any>;
 
     getProduct(slug: string): Promise<any>;
+    getFeedbackProductItem(slug: string): Promise<any>;
     searchProducts(query: any): Promise<any>;
 }

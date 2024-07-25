@@ -7,8 +7,9 @@ const Comment = ({
     image = avatar,
     name = "Anonymous",
     updatedAt = Date.now,
-    comment = "Good item",
-    star = 4,
+    comment,
+    star,
+    images,
 }) => {
     return (
         <div className="flex gap-4">
@@ -28,7 +29,6 @@ const Comment = ({
                 </div>
                 <div className="flex flex-col gap-2 pl-4 text-sm mt-4 border border-gray-300 py-2 bg-gray-100">
                     <span className=" flex items-center gap-1">
-                        <span className="font-semibold">Vote:</span>
                         <span className="flex items-center gap-1">
                             {renderStarFromNumber(star)?.map((el, index) => (
                                 <span key={index}>{el}</span>
@@ -36,11 +36,26 @@ const Comment = ({
                         </span>
                     </span>
                     <span className=" flex gap-1">
-                        <span className="font-semibold">Comment:</span>
+                        <span className="flex items-center gap-1 text-gray-500 text-xs">
+                            {moment(updatedAt)?.format("DD/MM/YYYY hh:mm")}
+                        </span>
+                    </span>
+                    <span className=" flex gap-1">
+                        {/* <span className="font-semibold">Comment:</span> */}
                         <span className="flex items-center gap-1">
                             {comment}
                         </span>
                     </span>
+                    <div className="flex space-x-2">
+                        {images.map((image, index) => (
+                            <img
+                                className="h-[100px] w-[100px] object-cover"
+                                src={image.src}
+                                key={index}
+                                alt="feedback"
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

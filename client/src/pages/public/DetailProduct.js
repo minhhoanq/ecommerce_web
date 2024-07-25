@@ -483,7 +483,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                         totalRatings={products?.totalRatings}
                         ratings={products?.ratings}
                         nameProduct={products?.title}
-                        pid={products?._id}
+                        pid={products?.id}
                         rerender={rerender}
                     />
                 </div>

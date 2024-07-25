@@ -144,7 +144,7 @@ const requestData = async (
                 message: any;
             }) => {
                 if (message.headers.correlationId.toString() === uuid) {
-                    resolve(message.value.toString());
+                    resolve(JSON.parse(message.value.toString()));
                     await consumer.disconnect();
                     await producer.disconnect();
                 } else {

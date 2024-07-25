@@ -2,7 +2,7 @@ import React, { memo, useState, useCallback, useEffect } from "react";
 import { productInfoTabs } from "../../ultils/contants";
 import { Votebar, Button, VoteOption, Comment } from "..";
 import { renderStarFromNumber } from "../../ultils/helpers";
-import { apiRatings } from "../../apis";
+import { apiRatings, getFeedbackApi } from "../../apis";
 import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../store/app/appSlice";
 import Swal from "sweetalert2";
@@ -54,8 +54,18 @@ const ProductInfomation = ({
     //     }
     // };
 
+    useState(() => {
+        (async () => {
+            const res = await getFeedbackApi(params.title);
+            console.log(res.metadata);
+            setFeedback(res.metadata);
+        })();
+    }, []);
+
     useEffect(() => {
         socket?.on("serverComment", (msg) => {
+            console.log("cehcek mes ewevw");
+            console.log("cehcek mes ewevw", msg);
             setFeedback((prev) => [...prev, { ...msg }]);
         });
 
@@ -130,9 +140,10 @@ const ProductInfomation = ({
                         <Comment
                             key={index}
                             star={el.star}
-                            // updatedAt={el.updatedAt}
-                            comment={el.comment}
-                            // name={`${el.postedBy?.lastname} ${el.postedBy?.firstname}`}
+                            updatedAt={el.createdAt}
+                            comment={el.content}
+                            name={`${el?.user.username}`}
+                            images={el.imageFeedbacks}
                         />
                     ))}
                 </div>

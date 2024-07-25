@@ -13,6 +13,31 @@ class FeedbackRepository {
             },
         });
     }
+
+    async getFeedbacks(data) {
+        console.log("data: ", data);
+        const ids = data.map((el) => el.id);
+        return await this.prisma.feedback.findMany({
+            where: {
+                orderItemId: {
+                    in: ids,
+                },
+            },
+            select: {
+                id: true,
+                orderItemId: true,
+                userId: true,
+                star: true,
+                content: true,
+                createdAt: true,
+                imageFeedbacks: {
+                    select: {
+                        src: true,
+                    },
+                },
+            },
+        });
+    }
 }
 
 module.exports = new FeedbackRepository();

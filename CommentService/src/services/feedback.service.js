@@ -56,45 +56,31 @@ class FeedbackService {
                 orderItemId: response.orderItemId,
                 star: +body.data.star,
                 content: body.data.content,
-                images: body.data.images,
+                imageFeedbacks: body.data.images.map((image) => {
+                    src: image;
+                }),
+                updatedAt: createFeedback.createdAt,
             };
         }
         return null;
     }
 
-    async createFeedback(body) {
-        console.log("body", body);
+    async getFeedbackItem(data) {
+        console.log("data service: ", data);
+        const feedback = await feedbackRepo.getFeedbacks(data);
+        return feedback;
+    }
 
-        // const producer = await getProducer();
-        const response = await RPCRequest("FEED_BACK", body);
-        console.log(response);
-        const data = {
-            userId: response.user.id,
-            orderItemId: response.orderItemId,
-            star: +body.data.star,
-            content: body.data.content,
-        };
-        const createFeedback = await feedbackRepo.createFeedback(data);
+    async serverRPCRequest(payload) {
+        const { event, data } = payload;
 
-        const createImageFeedback = body.data.images.map(async (image) => {
-            await imageFeedbackRepo.createImageFeedback({
-                feedbackId: createFeedback.id,
-                src: image,
-            });
-        });
+        switch (event) {
+            case "GET_FEEDBACK_ITEM":
+                return await this.getFeedbackItem(data);
 
-        await Promise.all(createImageFeedback);
-
-        if (createFeedback) {
-            return {
-                user: response.user,
-                orderItemId: response.orderItemId,
-                star: +body.data.star,
-                content: body.data.content,
-                images: body.data.images,
-            };
+            default:
+                break;
         }
-        return null;
     }
 }
 

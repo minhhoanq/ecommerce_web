@@ -67,14 +67,14 @@ const RPCObserver = async (RPC_TOPIC_NAME, service) => {
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const payload = JSON.parse(message.value.toString());
-            // const response = await service.serverRPCRequest(payload);
+            const response = await service.serverRPCRequest(payload);
             console.log(payload);
 
             await producer.send({
                 topic: message.headers.replyTo.toString(),
                 messages: [
                     {
-                        value: JSON.stringify(payload),
+                        value: JSON.stringify(response),
                         headers: {
                             correlationId:
                                 message.headers.correlationId.toString(),
@@ -107,7 +107,6 @@ const requestData = async (RPC_TOPIC_NAME, requestPayload, uuid) => {
         consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 if (message.headers.correlationId.toString() === uuid) {
-                    console.log("cehcek feed");
                     resolve(JSON.parse(message.value.toString()));
                     await consumer.disconnect();
                     await producer.disconnect();

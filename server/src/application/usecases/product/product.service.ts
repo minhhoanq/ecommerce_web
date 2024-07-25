@@ -132,6 +132,13 @@ export class ProductService implements IProductService {
         return product;
     }
 
+    async getFeedbackProductItem(slug: string): Promise<any> {
+        const feedbackProductItems =
+            await this._productRepo.findFeedbackProductItem(slug);
+
+        return feedbackProductItems;
+    }
+
     async searchProducts(query: any): Promise<any> {
         console.log("query: ", query);
 

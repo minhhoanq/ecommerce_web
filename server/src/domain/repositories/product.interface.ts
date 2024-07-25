@@ -19,4 +19,5 @@ export interface IProductRepository {
     ): Promise<any>;
     findAllVariations(slug: string): Promise<any>;
     findProduct(slug: string): Promise<any>;
+    findFeedbackProductItem(slug: string): Promise<any>;
 }

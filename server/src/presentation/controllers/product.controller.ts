@@ -177,6 +177,23 @@ export class ProductController {
         }
     }
 
+    async getFeedbackProductItem(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            new SuccessResponse({
+                message: "get feedback product item successfully!",
+                metadata: await this._productService.getFeedbackProductItem(
+                    req.params.slug
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async searchProducts(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({

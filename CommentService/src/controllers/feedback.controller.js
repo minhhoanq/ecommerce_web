@@ -20,13 +20,6 @@ class FeedbackController {
             metadata: await FeedbackService.createFeedback(req.body),
         }).send(res);
     };
-
-    getFeedback = async (req, res, next) => {
-        new CREATED({
-            message: "create feedback successfully!",
-            metadata: await FeedbackService.createFeedback(req.body),
-        }).send(res);
-    };
 }
 
 module.exports = new FeedbackController();

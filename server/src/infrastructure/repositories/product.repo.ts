@@ -9,7 +9,7 @@ import {
 } from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
 import slugify from "slugify";
-import { sendProductsByKafka } from "../kafka";
+import { RPCRequest, sendProductsByKafka } from "../kafka";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {
@@ -373,5 +373,47 @@ export class ProductRepositoryImpl implements IProductRepository {
         return {
             products,
         };
+    }
+
+    async findFeedbackProductItem(slug: string): Promise<any> {
+        const orderItems = await this._prisma.$queryRaw`
+            SELECT oi.id FROM orderitems as oi
+            JOIN skus as sk on oi."skuId" = sk.id
+            WHERE sk."slug" = ${slug}
+        `;
+
+        const payload = {
+            event: "GET_FEEDBACK_ITEM",
+            data: orderItems,
+        };
+
+        const response: any[] = (await RPCRequest(
+            "FEED_BACK",
+            payload
+        )) as any[];
+
+        const userIds = [
+            ...new Set(response.map((feedback) => feedback.userId)),
+        ];
+        console.log(userIds);
+        const users = await this._prisma.user.findMany({
+            where: {
+                id: {
+                    in: userIds,
+                },
+            },
+            select: {
+                id: true,
+                username: true,
+                avatar: true,
+            },
+        });
+
+        const feedbacksWithUserInfo = response.map((feedback) => {
+            const user = users.find((user) => user.id === feedback.userId);
+            return { ...feedback, user };
+        });
+
+        return feedbacksWithUserInfo;
     }
 }

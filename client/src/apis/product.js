@@ -75,3 +75,9 @@ export const apiDeleteOrderByAdmin = (oid) =>
         url: "/order/admin/" + oid,
         method: "delete",
     });
+
+export const getFeedbackApi = (slug) =>
+    axios({
+        url: "/product/feedback/" + slug,
+        method: "get",
+    });

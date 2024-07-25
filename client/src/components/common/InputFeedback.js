@@ -102,10 +102,10 @@ const InputFeedback = (props) => {
                 },
             },
         });
-        // console.log(createFeedback);
-        // if (createFeedback.status === 200) {
-        //     socket.emit("userComment", data);
-        // }
+        console.log(createFeedback);
+        if (createFeedback.status === 201) {
+            socket.emit("userComment", createFeedback.data.metadata);
+        }
     };
 
     return (
