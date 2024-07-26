@@ -5,12 +5,21 @@ import { TYPES } from "../../../shared/constants/types";
 import { Auth } from "../../auth/auth.util";
 import { Access } from "../../auth/rbac";
 import { asyncHandler } from "../../../shared/helpers/asyncHandler";
-
+import bodyParser from "body-parser";
 const router = express.Router();
+// express().use(bodyParser.raw({ type: "application/json" }));
 
 const controller = container.get<OrderController>(TYPES.OrderController);
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
+
+router.post(
+    "/webhook",
+    express.raw({ type: "application/json" }),
+    asyncHandler(controller.eventWebhooks.bind(controller))
+);
+
+router.use(express.json());
 
 router.post(
     "",

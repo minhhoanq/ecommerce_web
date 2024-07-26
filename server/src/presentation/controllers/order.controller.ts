@@ -56,6 +56,20 @@ export class OrderController {
         }
     };
 
+    eventWebhooks = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            new SuccessResponse({
+                message: "create payment successfully!",
+                metadata: await this._orderService.eventWebhooks(
+                    req.headers["stripe-signature"] as string,
+                    req.body
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     getOrder = async (req: Request, res: Response, next: NextFunction) => {
         try {
             new SuccessResponse({

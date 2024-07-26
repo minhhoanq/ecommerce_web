@@ -168,6 +168,37 @@ export class OrderService implements IOrderService {
         return { url: session.url };
     }
 
+    async eventWebhooks(signature: string, payload: any): Promise<any> {
+        console.log("payload signature: ", signature);
+        console.log("payload webhook: ", payload);
+        const endpointSecret = process.env.STRIPE_END_POINT_SECRET as string;
+        let event: Stripe.Event;
+        console.log("check bugs 0");
+
+        try {
+            // Construct the event from the payload and signature
+            event = stripe.webhooks.constructEvent(
+                payload,
+                signature,
+                endpointSecret
+            );
+            console.log("event: ", event);
+        } catch (error) {
+            console.error("Webhook Error:", error);
+            throw new Error(`Webhook Error: ${error}`);
+        }
+        console.log("event: ", event);
+        console.log("check bugs 1");
+
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log("Session: ", session);
+        console.log("check bugs 2");
+
+        if (event.type === "checkout.session.completed") {
+            console.log("Payment completed");
+        }
+    }
+
     async getOrderDetail(userId: number, orderId: number): Promise<any> {
         return await this._orderRepo.findFirst(userId, orderId);
     }
