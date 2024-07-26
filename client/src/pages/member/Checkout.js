@@ -6,7 +6,7 @@ import { Breadcrumb, Congrat, InputForm, Paypal } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getCurrent } from "store/user/asyncActions";
 import Swal from "sweetalert2";
-import { apiCheckout, apiCreateOrder, apiOrder, apiPayment } from "apis";
+import { apiCheckout, apiCreateOrder, apiCreatePayment, apiOrder } from "apis";
 import { IoLocationOutline } from "react-icons/io5";
 import { BsClock } from "react-icons/bs";
 import { MdOutlineDiscount } from "react-icons/md";
@@ -68,12 +68,19 @@ const Checkout = ({ dispatch, navigate }) => {
         //Banking
         if (paymentMethod === 2) {
             const payload = {
-                amount: reviewCheckout.checkoutOrder.totalCheckout,
-                orderDescription: "Order payment",
+                listItems: reviewCheckout?.orderItems.map((el) => {
+                    return {
+                        productItemId: el.id,
+                        quantity: el.quantity,
+                    };
+                }),
             };
-            const response = await apiPayment(payload);
+            const response = await apiCreatePayment(payload);
             console.log(response);
-            window.location.href = response.vnpUrl;
+            // if(response.status === 201) {
+
+            // }
+            window.location.href = response.metadata.url;
         }
         if (paymentMethod === 1) {
             const data = {

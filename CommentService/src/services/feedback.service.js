@@ -1,6 +1,7 @@
 const feedbackRepo = require("../repositories/feedback.repo");
 const imageFeedbackRepo = require("../repositories/imageFeedback.repo");
-const { getProducer, RPCRequest } = require("../utils/kafka");
+const { RPCRequest } = require("../utils/rabbitmq");
+require("dotenv").config();
 
 class FeedbackService {
     //connection socket
@@ -31,7 +32,7 @@ class FeedbackService {
         console.log("body", body);
 
         // const producer = await getProducer();
-        const response = await RPCRequest("FEED_BACK", body);
+        const response = await RPCRequest(process.env.FEEDBACK_MAIN_RPC, body);
         console.log(response);
         const data = {
             userId: response.user.id,
@@ -56,10 +57,10 @@ class FeedbackService {
                 orderItemId: response.orderItemId,
                 star: +body.data.star,
                 content: body.data.content,
-                imageFeedbacks: body.data.images.map((image) => {
-                    src: image;
-                }),
-                updatedAt: createFeedback.createdAt,
+                imageFeedbacks: body.data.images.map((image) => ({
+                    src: image,
+                })),
+                createdAt: createFeedback.createdAt,
             };
         }
         return null;
@@ -71,15 +72,16 @@ class FeedbackService {
         return feedback;
     }
 
-    async serverRPCRequest(payload) {
+    async SubscribeEvents(payload) {
         const { event, data } = payload;
+        console.log("vo day di");
 
         switch (event) {
             case "GET_FEEDBACK_ITEM":
                 return await this.getFeedbackItem(data);
 
             default:
-                break;
+                return null;
         }
     }
 }

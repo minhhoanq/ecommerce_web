@@ -5,7 +5,7 @@ const FeedbackServices = require("./src/services/feedback.service");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const router = require("./src/routes/feedback.route");
-const { RPCObserver } = require("./src/utils/kafka");
+const { RPCObserver } = require("./src/utils/rabbitmq");
 const feedbackService = require("./src/services/feedback.service");
 dotenv.config();
 
@@ -36,7 +36,7 @@ global.__basedir = __dirname;
 global._io = io;
 
 // Router
-RPCObserver("FEED_BACK", feedbackService);
+RPCObserver(process.env.MAIN_FEEDBACK_RPC, feedbackService);
 app.use("/", router);
 
 // Connect socket

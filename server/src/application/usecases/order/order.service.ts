@@ -12,6 +12,8 @@ import { IProductItemRepository } from "../../../domain/repositories/productItem
 import { ICartItemRepository } from "../../../domain/repositories/cartItem.interface";
 import { acquireLock, releaseLock } from "../redis/redis.service";
 import { IUserRepository } from "../../../domain/repositories/user.interface";
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY as string);
 
 @injectable()
 export class OrderService implements IOrderService {
@@ -136,6 +138,36 @@ export class OrderService implements IOrderService {
         return urlResult;
     }
 
+    async createPayment(userId: number, payload: any): Promise<any> {
+        const cart = await this._cartRepo.findByUserId(userId);
+
+        if (!cart) throw new NotFoundError("Cart not found!");
+        const { orderItems, checkoutOrder } = await this.checkout(
+            userId,
+            payload
+        );
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            line_items: orderItems.map((item: any) => {
+                return {
+                    price_data: {
+                        currency: "vnd",
+                        product_data: {
+                            name: item.name,
+                        },
+                        unit_amount: item.price,
+                    },
+                    quantity: item.quantity,
+                };
+            }),
+            success_url: "http://localhost:3000/order/result",
+            cancel_url: "http://localhost:3000/checkout",
+        });
+        return { url: session.url };
+    }
+
     async getOrderDetail(userId: number, orderId: number): Promise<any> {
         return await this._orderRepo.findFirst(userId, orderId);
     }
@@ -149,6 +181,8 @@ export class OrderService implements IOrderService {
         orderItemId: number;
     }): Promise<any> {
         const { userId, orderItemId } = data;
+        console.log(data);
+
         const orderItem = await this._orderRepo.findFirstOrderItem(orderItemId);
         console.log(orderItem);
         const user = await this._userRepo.findById(userId);
@@ -161,7 +195,7 @@ export class OrderService implements IOrderService {
         };
     }
 
-    async serverRPCRequest(payload: { event: string; data: any }) {
+    async SubscribeEvents(payload: { event: string; data: any }) {
         const { event, data } = payload;
         console.log("chgeck");
 
@@ -170,7 +204,7 @@ export class OrderService implements IOrderService {
                 return await this.checkInfoFeedback(data);
 
             default:
-                break;
+                return null;
         }
     }
 }

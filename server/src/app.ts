@@ -9,10 +9,12 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 import initEs from "./infrastructure/elasticsearch/index";
-import { RPCObserver } from "./infrastructure/kafka";
 import { container } from "./infrastructure/di/inversify.config";
 import { TYPES } from "./shared/constants/types";
 import { OrderService } from "./application/usecases/order/order.service";
+import { RPCObserver } from "./infrastructure/rabbitmq";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 // app.use(cookieParser());
@@ -50,7 +52,7 @@ initEs.init({
 });
 
 const service = container.get<OrderService>(TYPES.OrderService);
-RPCObserver("FEED_BACK", service);
+RPCObserver(process.env.FEEDBACK_MAIN_RPC as string, service);
 app.use("/api/v1", router);
 
 // handling error

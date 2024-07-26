@@ -42,6 +42,20 @@ export class OrderController {
         }
     };
 
+    createPayment = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            new Created({
+                message: "create payment successfully!",
+                metadata: await this._orderService.createPayment(
+                    +req.user.userId,
+                    req.body
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     getOrder = async (req: Request, res: Response, next: NextFunction) => {
         try {
             new SuccessResponse({

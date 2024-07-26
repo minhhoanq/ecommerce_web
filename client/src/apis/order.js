@@ -6,12 +6,6 @@ export const apiCheckout = (data) =>
         method: "post",
         data,
     });
-export const apiPayment = (data) =>
-    axios({
-        url: "order/create_payment_url",
-        method: "POST",
-        data,
-    });
 
 export const apiOrder = (data) =>
     axios({
@@ -31,4 +25,11 @@ export const apiGetOrder = (orderId) =>
     axios({
         url: `/order/${orderId}`,
         method: "GET",
+    });
+
+export const apiCreatePayment = (data) =>
+    axios({
+        url: "/order/create_payment",
+        method: "POST",
+        data,
     });

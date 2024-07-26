@@ -9,7 +9,8 @@ import {
 } from "../../application/dtos/product.dto";
 import { BadRequestError } from "../../shared/core/error.response";
 import slugify from "slugify";
-import { RPCRequest, sendProductsByKafka } from "../kafka";
+import { sendProductsByKafka } from "../kafka";
+import { RPCRequest } from "../rabbitmq";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {
@@ -387,8 +388,10 @@ export class ProductRepositoryImpl implements IProductRepository {
             data: orderItems,
         };
 
+        console.log("Call rpc");
+
         const response: any[] = (await RPCRequest(
-            "FEED_BACK",
+            process.env.MAIN_FEEDBACK_RPC as string,
             payload
         )) as any[];
 

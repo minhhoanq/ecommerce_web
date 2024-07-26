@@ -9,16 +9,10 @@ import Swal from "sweetalert2";
 import path from "../../ultils/path";
 import { useNavigate, useParams } from "react-router-dom";
 
-const ProductInfomation = ({
-    totalRatings,
-    ratings,
-    nameProduct,
-    pid,
-    rerender,
-    socket,
-}) => {
+const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
     const [activedTab, setActivedTab] = useState(1);
-    const [feedback, setFeedback] = useState([]);
+    const [feedbacks, setFeedback] = useState([]);
+    const [totalRatings, setTotalRatings] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
@@ -64,8 +58,6 @@ const ProductInfomation = ({
 
     useEffect(() => {
         socket?.on("serverComment", (msg) => {
-            console.log("cehcek mes ewevw");
-            console.log("cehcek mes ewevw", msg);
             setFeedback((prev) => [...prev, { ...msg }]);
         });
 
@@ -75,7 +67,19 @@ const ProductInfomation = ({
         };
     }, [socket]);
 
-    console.log(feedback);
+    useEffect(() => {
+        const totalStars = feedbacks.reduce(
+            (sum, feedback) => sum + feedback.star,
+            0
+        );
+        const count = feedbacks.length;
+        const averageStar = totalStars / count;
+        console.log(count);
+        console.log(totalStars);
+        console.log(averageStar);
+        setTotalRatings(averageStar.toFixed(2));
+    }, [feedbacks]);
+
     return (
         <div>
             <div className="flex items-center gap-2 relative bottom-[-1px]">
@@ -109,10 +113,7 @@ const ProductInfomation = ({
                                 )
                             )}
                         </span>
-                        <span className="text-sm">{`${
-                            ratings?.length ||
-                            feedback.star + " " + feedback.comment
-                        } reviewers and commentors`}</span>
+                        <span className="text-sm">{`${feedbacks?.length} reviewers and commentors`}</span>
                     </div>
                     <div className="flex-6 flex gap-2 flex-col p-4">
                         {Array.from(Array(5).keys())
@@ -121,9 +122,9 @@ const ProductInfomation = ({
                                 <Votebar
                                     key={el}
                                     number={el + 1}
-                                    ratingTotal={ratings?.length}
+                                    ratingTotal={feedbacks?.length}
                                     ratingCount={
-                                        ratings?.filter(
+                                        feedbacks?.filter(
                                             (i) => i.star === el + 1
                                         )?.length
                                     }
@@ -136,14 +137,14 @@ const ProductInfomation = ({
                     <Button handleOnClick={handleVoteNow}>Vote now!</Button>
                 </div> */}
                 <div className="flex flex-col gap-4 pt-4">
-                    {feedback?.map((el, index) => (
+                    {feedbacks?.map((el, index) => (
                         <Comment
                             key={index}
-                            star={el.star}
-                            updatedAt={el.createdAt}
-                            comment={el.content}
+                            star={el?.star}
+                            updatedAt={el?.createdAt}
+                            comment={el?.content}
                             name={`${el?.user.username}`}
-                            images={el.imageFeedbacks}
+                            images={el?.imageFeedbacks}
                         />
                     ))}
                 </div>
