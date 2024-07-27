@@ -9,9 +9,10 @@ import { statusOrders } from "ultils/contants";
 import { formatMoney } from "ultils/helpers";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
-import { showModal } from "store/app/appSlice";
-import { useDispatch } from "react-redux";
+import { showFeedback, showModal } from "store/app/appSlice";
+import { useDispatch, useSelector } from "react-redux";
 import InputFeedback from "components/common/InputFeedback";
+import { Stepper } from "react-form-stepper";
 
 const History = ({ navigate, location }) => {
     const [orders, setOrders] = useState([]);
@@ -20,6 +21,7 @@ const History = ({ navigate, location }) => {
         open: false,
         orderId: 0,
     });
+    const { isShowFeedback } = useSelector((state) => state.app);
     const dispatch = useDispatch();
     const [params] = useSearchParams();
     const {
@@ -57,12 +59,7 @@ const History = ({ navigate, location }) => {
     };
 
     const showModalFeedback = (item) => {
-        dispatch(
-            showModal({
-                isShowModal: true,
-                modalChildren: <InputFeedback item={item} />,
-            })
-        );
+        dispatch(showFeedback({ item }));
     };
 
     return (
@@ -93,8 +90,10 @@ const History = ({ navigate, location }) => {
             </div>
             <table className="table-auto w-full">
                 <thead>
-                    <tr className="border bg-sky-900 text-white border-white">
-                        <th className="text-center py-2">STT</th>
+                    <tr className="border bg-main text-white border-white">
+                        <th className="text-center py-2">
+                            {isShowFeedback.open}
+                        </th>
                         <th className="text-center py-2">Total</th>
                         <th className="text-center py-2">Status</th>
                         <th className="text-center py-2">Created At</th>
@@ -116,7 +115,13 @@ const History = ({ navigate, location }) => {
                                 <td className="text-center py-2">
                                     {formatMoney(el.total) + " VND"}
                                 </td>
-                                <td className="text-center py-2">Success</td>
+                                <td className="text-center py-2">
+                                    {el.orderStatusId === 1
+                                        ? "Pending"
+                                        : el.orderStatusId === 2
+                                        ? "Paid"
+                                        : "Completed"}
+                                </td>
                                 <td className="text-center py-2">
                                     {moment(el.createdAt)?.format("DD/MM/YYYY")}
                                 </td>
@@ -144,7 +149,15 @@ const History = ({ navigate, location }) => {
                                             : "hidden"
                                     }`}
                                 >
-                                    <div className="p-4">
+                                    <Stepper
+                                        steps={[
+                                            { label: "Pending" },
+                                            { label: "Paid" },
+                                            { label: "Completed" },
+                                        ]}
+                                        activeStep={el?.orderStatusId}
+                                    />
+                                    <div className="p-4 border-t-2">
                                         {el?.orderitems?.map((item) => (
                                             <div
                                                 className="flex justify-between my-2"
@@ -182,18 +195,20 @@ const History = ({ navigate, location }) => {
                                                         " VND"}
                                                 </div>
 
-                                                <div className="text-right p-2 flex justify-center items-center">
-                                                    <button
-                                                        onClick={() =>
-                                                            showModalFeedback(
-                                                                item
-                                                            )
-                                                        }
-                                                        className="border h-[35px] w-[100px] border-main text-main hover:bg-red-50"
-                                                    >
-                                                        Feedback
-                                                    </button>
-                                                </div>
+                                                {el.orderStatusId === 3 && (
+                                                    <div className="text-right p-2 flex justify-center items-center">
+                                                        <button
+                                                            onClick={() =>
+                                                                showModalFeedback(
+                                                                    item
+                                                                )
+                                                            }
+                                                            className="border h-[35px] w-[100px] border-main text-main hover:bg-red-50"
+                                                        >
+                                                            Feedback
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

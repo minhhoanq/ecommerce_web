@@ -12,7 +12,8 @@ export interface IOrderRepository {
             }
         ]
     ): Promise<any>;
-
+    updateStatus(userId: number, orderId: number): Promise<any>;
+    delete(userId: number, orderId: number): Promise<any>;
     findFirst(userId: number, orderId: number): Promise<any>;
     findMany(userId: number): Promise<any>;
     findFirstOrderItem(orderItemId: number): Promise<any>;

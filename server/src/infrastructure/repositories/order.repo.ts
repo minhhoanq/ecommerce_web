@@ -64,6 +64,27 @@ export class OrderRepositoryImpl implements IOrderRepository {
         }
     }
 
+    async updateStatus(userId: number, orderId: number): Promise<any> {
+        return await this._prisma.order.update({
+            where: {
+                userId,
+                id: orderId,
+            },
+            data: {
+                orderStatusId: 2,
+            },
+        });
+    }
+
+    async delete(userId: number, orderId: number): Promise<any> {
+        return await this._prisma.order.delete({
+            where: {
+                userId,
+                id: orderId,
+            },
+        });
+    }
+
     async findFirst(userId: number, orderId: number): Promise<any> {
         return await this._prisma.$queryRaw`
             SELECT 
@@ -82,7 +103,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
     async findMany(userId: number): Promise<any> {
         const orders: any[] = await this._prisma.$queryRaw`
-            SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."createdAt", o."updatedAt",
+            SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
             json_agg(
                     json_build_object(
                         'id', oi.id,
@@ -107,6 +128,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
                 o."userId" = ${userId}
             GROUP BY
                 o.id
+            ORDER BY o."createdAt" DESC
             LIMIT 7
             `;
 

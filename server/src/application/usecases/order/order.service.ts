@@ -89,6 +89,8 @@ export class OrderService implements IOrderService {
     }
 
     async order(userId: number, payload: any): Promise<any> {
+        console.log("payload: ", payload);
+
         const cart = await this._cartRepo.findByUserId(userId);
 
         if (!cart) throw new NotFoundError("Cart not found!");
@@ -98,7 +100,6 @@ export class OrderService implements IOrderService {
         );
 
         // payload.listItems;
-        console.log(orderItems);
 
         // const products = orderItems;
         // const acquireProduct: boolean[] = [];
@@ -132,14 +133,17 @@ export class OrderService implements IOrderService {
         if (!order) {
             return false;
         }
-        console.log(order);
 
         const urlResult = `http://localhost:3000/order/result?orderId=${order.id}`;
-        return urlResult;
+        return {
+            order,
+            urlResult,
+        };
     }
 
     async createPayment(userId: number, payload: any): Promise<any> {
         const cart = await this._cartRepo.findByUserId(userId);
+        console.log(userId + " | " + payload);
 
         if (!cart) throw new NotFoundError("Cart not found!");
         const { orderItems, checkoutOrder } = await this.checkout(
@@ -147,33 +151,42 @@ export class OrderService implements IOrderService {
             payload
         );
 
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            mode: "payment",
-            line_items: orderItems.map((item: any) => {
-                return {
-                    price_data: {
-                        currency: "vnd",
-                        product_data: {
-                            name: item.name,
+        payload.paymentMethodId = 2;
+
+        const response = await this.order(+userId, payload);
+
+        if (response.order) {
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ["card"],
+                mode: "payment",
+                line_items: orderItems.map((item: any) => {
+                    return {
+                        price_data: {
+                            currency: "vnd",
+                            product_data: {
+                                name: item.name,
+                            },
+                            unit_amount: item.price,
                         },
-                        unit_amount: item.price,
-                    },
-                    quantity: item.quantity,
-                };
-            }),
-            success_url: "http://localhost:3000/order/result",
-            cancel_url: "http://localhost:3000/checkout",
-        });
-        return { url: session.url };
+                        quantity: item.quantity,
+                    };
+                }),
+                success_url: response.urlResult,
+                cancel_url: "http://localhost:3000/checkout",
+                metadata: {
+                    userId: userId,
+                    orderId: response?.order?.id,
+                },
+            });
+            return { url: session.url };
+        }
+        return null;
     }
 
     async eventWebhooks(signature: string, payload: any): Promise<any> {
-        console.log("payload signature: ", signature);
-        console.log("payload webhook: ", payload);
         const endpointSecret = process.env.STRIPE_END_POINT_SECRET as string;
         let event: Stripe.Event;
-        console.log("check bugs 0");
+        console.log("Vo webhook");
 
         try {
             // Construct the event from the payload and signature
@@ -182,20 +195,29 @@ export class OrderService implements IOrderService {
                 signature,
                 endpointSecret
             );
-            console.log("event: ", event);
         } catch (error) {
-            console.error("Webhook Error:", error);
             throw new Error(`Webhook Error: ${error}`);
         }
-        console.log("event: ", event);
-        console.log("check bugs 1");
 
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log("Session: ", session);
-        console.log("check bugs 2");
 
         if (event.type === "checkout.session.completed") {
-            console.log("Payment completed");
+            if (session.metadata) {
+                const userId = session.metadata.userId;
+                const orderId = session.metadata.orderId;
+                await this._orderRepo.updateStatus(+userId, +orderId);
+                // console.log(userId + " | " + orderId);
+            }
+        } else {
+            // Handle payment failure or session expiration
+            if (session.metadata) {
+                const userId = session.metadata.userId;
+                const orderId = session.metadata.orderId;
+                await this._orderRepo.delete(+orderId, +orderId);
+                console.log(
+                    `Order ${orderId} for user ${userId} has been deleted due to payment failure or session expiration.`
+                );
+            }
         }
     }
 

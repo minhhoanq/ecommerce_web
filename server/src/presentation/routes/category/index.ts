@@ -5,6 +5,7 @@ import { TYPES } from "../../../shared/constants/types";
 import { Auth } from "../../auth/auth.util";
 import { Access } from "../../auth/rbac";
 const router = express.Router();
+router.use(express.json());
 
 const controller = container.get<CategoryController>(TYPES.CategoryController);
 const auth = container.get<Auth>(TYPES.Auth);

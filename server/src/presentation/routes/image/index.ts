@@ -7,6 +7,7 @@ import { TYPES } from "../../../shared/constants/types";
 
 const router = express.Router();
 const controller = container.get<ImageController>(TYPES.ImageController);
+router.use(express.json());
 
 router.post(
     "/thumbnail",

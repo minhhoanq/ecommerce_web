@@ -36,16 +36,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Cart, Modal } from "components";
-import { showCart } from "store/app/appSlice";
+import { showCart, showFeedback } from "store/app/appSlice";
 import { updateCart } from "store/user/userSlice";
 import { getCartItems } from "apis";
 import OrderResult from "pages/member/OrderResult";
+import InputFeedback from "components/common/InputFeedback";
 
 function App() {
     const dispatch = useDispatch();
-    const { isShowModal, modalChildren, isShowCart } = useSelector(
-        (state) => state.app
-    );
+    const { isShowModal, modalChildren, isShowCart, isShowFeedback } =
+        useSelector((state) => state.app);
 
     useEffect(() => {
         (async () => {
@@ -66,6 +66,14 @@ function App() {
                     className="absolute inset-0 bg-overlay z-50 flex justify-end"
                 >
                     <Cart />
+                </div>
+            )}
+            {isShowFeedback.open && (
+                <div
+                    onClick={() => dispatch(showFeedback({ item: null }))}
+                    className="absolute inset-0 z-[99998] bg-overlay flex items-center justify-center"
+                >
+                    <InputFeedback item={isShowFeedback.item} />
                 </div>
             )}
             {isShowModal && <Modal>{modalChildren}</Modal>}

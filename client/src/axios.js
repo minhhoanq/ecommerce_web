@@ -1,4 +1,7 @@
 import axios from "axios";
+import { Loading } from "components";
+import { showModal, startLoading, stopLoading } from "store/app/appSlice";
+import { store } from "store/redux";
 const instance = axios.create({
     baseURL: "http://localhost:8000/api/v1",
 });
@@ -7,6 +10,10 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function (config) {
         // Do something before request is sent
+        store.dispatch(
+            showModal({ isShowModal: true, modalChildren: <Loading /> })
+        );
+        console.log("loading");
         let localStorageData = window.localStorage.getItem("persist:shop/user");
         if (localStorageData && typeof localStorageData === "string") {
             localStorageData = JSON.parse(localStorageData);
@@ -29,11 +36,13 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
     function (response) {
+        store.dispatch(showModal({ isShowModal: false, modalChildren: null }));
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
         return response.data;
     },
     function (error) {
+        store.dispatch(showModal({ isShowModal: false, modalChildren: null }));
         // Any status codes that falls outside the range of 2xx cause this function to trigger
         // Do something with response error
         return error.response.data;

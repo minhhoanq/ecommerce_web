@@ -77,9 +77,6 @@ const Checkout = ({ dispatch, navigate }) => {
             };
             const response = await apiCreatePayment(payload);
             console.log(response);
-            // if(response.status === 201) {
-
-            // }
             window.location.href = response.metadata.url;
         }
         if (paymentMethod === 1) {
@@ -93,7 +90,8 @@ const Checkout = ({ dispatch, navigate }) => {
                 }),
             };
             const order = await apiOrder(data);
-            if (order.status === 201) window.location = order.metadata;
+            if (order.status === 201)
+                window.location = order.metadata.urlResult;
         }
         //Payment upon delivery
     };

@@ -10,6 +10,7 @@ const router = express.Router();
 const controller = container.get<ProductController>(TYPES.ProductController);
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
+router.use(express.json());
 
 //AUTHENTICATION
 router.post(

@@ -10,6 +10,7 @@ const router = express.Router();
 const controller = container.get<CartController>(TYPES.CartController);
 const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
+router.use(express.json());
 
 router.post(
     "",
