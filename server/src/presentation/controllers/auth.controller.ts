@@ -54,8 +54,6 @@ export class AuthController {
     }
 
     async signin(req: Request, res: Response, next: NextFunction) {
-        console.log("vo day ko vay");
-
         try {
             new SuccessResponse({
                 message: "OK!",
@@ -88,9 +86,17 @@ export class AuthController {
         }
     }
 
-    async test(req: Request, res: Response, next: NextFunction) {
+    async updateUser(req: Request, res: Response, next: NextFunction) {
+        console.log("vo day ko vay");
+
         try {
-            return res.json("test access");
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.update(
+                    req.user.userId,
+                    req.body
+                ),
+            }).send(res);
         } catch (error) {
             next(error);
         }

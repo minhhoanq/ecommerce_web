@@ -16,6 +16,11 @@ router.use(express.json());
 router.get("/me", auth.authentication, controller.me.bind(controller));
 router.post("/signup", controller.signup.bind(controller));
 router.post("/signin", controller.signin.bind(controller));
+router.patch(
+    "/update",
+    auth.authentication,
+    controller.updateUser.bind(controller)
+);
 router.put("/final-signup/:token", controller.finalSignup.bind(controller));
 router.post("/forgot-password", controller.forgotPassword.bind(controller));
 router.put("/reset-password", controller.resetPassword.bind(controller));

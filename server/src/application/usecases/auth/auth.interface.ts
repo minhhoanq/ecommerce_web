@@ -5,6 +5,7 @@ import {
     CreateUserDTO,
     ResetPasswordDTO,
     SigninDTO,
+    UpdateUserDTO,
 } from "../../dtos/user.dto";
 
 export interface IAuthService {
@@ -17,6 +18,7 @@ export interface IAuthService {
         user: SigninDTO
     ): Promise<{ user: User; tokens: Tokens | undefined } | null>;
     signout(keyToken: any): Promise<boolean>;
+    update(userId: number, body: UpdateUserDTO): Promise<User>;
     refreshToken(
         refreshToken: string,
         user: any,

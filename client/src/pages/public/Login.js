@@ -22,8 +22,8 @@ const Login = () => {
     const [payload, setPayload] = useState({
         email: "",
         password: "",
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         username: "",
     });
     const [isVerifiedEmail, setIsVerifiedEmail] = useState(false);
@@ -35,8 +35,8 @@ const Login = () => {
         setPayload({
             email: "minhhoanglost@gmail.com",
             password: "123456789",
-            firstname: "",
-            lastname: "",
+            firstName: "",
+            lastName: "",
             username: "",
         });
     };
@@ -53,7 +53,7 @@ const Login = () => {
     }, [isRegister]);
     // SUBMIT
     const handleSubmit = useCallback(async () => {
-        const { firstname, lastname, username, ...data } = payload;
+        const { firstName, lastName, username, ...data } = payload;
 
         const invalids = isRegister
             ? validate(payload, setInvalidFields)
@@ -178,16 +178,16 @@ const Login = () => {
                     {isRegister && (
                         <div className="flex items-center gap-2">
                             <InputField
-                                value={payload.firstname}
+                                value={payload.firstName}
                                 setValue={setPayload}
-                                nameKey="firstname"
+                                nameKey="firstName"
                                 invalidFields={invalidFields}
                                 setInvalidFieds={setInvalidFields}
                             />
                             <InputField
-                                value={payload.lastname}
+                                value={payload.lastName}
                                 setValue={setPayload}
-                                nameKey="lastname"
+                                nameKey="lastName"
                                 invalidFields={invalidFields}
                                 setInvalidFieds={setInvalidFields}
                             />

@@ -17,7 +17,12 @@ import sendMail from "../../../shared/utils/httpStatusCode/sendMail";
 import makeVerification from "uniqid";
 import { ConfirmSignup } from "../../../shared/utils/templateHtml/confirmSignup";
 import schedule from "node-schedule";
-import { CodeVerifyDTO, CreateUserDTO, SigninDTO } from "../../dtos/user.dto";
+import {
+    CodeVerifyDTO,
+    CreateUserDTO,
+    SigninDTO,
+    UpdateUserDTO,
+} from "../../dtos/user.dto";
 import { ConfirmResetPassword } from "../../../shared/utils/templateHtml/confirmResetPassword";
 import {
     createPasswordChangedToken,
@@ -343,5 +348,10 @@ export class AuthService implements IAuthService {
         });
 
         return updateUser;
+    }
+
+    async update(userId: number, body: UpdateUserDTO): Promise<User> {
+        console.log("body", body);
+        return await this._userRepo.update(userId, body);
     }
 }

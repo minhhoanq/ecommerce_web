@@ -89,6 +89,8 @@ export class UserRepoImpl implements IUserRepository {
         return user.length > 0 ? user[0] : null;
     }
     async create(data: any): Promise<any> {
+        console.log("user sign up data: ", data);
+
         return await this._prisma.user.create({
             data: data,
         });
@@ -123,7 +125,7 @@ export class UserRepoImpl implements IUserRepository {
             avatar,
             gender,
             dob,
-            phone,
+            phone: Number(phone),
             roleId,
             status,
             isVerify,
@@ -144,13 +146,14 @@ export class UserRepoImpl implements IUserRepository {
                 avatar,
                 gender,
                 dob,
-                phone,
+                phone: Number(phone),
                 roleId,
                 status,
                 isVerify,
                 passwordChangedAt,
                 passwordResetToken,
                 passwordResetExpires,
+                updatedAt: new Date(),
             },
         });
     }

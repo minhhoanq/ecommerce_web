@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 const sendMail = async ({
     email,
@@ -20,6 +22,8 @@ const sendMail = async ({
     });
 
     const main = async () => {
+        console.log(process.env.EMAIL_NAME);
+
         const info = await transport.sendMail({
             from: '"Admin" <no-reply@minhhoang.com>', // sender address
             to: email, // list of receivers

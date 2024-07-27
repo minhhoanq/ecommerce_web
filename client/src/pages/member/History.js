@@ -90,20 +90,18 @@ const History = ({ navigate, location }) => {
             </div>
             <table className="table-auto w-full">
                 <thead>
-                    <tr className="border bg-main text-white border-white">
-                        <th className="text-center py-2">
-                            {isShowFeedback.open}
-                        </th>
-                        <th className="text-center py-2">Total</th>
-                        <th className="text-center py-2">Status</th>
-                        <th className="text-center py-2">Created At</th>
+                    <tr className="border bg-gray-200 text-sm text-gray-400">
+                        <th className="text-center py-2">STT</th>
+                        <th className="text-center py-2">TOTAL</th>
+                        <th className="text-center py-2">STATUS</th>
+                        <th className="text-center py-2">CREATE AT</th>
                         <th className="text-center py-2"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders?.map((el, idx) => (
                         <React.Fragment key={el.orderId}>
-                            <tr className="border-b">
+                            <tr className="border-b text-sm">
                                 <td className="text-center py-2">
                                     {(+params.get("page") > 1
                                         ? (+params.get("page") - 1) *
@@ -126,16 +124,22 @@ const History = ({ navigate, location }) => {
                                     {moment(el.createdAt)?.format("DD/MM/YYYY")}
                                 </td>
                                 <td
-                                    className="text-center flex justify-center py-3 hover:cursor-pointer"
+                                    className="text-center flex justify-center py-3 hover:cursor-pointer text-blue-500"
                                     onClick={() =>
                                         handleShowOrderDetail(el.orderId)
                                     }
                                 >
                                     {showOrderDetail.open === true &&
                                     showOrderDetail.orderId === el.orderId ? (
-                                        <IoIosArrowUp />
+                                        <div className="flex justify-center items-center space-x-4">
+                                            <span>View Detail</span>
+                                            <IoIosArrowUp color="" />
+                                        </div>
                                     ) : (
-                                        <IoIosArrowDown />
+                                        <div className="flex justify-center items-center space-x-4">
+                                            <span>View Detail</span>
+                                            <IoIosArrowDown />
+                                        </div>
                                     )}
                                 </td>
                             </tr>
