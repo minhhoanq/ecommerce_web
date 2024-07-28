@@ -12,7 +12,7 @@ import {
     InputSelect,
     Pagination,
 } from "../../components";
-import { apiGetProducts, apiSearchProducts } from "../../apis";
+import { apiGetCategory, apiGetProducts, apiSearchProducts } from "../../apis";
 import Masonry from "react-masonry-css";
 import { sorts } from "../../ultils/contants";
 
@@ -26,39 +26,55 @@ const breakpointColumnsObj = {
 const Products = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [categoryBrands, setCategoryBrands] = useState(null);
+    const [brand, setBrand] = useState(null);
+    const [price, setPrice] = useState({
+        from: "",
+        to: "",
+    });
     const [activeClick, setActiveClick] = useState(null);
     const [params] = useSearchParams();
     const [sort, setSort] = useState("");
     const { category } = useParams();
+    const paramsUrl = useParams();
+
+    console.log(paramsUrl);
 
     const fetchProductsByCategory = async (queries) => {
         if (category && category !== "products") queries.category = category;
+        if (brand && brand !== "products") queries.brand = brand;
         const response = await apiSearchProducts(queries);
         console.log(response);
         if (response.status === 200) setProducts(response?.metadata);
     };
+
     useEffect(() => {
+        (async () => {
+            const data =
+                category.charAt(0).toLocaleUpperCase() + category.slice(1);
+            console.log(data);
+            const res = await apiGetCategory(data);
+            setCategoryBrands(res?.metadata?.categories[0]);
+        })();
+    }, []);
+
+    useEffect(() => {
+        console.log(params);
         const queries = Object.fromEntries([...params]);
-        let priceQuery = {};
-        if (queries.to && queries.from) {
-            priceQuery = {
-                $and: [
-                    { price: { gte: queries.from } },
-                    { price: { lte: queries.to } },
-                ],
-            };
-            delete queries.price;
-        } else {
-            if (queries.from) queries.price = { gte: queries.from };
-            if (queries.to) queries.price = { lte: queries.to };
+        queries.brand = brand;
+        if (price.from !== "" && price.to !== "") {
+            queries.minPrice = price.from;
+            queries.maxPrice = price.to;
         }
 
-        delete queries.to;
-        delete queries.from;
-        const q = { ...priceQuery, ...queries };
+        console.log(price);
+
+        // delete queries.to;
+        // delete queries.from;
+        const q = { ...queries };
         fetchProductsByCategory(q);
         window.scrollTo(0, 0);
-    }, [params]);
+    }, [params, brand, price]);
     const changeActiveFitler = useCallback(
         (name) => {
             if (activeClick === name) setActiveClick(null);
@@ -73,14 +89,16 @@ const Products = () => {
         [sort]
     );
 
-    useEffect(() => {
-        if (sort) {
-            navigate({
-                pathname: `/${category}`,
-                search: createSearchParams({ sort }).toString(),
-            });
-        }
-    }, [sort]);
+    // useEffect(() => {
+    //     if (sort) {
+    //         navigate({
+    //             pathname: `/${category}`,
+    //             search: createSearchParams({ sort }).toString(),
+    //         });
+    //     }
+    // }, [sort]);
+
+    console.log(categoryBrands);
     return (
         <div className="w-full">
             <div className="h-[81px] flex justify-center items-center bg-gray-100">
@@ -89,21 +107,41 @@ const Products = () => {
                     <Breadcrumb category={category} />
                 </div>
             </div>
-            <div className="lg:w-main border p-4 flex lg:pr-4 pr-8 flex-col md:flex-row gap-4 md:justify-between mt-8 m-auto">
+            <div className="h-[81px] flex justify-center items-center">
+                <div className="lg:w-main w-screen px-4 lg:px-0 text-black flex space-x-2">
+                    {categoryBrands &&
+                        categoryBrands?.brands.map((el, index) => (
+                            <div
+                                key={index}
+                                className="border p-2 cursor-pointer"
+                                onClick={() => setBrand(el.name)}
+                            >
+                                {el.name}
+                            </div>
+                        ))}
+                </div>
+            </div>
+            <div className="lg:w-main border p-4 flex lg:pr-4 pr-8 flex-col md:flex-row gap-4 md:justify-between mt-2 m-auto">
                 <div className="w-4/5 flex-auto flex flex-col gap-3">
                     <span className="font-semibold text-sm">Filter by</span>
                     <div className="flex items-center gap-4">
                         <SearchItem
+                            setPriceChange={(el) =>
+                                setPrice({
+                                    from: el.from,
+                                    to: el.to,
+                                })
+                            }
                             name="price"
                             activeClick={activeClick}
                             changeActiveFitler={changeActiveFitler}
                             type="input"
                         />
-                        <SearchItem
+                        {/* <SearchItem
                             name="color"
                             activeClick={activeClick}
                             changeActiveFitler={changeActiveFitler}
-                        />
+                        /> */}
                     </div>
                 </div>
                 <div className="w-1/5 flex flex-col gap-3">

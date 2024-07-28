@@ -19,12 +19,30 @@ export class CategoryRepositoryImpl implements ICategoryRepository {
         return await this._prisma.$queryRaw`
             SELECT
                 c.id AS categoryId,
+                c."thumbnail",
                 c."name" AS categoryName,
                 b.id AS brandId,
                 b."name" AS brandName
             FROM categories c
             LEFT JOIN categorybrands cb ON c.id = cb."categoryId"
             LEFT JOIN brands b ON cb."brandId" = b.id;
+        `;
+    }
+
+    async findFirst(category: string): Promise<any> {
+        console.log(category);
+
+        return await this._prisma.$queryRaw`
+            SELECT
+                c.id AS categoryId,
+                c."thumbnail",
+                c."name" AS categoryName,
+                b.id AS brandId,
+                b."name" AS brandName
+            FROM categories c
+            LEFT JOIN categorybrands cb ON c.id = cb."categoryId"
+            LEFT JOIN brands b ON cb."brandId" = b.id
+            WHERE c."name" = ${category};
         `;
     }
 

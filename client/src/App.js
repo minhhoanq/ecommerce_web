@@ -97,6 +97,7 @@ function App() {
                         path={path.PRODUCTS__CATEGORY}
                         element={<Products />}
                     />
+                    <Route path={path.PRODUCTS} element={<Products />} />
                     <Route
                         path={path.RESET_PASSWORD}
                         element={<ResetPassword />}

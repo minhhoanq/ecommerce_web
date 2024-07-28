@@ -8,6 +8,7 @@ import { CategoryCreateDTO, CategoryUpdateDTO } from "../../dtos/category.dto";
 interface Category {
     id: number;
     name: string;
+    thumbnail: string;
     brands: { id: number; name: string }[];
 }
 
@@ -35,6 +36,36 @@ export class CategoryService implements ICategoryService {
                 categoriesMap[row.categoryid] = {
                     id: row.categoryid,
                     name: row.categoryname,
+                    thumbnail: row.thumbnail,
+                    brands: [],
+                };
+            }
+
+            if (row.brandid) {
+                categoriesMap[row.categoryid].brands.push({
+                    id: row.brandid,
+                    name: row.brandname,
+                });
+            }
+        });
+
+        const result: Result = {
+            categories: Object.values(categoriesMap),
+        };
+        return result;
+    }
+
+    async getCategory(category: string): Promise<any> {
+        const categories: Category[] = await this._cateRepo.findFirst(category);
+        const categoriesMap: { [key: number]: Category } = {};
+
+        // Định dạng dữ liệu
+        categories.forEach((row: any) => {
+            if (!categoriesMap[row.categoryid]) {
+                categoriesMap[row.categoryid] = {
+                    id: row.categoryid,
+                    name: row.categoryname,
+                    thumbnail: row.thumbnail,
                     brands: [],
                 };
             }

@@ -4,7 +4,6 @@ import { TYPES } from "../../shared/constants/types";
 import "reflect-metadata";
 import { NextFunction, Request, Response } from "express";
 import { Created, SuccessResponse } from "../../shared/core/success.response";
-import { RPCObserver } from "../../infrastructure/kafka";
 
 @injectable()
 export class OrderController {

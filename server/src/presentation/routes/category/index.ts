@@ -12,6 +12,7 @@ const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
 
 router.get("", controller.getCategories.bind(controller));
+router.get("/:category", controller.getCategory.bind(controller));
 router.post("", controller.createCategory.bind(controller));
 router.patch("", controller.updateCategory.bind(controller));
 

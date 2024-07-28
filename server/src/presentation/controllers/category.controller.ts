@@ -24,6 +24,19 @@ export class CategoryController {
         }
     }
 
+    async getCategory(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "get all categories successfully!",
+                metadata: await this._cateService.getCategory(
+                    req.params.category
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async createCategory(req: Request, res: Response, next: NextFunction) {
         try {
             new Created({

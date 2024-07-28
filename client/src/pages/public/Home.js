@@ -112,15 +112,12 @@ const Home = ({ navigate }) => {
                     {categories
                         ?.filter((el) => el.brands.length > 0)
                         ?.map((el) => (
-                            <div key={el._id} className="col-span-1">
+                            <div key={el.id} className="col-span-1">
                                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
                                     <img
-                                        src={
-                                            // el?.thumbnail |
-                                            `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
-                                        }
+                                        src={el?.thumbnail}
                                         alt=""
-                                        className="w-1/2 flex-1 h-[129px] object-cover"
+                                        className="w-1/2 flex-1 h-[129px] object-contain"
                                     />
                                     <div className="w-1/2 flex-1 text-gray-700">
                                         <h4 className="font-semibold uppercase">

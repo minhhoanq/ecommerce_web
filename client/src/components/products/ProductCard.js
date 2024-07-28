@@ -18,10 +18,7 @@ const ProductCard = ({ totalRatings, navigate, productData }) => {
         >
             <div className="flex w-full border">
                 <img
-                    src={
-                        // image |
-                        `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
-                    }
+                    src={productData.image}
                     alt="products"
                     className="w-[120px] object-contain p-4"
                 />

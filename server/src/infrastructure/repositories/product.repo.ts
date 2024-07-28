@@ -336,8 +336,12 @@ export class ProductRepositoryImpl implements IProductRepository {
         });
 
         const productSkus: any[] = await this._prisma.$queryRaw`
-            SELECT DISTINCT ON (sk."name") sk.id, sk."name", sk."slug", pr."price" FROM products as p
+            SELECT DISTINCT ON (sk."name") sk.id, sk."name", sk."slug", pr."price", p."image", ca."name" as category, br."name" as brand 
+            FROM products as p
             JOIN skus AS sk ON p.id = sk."productId"
+            JOIN categorybrands as cb on p."categoryBrandId" = cb.id
+            JOIN categories as ca on cb."categoryId" = ca.id
+            JOIN brands as br on cb."brandId" = br.id
             JOIN prices AS pr ON sk.id = pr."skuId"
         `;
 

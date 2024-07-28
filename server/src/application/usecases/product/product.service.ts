@@ -148,22 +148,66 @@ export class ProductService implements IProductService {
         return feedbackProductItems;
     }
 
+    capitalizeFirstLetter(string: string) {
+        if (string.length === 0) return string;
+        return string.toLocaleLowerCase();
+    }
+
     async searchProducts(query: any): Promise<any> {
         console.log("query: ", query);
+        const { q, category, brand, minPrice, maxPrice } = query;
 
-        const esQuery = query.q
-            ? {
-                  query: {
-                      match_phrase_prefix: {
-                          name: query.q,
-                      },
-                  },
-              }
-            : {
-                  query: {
-                      match_all: {},
-                  },
-              };
+        let categoryQuery = null;
+        if (category) {
+            categoryQuery = this.capitalizeFirstLetter(category);
+        }
+        let brandQuery = null;
+        if (brand) {
+            brandQuery = this.capitalizeFirstLetter(brand);
+        }
+
+        const esQuery = {
+            query: {
+                bool: {
+                    must: [
+                        // Nếu có giá trị cho `name`, sử dụng match_phrase_prefix
+                        ...(q
+                            ? [
+                                  {
+                                      match_phrase_prefix: {
+                                          name: q,
+                                      },
+                                  },
+                              ]
+                            : []), // Nếu không có giá trị cho `name`, không thêm điều kiện này
+                    ],
+                    filter: [
+                        // Điều kiện lọc theo category nếu có giá trị
+                        ...(category
+                            ? [{ term: { category: categoryQuery } }]
+                            : []),
+                        // Điều kiện lọc theo brand nếu có giá trị
+                        ...(brand ? [{ term: { brand: brandQuery } }] : []),
+                        // Điều kiện lọc theo giá chỉ được thêm nếu có giá trị cho minPrice và maxPrice
+                        ...(minPrice != null && maxPrice != null
+                            ? [
+                                  {
+                                      range: {
+                                          price: {
+                                              gte: minPrice,
+                                              lte: maxPrice,
+                                          },
+                                      },
+                                  },
+                              ]
+                            : []),
+                    ],
+                },
+            },
+            from: 0,
+            size: 10,
+        };
+        console.log(JSON.stringify(esQuery));
 
         const resultEs = await clientEs.elasticClient?.search({
             index: "products_idx",

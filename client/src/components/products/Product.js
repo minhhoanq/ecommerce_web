@@ -14,11 +14,11 @@ import { getCurrent } from "store/user/asyncActions";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import path from "ultils/path";
-import { BsFillCartCheckFill, BsFillCartPlusFill } from "react-icons/bs";
+// import { BsFillCartCheckFill, BsFillCartPlusFill } from "react-icons/bs";
 import { createSearchParams } from "react-router-dom";
 import clsx from "clsx";
 
-const { AiFillEye, BsFillSuitHeartFill } = icons;
+// const { AiFillEye, BsFillSuitHeartFill } = icons;
 
 const Product = ({
     productData,
@@ -92,15 +92,21 @@ const Product = ({
     };
     return (
         <div
-            className={clsx("w-full col-span-1 text-base px-[10px]", className)}
+            className={clsx(
+                "w-full col-span-1 text-base px-[10px] cursor-pointer",
+                className
+            )}
         >
             <div
                 className="w-full border p-[15px] flex flex-col items-center"
                 onClick={(e) =>
                     navigate(
                         `/${
-                            productData?.categorybrand?.category?.name.toLowerCase() ||
-                            "smartphone"
+                            productData?._source &&
+                            productData?._source?.category
+                                ? productData?._source.category.toLowerCase()
+                                : productData?.categorybrand?.category?.name.toLowerCase() ||
+                                  "smartphone"
                         }/${
                             productData?._source && productData?._source?.id
                                 ? productData?._source.id
@@ -122,7 +128,7 @@ const Product = ({
                 }}
             >
                 <div className="w-[274px] relative">
-                    {isShowOption && (
+                    {/* {isShowOption && (
                         <div className="absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top">
                             <span
                                 title="Quick view"
@@ -132,7 +138,7 @@ const Product = ({
                             >
                                 <SelectOption icon={<AiFillEye />} />
                             </span>
-                            {/* {current?.cart?.some(
+                            {current?.cart?.some(
                                 (el) => el.product === productData.id.toString()
                             ) ? (
                                 <span title="Added to Cart">
@@ -153,7 +159,7 @@ const Product = ({
                                         icon={<BsFillCartPlusFill />}
                                     />
                                 </span>
-                            )} */}
+                            )}
                             <span
                                 title="Add to Wishlist"
                                 onClick={(e) =>
@@ -175,9 +181,13 @@ const Product = ({
                                 />
                             </span>
                         </div>
-                    )}
+                    )} */}
                     <img
-                        src={productData?.image}
+                        src={
+                            productData?._source && productData?._source.image
+                                ? productData?._source.image
+                                : productData?.image
+                        }
                         alt=""
                         className="w-[274px] h-[274px]  object-cover"
                     />
