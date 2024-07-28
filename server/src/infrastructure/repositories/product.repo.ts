@@ -38,7 +38,9 @@ export class ProductRepositoryImpl implements IProductRepository {
     };
 
     async create(payload: any): Promise<any> {
-        const { name, desc, price, categoryBrandId, skus } = payload;
+        console.log("payload: ", payload);
+
+        const { name, desc, categoryBrandId, images, skus } = payload;
 
         const updatedAt = new Date();
         const releaseDate = new Date();
@@ -57,6 +59,7 @@ export class ProductRepositoryImpl implements IProductRepository {
 
                 const skuPromises = skus.map(async (sku: any) => {
                     const attributes = this.transformAttributes(sku.attributes);
+
                     const createdSku = await prisma.sku.create({
                         data: {
                             skuNo: sku.skuNo,
@@ -69,8 +72,8 @@ export class ProductRepositoryImpl implements IProductRepository {
                     });
 
                     const skuAttributePromises = await sku.attributes.map(
-                        (attr: any) =>
-                            prisma.skuAttribute.create({
+                        async (attr: any) =>
+                            await prisma.skuAttribute.create({
                                 data: {
                                     skuId: createdSku.id,
                                     attributeId: attr.attributeId,
@@ -103,6 +106,15 @@ export class ProductRepositoryImpl implements IProductRepository {
                     return createdSku; // Return the created sku
                 });
 
+                const imageProducts = await images.map(async (el: string) => {
+                    await prisma.imageProduct.create({
+                        data: {
+                            productId: product.id,
+                            src: el,
+                        },
+                    });
+                });
+                await Promise.all(imageProducts);
                 await Promise.all(skuPromises);
                 return product; // Return the created product
             });
@@ -370,8 +382,19 @@ export class ProductRepositoryImpl implements IProductRepository {
             JOIN inventories as i ON sk.id = i."skuId"
             WHERE sa."skuId" IN (SELECT id FROM filtered_skus) AND sa."attributeId" = 1;
         `;
+        const images: any[] = await this._prisma.imageProduct.findMany({
+            where: {
+                productId: products[0].id,
+            },
+            select: {
+                id: true,
+                productId: true,
+                src: true,
+            },
+        });
 
         return {
+            images,
             products,
         };
     }

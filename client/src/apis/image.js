@@ -6,9 +6,9 @@ export const uploadImages = (data) =>
         method: "post",
         data,
     });
-export const apiAddVarriant = (data, pid) =>
+export const uploadImage = (data, pid) =>
     axios({
-        url: "/product/varriant/" + pid,
-        method: "put",
+        url: "/image/thumbnail/",
+        method: "post",
         data,
     });

@@ -40,19 +40,12 @@ const settings = {
     slidesToScroll: 1,
 };
 
-const images = [
-    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-timultra-22.png",
-    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-vang-222.png",
-    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-xam-222.png",
-    "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-den-600.png",
-];
-
 const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     const nameRef = useRef();
     const params = useParams();
     const { current } = useSelector((state) => state.user);
     const [colors, setColors] = useState([]);
-    const [colorItems, setColorItems] = useState([]);
+    const [imageProducts, setImagesProducts] = useState([]);
     const [storages, setStorages] = useState([]);
     const [products, setProducts] = useState([]);
     const [currentImage, setCurrentImage] = useState(null);
@@ -109,7 +102,8 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 productItemId: response.metadata.products[0]?.skuid,
             }));
             setProducts(response.metadata.products);
-            setCurrentImage(response.productData?.thumbnail);
+            setImagesProducts(response.metadata.images);
+            setCurrentImage(response.metadata?.images[0]?.src);
         }
     };
     useEffect(() => {
@@ -277,14 +271,10 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                     isFluidWidth: false,
                                     width: 458,
                                     height: 458,
-                                    src:
-                                        currentImage ||
-                                        `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`,
+                                    src: currentImage,
                                 },
                                 largeImage: {
-                                    src:
-                                        currentImage ||
-                                        `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`,
+                                    src: currentImage,
                                     width: 458,
                                     height: 600,
                                 },
@@ -306,27 +296,27 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                             {...settings}
                         >
                             {/* currentProduct. */}
-                            {images?.length === 0 &&
-                                images?.map((el) => (
-                                    <div className="flex-1" key={el}>
+                            {imageProducts?.length === 0 &&
+                                imageProducts?.map((el, index) => (
+                                    <div className="flex-1" key={index}>
                                         <img
                                             onClick={(e) =>
-                                                handleClickImage(e, el)
+                                                handleClickImage(e, el.src)
                                             }
-                                            src={el}
+                                            src={el.src}
                                             alt="sub-product"
                                             className="w-[143px] cursor-pointer h-[143px] border object-cover"
                                         />
                                     </div>
                                 ))}
-                            {images?.length > 0 &&
-                                images?.map((el) => (
-                                    <div className="flex-1" key={el}>
+                            {imageProducts?.length > 0 &&
+                                imageProducts?.map((el, index) => (
+                                    <div className="flex-1" key={index}>
                                         <img
                                             onClick={(e) =>
-                                                handleClickImage(e, el)
+                                                handleClickImage(e, el.src)
                                             }
-                                            src={el}
+                                            src={el.src}
                                             alt="sub-product"
                                             className="w-[143px] cursor-pointer h-[143px] border object-cover"
                                         />

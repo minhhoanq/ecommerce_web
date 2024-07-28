@@ -29,7 +29,15 @@ export class ProductService implements IProductService {
     }
 
     async createProduct(body: any): Promise<any> {
-        const { name, desc, thumbnail, categoryBrandId, brandId, skus } = body;
+        const {
+            name,
+            desc,
+            thumbnail,
+            categoryBrandId,
+            brandId,
+            images,
+            skus,
+        } = body;
         //create new product
         const newProduct = await this._productRepo.create({
             name,
@@ -37,6 +45,7 @@ export class ProductService implements IProductService {
             thumbnail,
             categoryBrandId,
             brandId,
+            images,
             skus,
         });
 

@@ -177,10 +177,7 @@ const Product = ({
                         </div>
                     )}
                     <img
-                        src={
-                            productData?.thumb ||
-                            "https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-ultra-xam-222.png"
-                        }
+                        src={productData.src}
                         alt=""
                         className="w-[274px] h-[274px]  object-cover"
                     />

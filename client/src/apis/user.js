@@ -53,8 +53,8 @@ export const apiDeleteUser = (uid) =>
     });
 export const apiUpdateCurrent = (data) =>
     axios({
-        url: "/user/current",
-        method: "put",
+        url: "/auth/update",
+        method: "patch",
         data,
     });
 export const addToCart = (data) =>

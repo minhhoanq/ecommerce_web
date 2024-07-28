@@ -1,6 +1,6 @@
 import { Button, InputForm } from "components";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import avatar from "assets/avatarDefault.png";
@@ -10,8 +10,10 @@ import { toast } from "react-toastify";
 import { getBase64 } from "ultils/helpers";
 import { useSearchParams } from "react-router-dom";
 import withBaseComponent from "hocs/withBaseComponent";
+import { uploadImage } from "apis/image";
 
 const Personal = ({ navigate }) => {
+    const [preview, setPreview] = useState(null);
     const {
         register,
         formState: { errors, isDirty },
@@ -32,16 +34,31 @@ const Personal = ({ navigate }) => {
             address: current?.address,
         });
     }, [current]);
-    const handleUpdateInfor = async (data) => {
-        const formData = new FormData();
-        if (data.avatar.length > 0) formData.append("avatar", data.avatar[0]);
-        delete data.avatar;
-        for (let i of Object.entries(data)) formData.append(i[0], i[1]);
 
-        const response = await apiUpdateCurrent(formData);
-        if (response.success) {
+    const handlePreviewThumb = async () => {
+        const formData = new FormData();
+        const fileImages = watch("avatar"); // Assuming `watch` returns the list of selected files
+        formData.append("file", fileImages[0]); // Append files to FormData with the key "files"
+
+        const image = await uploadImage(formData);
+        console.log(image);
+        // let imagesArray = uploadInmage.metadata.map((el) => el.url);
+        setPreview(image.metadata.url);
+    };
+
+    useEffect(() => {
+        if (watch("avatar") instanceof FileList && watch("avatar").length > 0)
+            handlePreviewThumb();
+    }, [watch("avatar")]);
+
+    const handleUpdateInfor = async (data) => {
+        console.log("data", data);
+        if (preview) data.avatar = preview;
+        const response = await apiUpdateCurrent(data);
+        console.log(data);
+        if (response.status === 200) {
             dispatch(getCurrent());
-            toast.success(response.mes);
+            toast.success(response.mesage);
             if (searchParams.get("redirect"))
                 navigate(searchParams.get("redirect"));
         } else toast.error(response.mes);
@@ -59,8 +76,10 @@ const Personal = ({ navigate }) => {
                     <label htmlFor="file">
                         <img
                             src={
-                                current?.avatar ||
-                                "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
+                                preview
+                                    ? preview
+                                    : current?.avatar ||
+                                      "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
                             }
                             alt="avatar"
                             className="w-20 h-20 ml-8 object-cover rounded-full cursor-pointer"
