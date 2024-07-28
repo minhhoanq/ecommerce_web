@@ -36,8 +36,9 @@ const settings = {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 5,
     slidesToScroll: 1,
+    centerPadding: "0px",
 };
 
 const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
@@ -103,7 +104,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             }));
             setProducts(response.metadata.products);
             setImagesProducts(response.metadata.images);
-            setCurrentImage(response.metadata?.images[0]?.src);
+            setCurrentImage(response.metadata?.products[0]?.image);
         }
     };
     useEffect(() => {
@@ -292,33 +293,33 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
 
                     <div className="w-[458px]">
                         <Slider
-                            className="image-slider flex gap-2 justify-between"
+                            className="image-slider grap-2 flex justify-start"
                             {...settings}
                         >
                             {/* currentProduct. */}
-                            {imageProducts?.length === 0 &&
+                            {/* {imageProducts?.length === 0 &&
                                 imageProducts?.map((el, index) => (
-                                    <div className="flex-1" key={index}>
+                                    <div className="w-[80px]" key={index}>
                                         <img
                                             onClick={(e) =>
                                                 handleClickImage(e, el.src)
                                             }
                                             src={el.src}
                                             alt="sub-product"
-                                            className="w-[143px] cursor-pointer h-[143px] border object-cover"
+                                            className="w-[80px] cursor-pointer h-[80px] border object-cover"
                                         />
                                     </div>
-                                ))}
+                                ))} */}
                             {imageProducts?.length > 0 &&
                                 imageProducts?.map((el, index) => (
-                                    <div className="flex-1" key={index}>
+                                    <div className="w-[80px]" key={index}>
                                         <img
                                             onClick={(e) =>
                                                 handleClickImage(e, el.src)
                                             }
                                             src={el.src}
                                             alt="sub-product"
-                                            className="w-[143px] cursor-pointer h-[143px] border object-cover"
+                                            className="w-[80px] cursor-pointer h-[80px] border object-cover"
                                         />
                                     </div>
                                 ))}

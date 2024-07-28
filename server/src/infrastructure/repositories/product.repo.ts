@@ -326,6 +326,12 @@ export class ProductRepositoryImpl implements IProductRepository {
                         },
                     },
                 },
+                imageProducts: {
+                    select: {
+                        id: true,
+                        src: true,
+                    },
+                },
             },
         });
 
@@ -374,7 +380,7 @@ export class ProductRepositoryImpl implements IProductRepository {
                 JOIN skuattributes as sa ON sk.id = sa."skuId"
                 WHERE sk."slug" = ${slug}
             )
-            SELECT p.id, p."name", sk."slug", p."desc", sk."skuNo", pr."price", i."stock" as quantity, sk.id as skuId, sa."attributeValue"
+            SELECT p.id, p."name", p."image", sk."slug", p."desc", sk."skuNo", pr."price", i."stock" as quantity, sk.id as skuId, sa."attributeValue"
             FROM skus as sk
             JOIN products as p on sk."productId" = p.id
             JOIN skuattributes as sa ON sk.id = sa."skuId"

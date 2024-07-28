@@ -121,7 +121,7 @@ const Product = ({
                     setIsShowOption(false);
                 }}
             >
-                <div className="w-full relative">
+                <div className="w-[274px] relative">
                     {isShowOption && (
                         <div className="absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top">
                             <span
@@ -177,7 +177,7 @@ const Product = ({
                         </div>
                     )}
                     <img
-                        src={productData.src}
+                        src={productData?.image}
                         alt=""
                         className="w-[274px] h-[274px]  object-cover"
                     />

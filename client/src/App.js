@@ -130,18 +130,16 @@ function App() {
                 <Route path={path.LOGIN} element={<Login />} />
             </Routes>
             <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={true}
+                position="bottom-right"
+                autoClose={3000}
+                // hideProgressBar={true}
                 newestOnTop={false}
                 closeOnClick
                 rtl={false}
                 pauseOnFocusLoss
-                draggable
+                // draggable
                 pauseOnHover
             />
-            {/* Same as */}
-            <ToastContainer />
         </div>
     );
 }
