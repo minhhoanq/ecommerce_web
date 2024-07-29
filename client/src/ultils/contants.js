@@ -243,7 +243,7 @@ export const memberSidebar = [
     {
         id: 1,
         type: "SINGLE",
-        text: "Personal",
+        text: "Profile",
         path: `/${path.MEMBER}/${path.PERSONAL}`,
         icon: <AiOutlineDashboard size={20} />,
     },
@@ -272,11 +272,11 @@ export const memberSidebar = [
 
 export const roles = [
     {
-        code: 1945,
+        code: 2,
         value: "Admin",
     },
     {
-        code: 1979,
+        code: 2,
         value: "User",
     },
 ];

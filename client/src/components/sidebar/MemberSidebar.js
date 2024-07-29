@@ -1,5 +1,5 @@
 import React, { memo, Fragment, useState } from "react";
-import avatar from "assets/avatarDefault.png";
+import logo from "assets/logo.png";
 import { memberSidebar } from "ultils/contants";
 import { NavLink, Link } from "react-router-dom";
 import clsx from "clsx";
@@ -22,17 +22,16 @@ const MemberSidebar = () => {
 
     return (
         <div className=" bg-white max-h-screen py-4 w-[250px] flex-none border-r border-r-blue-200">
-            <div className="w-full flex flex-col items-center justify-center py-4">
+            <Link
+                to={"/"}
+                className="flex flex-col justify-center items-center p-4 gap-2"
+            >
                 <img
-                    src={
-                        current?.avatar ||
-                        "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
-                    }
+                    src={logo}
                     alt="logo"
-                    className="w-16 h-16 object-cover"
+                    className="w-[200px] object-contain"
                 />
-                <small>{`${current?.lastName} ${current?.firstName}`}</small>
-            </div>
+            </Link>
             <div>
                 {memberSidebar.map((el, idx) => (
                     <Fragment key={idx}>

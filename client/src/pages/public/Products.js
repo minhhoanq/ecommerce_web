@@ -36,13 +36,15 @@ const Products = () => {
     const [params] = useSearchParams();
     const [sort, setSort] = useState("");
     const { category } = useParams();
-    const paramsUrl = useParams();
-
-    console.log(paramsUrl);
 
     const fetchProductsByCategory = async (queries) => {
-        if (category && category !== "products") queries.category = category;
+        if (category && category !== "products") {
+            queries.category = category;
+        }
         if (brand && brand !== "products") queries.brand = brand;
+        if (!category || category === "products") {
+            delete queries.brand;
+        }
         const response = await apiSearchProducts(queries);
         console.log(response);
         if (response.status === 200) setProducts(response?.metadata);
@@ -60,6 +62,7 @@ const Products = () => {
 
     useEffect(() => {
         console.log(params);
+        console.log(category);
         const queries = Object.fromEntries([...params]);
         queries.brand = brand;
         if (price.from !== "" && price.to !== "") {
@@ -74,7 +77,7 @@ const Products = () => {
         const q = { ...queries };
         fetchProductsByCategory(q);
         window.scrollTo(0, 0);
-    }, [params, brand, price]);
+    }, [params, brand, price, category]);
     const changeActiveFitler = useCallback(
         (name) => {
             if (activeClick === name) setActiveClick(null);
@@ -109,7 +112,9 @@ const Products = () => {
             </div>
             <div className="h-[81px] flex justify-center items-center">
                 <div className="lg:w-main w-screen px-4 lg:px-0 text-black flex space-x-2">
-                    {categoryBrands &&
+                    {category &&
+                        category !== "products" &&
+                        categoryBrands &&
                         categoryBrands?.brands.map((el, index) => (
                             <div
                                 key={index}
