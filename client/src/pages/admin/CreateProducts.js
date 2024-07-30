@@ -11,6 +11,16 @@ import { CiCirclePlus } from "react-icons/ci";
 import SmartphoneFrom from "components/form/SmartphoneFrom";
 import { uploadImages } from "apis/image";
 
+const defaultValues = {
+    name: "",
+    desc: "desc",
+    image: "",
+    images: "",
+    categoryId: 0,
+    brandId: 0,
+    skus: [],
+};
+
 const CreateProducts = () => {
     const { categories } = useSelector((state) => state.app);
     const dispatch = useDispatch();
@@ -27,15 +37,7 @@ const CreateProducts = () => {
         handleSubmit,
         watch,
     } = useForm({
-        defaultValues: {
-            title: "",
-            desc: "",
-            thumb: "",
-            images: "",
-            category: 0,
-            brand: 0,
-            skus: [],
-        },
+        defaultValues,
     });
 
     const productType = watch("categoryId");
@@ -59,7 +61,7 @@ const CreateProducts = () => {
         description: "",
     });
     const [preview, setPreview] = useState({
-        thumb: [],
+        image: [],
         images: [],
     });
     const [invalidFields, setInvalidFields] = useState([]);
@@ -72,14 +74,14 @@ const CreateProducts = () => {
     const [hoverElm, setHoverElm] = useState(null);
     // const handlePreviewThumb = async (file) => {
     //     const base64Thumb = await getBase64(file);
-    //     setPreview((prev) => ({ ...prev, thumb: base64Thumb }));
+    //     setPreview((prev) => ({ ...prev, image: base64Thumb }));
     // };
     const handlePreviewThumb = async () => {
         const formData = new FormData();
-        const fileImages = watch("thumb"); // Assuming `watch` returns the list of selected files
+        const fileImages = watch("image"); // Assuming `watch` returns the list of selected files
         if (fileImages.length > 0) {
-            for (let image of fileImages) {
-                formData.append("files", image); // Append files to FormData with the key "files"
+            for (let file of fileImages) {
+                formData.append("files", file); // Append files to FormData with the key "files"
             }
         }
 
@@ -87,15 +89,15 @@ const CreateProducts = () => {
         let imagesArray = uploadInmage.metadata.map((el) => el.url);
         setPreview((prev) => ({
             ...prev,
-            thumb: imagesArray,
+            image: imagesArray,
         }));
     };
     const handlePreviewImages = async () => {
         const formData = new FormData();
         const fileImages = watch("images"); // Assuming `watch` returns the list of selected files
         if (fileImages.length > 0) {
-            for (let image of fileImages) {
-                formData.append("files", image); // Append files to FormData with the key "files"
+            for (let file of fileImages) {
+                formData.append("files", file); // Append files to FormData with the key "files"
             }
         }
 
@@ -107,49 +109,24 @@ const CreateProducts = () => {
         }));
     };
     useEffect(() => {
-        handlePreviewThumb(watch("thumb")[0]);
-    }, [watch("thumb")]);
+        handlePreviewThumb(watch("image")[0]);
+    }, [watch("image")]);
     useEffect(() => {
         handlePreviewImages(watch("images"));
     }, [watch("images")]);
 
     const handleCreateProduct = async (data) => {
-        data.thumb = preview.thumb[0];
+        data.image = preview.image[0];
         data.images = preview.images;
-        data.categoryBrandId = 2;
         console.log("create data product: ", data);
         const response = await apiCreateProduct(data);
         console.log(response);
-        // const invalids = validate(payload, setInvalidFields);
-        // if (invalids === 0) {
-        //     if (data.category)
-        //         data.category = categories?.find(
-        //             (el) => el._id === data.category
-        //         )?.title;
-        //     const finalPayload = { ...data, ...payload };
-        //     const formData = new FormData();
-        //     for (let i of Object.entries(finalPayload))
-        //         formData.append(i[0], i[1]);
-        //     if (finalPayload.thumb)
-        //         formData.append("thumb", finalPayload.thumb[0]);
-        //     if (finalPayload.images) {
-        //         for (let image of finalPayload.images)
-        //             formData.append("images", image);
-        //     }
-        //     dispatch(
-        //         showModal({ isShowModal: true, modalChildren: <Loading /> })
-        //     );
-        //     const response = await apiCreateProduct(formData);
-        //     dispatch(showModal({ isShowModal: false, modalChildren: null }));
-        //     if (response.success) {
-        //         toast.success(response.mes);
-        //         reset();
-        //         setPayload({
-        //             thumb: "",
-        //             image: [],
-        //         });
-        //     } else toast.error(response.mes);
-        // }
+        if (response.status === 200) {
+            reset(defaultValues);
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
     };
 
     return (
@@ -163,7 +140,7 @@ const CreateProducts = () => {
                         label="Product Representative Name (Ex: Macbook)"
                         register={register}
                         errors={errors}
-                        id="title"
+                        id="name"
                         validate={{
                             required: "Need fill this field",
                         }}
@@ -178,7 +155,7 @@ const CreateProducts = () => {
                                 value: el.name,
                             }))}
                             register={register}
-                            id="category"
+                            id="categoryId"
                             validate={{ required: "Need fill this field" }}
                             style="flex-auto"
                             errors={errors}
@@ -187,13 +164,13 @@ const CreateProducts = () => {
                         <Select
                             label="Brand"
                             options={categories
-                                ?.find((el) => el.id == watch("category"))
+                                ?.find((el) => el.id == watch("categoryId"))
                                 ?.brands?.map((el) => ({
                                     code: el.id,
                                     value: el.name,
                                 }))}
                             register={register}
-                            id="brand"
+                            id="brandId"
                             style="flex-auto"
                             errors={errors}
                             fullWidth
@@ -213,11 +190,11 @@ const CreateProducts = () => {
                         <div className="flex flex-col gap-2 mt-2">
                             <label
                                 className="font-semibold flex flex-col space-y-2"
-                                htmlFor="thumb"
+                                htmlFor="image"
                             >
                                 <span>Upload representative image</span>
-                                {preview.thumb?.length ? (
-                                    preview.thumb?.map((el, index) => (
+                                {preview.image?.length ? (
+                                    preview.image?.map((el, index) => (
                                         <div className="my-4" key={index}>
                                             <img
                                                 src={el}
@@ -237,15 +214,15 @@ const CreateProducts = () => {
                             </label>
                             <input
                                 type="file"
-                                id="thumb"
-                                {...register("thumb", {
+                                id="image"
+                                {...register("image", {
                                     required: "Need fill",
                                 })}
                                 hidden
                             />
-                            {errors["thumb"] && (
+                            {errors["image"] && (
                                 <small className="text-xs text-red-500">
-                                    {errors["thumb"]?.message}
+                                    {errors["image"]?.message}
                                 </small>
                             )}
                         </div>

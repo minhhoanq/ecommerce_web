@@ -3,6 +3,17 @@ import { useForm } from "react-hook-form";
 
 const { default: InputForm } = require("components/inputs/InputForm");
 
+const attributes = [
+    {
+        id: 1,
+        name: "Color",
+    },
+    {
+        id: 2,
+        name: "Storage",
+    },
+];
+
 const SmartphoneFrom = ({
     index,
     sku,
@@ -20,26 +31,46 @@ const SmartphoneFrom = ({
         defaultValues: {
             name: "",
             price: 0,
-            quantity: 0,
+            stock: 0,
             storage: "",
             color: "",
         },
     });
 
+    // Create a map for quick lookup
+    const attributeMap = attributes.reduce((acc, attribute) => {
+        acc[attribute.name.toLowerCase()] = attribute.id;
+        return acc;
+    }, {});
+
     // const formValue = watch();
 
     useEffect(() => {
-        onChange(index, {
+        const data = {
             name: watch("name"),
             price: watch("price"),
-            quantity: watch("quantity"),
+            stock: watch("stock"),
             storage: watch("storage"),
             color: watch("color"),
-        });
+        };
+
+        const convertedData = {
+            name: data.name,
+            price: parseInt(data.price, 10), // Convert price to number
+            stock: parseInt(data.stock, 10), // Convert stock to number
+            attributes: Object.keys(data)
+                .filter((key) => attributeMap[key.toLowerCase()])
+                .map((key) => ({
+                    attributeId: attributeMap[key.toLowerCase()],
+                    attributeValue: data[key],
+                })),
+        };
+
+        onChange(index, convertedData);
     }, [
         watch("name"),
         watch("price"),
-        watch("quantity"),
+        watch("stock"),
         watch("storage"),
         watch("color"),
     ]);
@@ -155,15 +186,15 @@ const SmartphoneFrom = ({
                         type="number"
                     />
                     <InputForm
-                        label="Quantity"
+                        label="stock"
                         register={register}
                         errors={errors}
-                        id="quantity"
+                        id="stock"
                         validate={{
                             required: "Need fill this field",
                         }}
                         style="flex-auto"
-                        placeholder="Quantity of new product"
+                        placeholder="stock of new product"
                         type="number"
                     />
                 </div>

@@ -40,10 +40,19 @@ export class ProductRepositoryImpl implements IProductRepository {
     async create(payload: any): Promise<any> {
         console.log("payload: ", payload);
 
-        const { name, desc, categoryBrandId, images, skus } = payload;
+        const { name, desc, categoryId, brandId, image, images, skus } =
+            payload;
 
         const updatedAt = new Date();
         const releaseDate = new Date();
+
+        const categoryBrand: any[] = await this._prisma.$queryRaw`
+            select id from categorybrands
+            where "categoryId" = ${parseInt(
+                categoryId
+            )} and "brandId" = ${parseInt(brandId)}
+        `;
+        console.log(categoryBrand);
 
         try {
             await this._prisma.$transaction(async (prisma) => {
@@ -51,7 +60,8 @@ export class ProductRepositoryImpl implements IProductRepository {
                     data: {
                         name,
                         desc,
-                        categoryBrandId,
+                        image,
+                        categoryBrandId: categoryBrand[0].id,
                         releaseDate,
                         updatedAt,
                     },
