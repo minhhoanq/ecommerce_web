@@ -62,7 +62,6 @@ export class ProductRepositoryImpl implements IProductRepository {
 
                     const createdSku = await prisma.sku.create({
                         data: {
-                            skuNo: sku.skuNo,
                             name: sku.name,
                             slug: slugify(sku.name, { lower: true }),
                             productId: product.id,
@@ -138,7 +137,6 @@ export class ProductRepositoryImpl implements IProductRepository {
                         data: {
                             name: sku.name,
                             slug: slugify(sku.name, { lower: true }),
-                            skuNo: sku.skuNo,
                             productId: productId,
                             updatedAt,
                             attributes: attributes,
@@ -216,7 +214,6 @@ export class ProductRepositoryImpl implements IProductRepository {
             await this._prisma.$queryRaw`
             UPDATE "skus"
                 SET 
-                    "skuNo" = COALESCE(${skus.skuNo}, "skuNo"),
                     "productId" = COALESCE(${productId}, "productId"),
                     "stock" = COALESCE(${skus.stock}, "stock"),
                     "thumbnail" = COALESCE(${skus.thumbnail}, "thumbnail"),
@@ -306,7 +303,6 @@ export class ProductRepositoryImpl implements IProductRepository {
                         id: true,
                         name: true,
                         slug: true,
-                        skuNo: true,
                         attributes: true,
                         createdAt: true,
                         updatedAt: true,
@@ -384,7 +380,7 @@ export class ProductRepositoryImpl implements IProductRepository {
                 JOIN skuattributes as sa ON sk.id = sa."skuId"
                 WHERE sk."slug" = ${slug}
             )
-            SELECT p.id, p."name", p."image", sk."slug", p."desc", sk."skuNo", pr."price", i."stock" as quantity, sk.id as skuId, sa."attributeValue"
+            SELECT p.id, p."name", p."image", sk."slug", p."desc",  pr."price", i."stock" as quantity, sk.id as skuId, sa."attributeValue"
             FROM skus as sk
             JOIN products as p on sk."productId" = p.id
             JOIN skuattributes as sa ON sk.id = sa."skuId"
