@@ -44,6 +44,13 @@ router.get(
 );
 
 router.get(
+    "/statistical",
+    auth.authentication,
+    // access.GrantAccess("readOwn", "order"),
+    asyncHandler(controller.getStatistical.bind(controller))
+);
+
+router.get(
     "/:orderId",
     auth.authentication,
     // access.GrantAccess("readOwn", "order"),

@@ -93,4 +93,19 @@ export class OrderController {
             next(error);
         }
     };
+
+    getStatistical = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            new SuccessResponse({
+                message: "Get statistical successfully!",
+                metadata: await this._orderService.getStatistical(),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
 }

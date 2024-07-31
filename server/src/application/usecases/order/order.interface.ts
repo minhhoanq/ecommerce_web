@@ -10,4 +10,5 @@ export interface IOrderService {
         orderItemId: number;
     }): Promise<any>;
     SubscribeEvents(payload: { event: string; data: any }): Promise<any>;
+    getStatistical(): Promise<any>;
 }

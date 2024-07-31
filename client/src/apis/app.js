@@ -10,9 +10,9 @@ export const apiGetCategory = (category) =>
         url: "/category/" + category,
         method: "get",
     });
-export const apiGetDashboard = (params) =>
+export const apiGetStatistical = (params) =>
     axios({
-        url: "/order/dashboard",
+        url: "/order/statistical",
         method: "get",
         params,
     });

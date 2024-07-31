@@ -274,14 +274,18 @@ const CreateProducts = () => {
                         </div>
                     </div>
 
-                    <div className="border-t border-t-slate-300 my-8"></div>
+                    {watch("categoryId") && watch("categoryId") !== 0 && (
+                        <div>
+                            <div className="border-t border-t-slate-300 my-8"></div>
 
-                    <div
-                        className="max-w-max cursor-pointer space-x-2 px-2 py-1 rounded-none text-white flex items-center justify-center "
-                        onClick={() => handleAddSKU()}
-                    >
-                        <CiCirclePlus size={30} color="red" />
-                    </div>
+                            <div
+                                className="max-w-max cursor-pointer space-x-2 px-2 py-1 rounded-none text-white flex items-center justify-center "
+                                onClick={() => handleAddSKU()}
+                            >
+                                <CiCirclePlus size={30} color="red" />
+                            </div>
+                        </div>
+                    )}
 
                     {watch("skus") &&
                         watch("skus").map((sku, index) => (

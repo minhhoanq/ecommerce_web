@@ -143,4 +143,45 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
         return orderItem.length > 0 ? orderItem[0] : null;
     }
+
+    async getStatistical(): Promise<any> {
+        const countNewUser: any[] = await this._prisma.$queryRaw`
+            SELECT COUNT(*) FROM users
+            WHERE "roleId" = 2;
+        `;
+
+        const paid: any[] = await this._prisma.$queryRaw`
+            select sum("total") from orders
+            where "orderStatusId" in (2, 3);
+        `;
+
+        const unPaid: any[] = await this._prisma.$queryRaw`
+            select sum("total") from orders
+            where "orderStatusId" in (1);
+        `;
+
+        const sold: any[] = await this._prisma.$queryRaw`
+            select count("quantity") from orderitems
+        `;
+
+        const completeOrder: any[] = await this._prisma.$queryRaw`
+            select count("orderStatusId") from orders
+            where "orderStatusId" = 3
+        `;
+        const cancelOrder: any[] = await this._prisma.$queryRaw`
+            select count("orderStatusId") from orders
+            where "orderStatusId" = 4
+        `;
+
+        return {
+            countNewUser: countNewUser[0].count.toString(),
+            paid: paid[0].sum.toString(),
+            unPaid: unPaid[0]?.sum.toString(),
+            sold: sold[0]?.count.toString(),
+            statusOrder: {
+                complete: completeOrder[0]?.count.toString(),
+                cancel: cancelOrder[0]?.count.toString(),
+            },
+        };
+    }
 }

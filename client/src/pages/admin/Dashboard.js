@@ -1,4 +1,4 @@
-import { apiGetDashboard } from "apis";
+import { apiGetDashboard, apiGetStatistical } from "apis";
 import BoxInfo from "components/chart/BoxInfo";
 import CustomChart from "components/chart/CustomChart";
 import React, { useEffect, useState } from "react";
@@ -15,8 +15,8 @@ const Dashboard = () => {
         to: "",
     });
     const fetchDataDashboard = async (params) => {
-        const response = await apiGetDashboard(params);
-        if (response.success) setData(response.data);
+        const response = await apiGetStatistical();
+        if (response.status === 200) setData(response.metadata);
     };
     useEffect(() => {
         const type = isMonth ? "MTH" : "D";
@@ -28,16 +28,17 @@ const Dashboard = () => {
     const handleCustomTime = () => {
         setCustomTime({ from: "", to: "" });
     };
+
+    console.log(data);
+
     const pieData = {
         labels: ["Tông đơn đã hủy", "Tổng đơn thành công"],
         datasets: [
             {
                 label: "Tổng đơn",
                 data: [
-                    data?.pieData?.find((el) => el.status === "Cancelled")
-                        ?.sum || 2,
-                    data?.pieData?.find((el) => el.status === "Succeed")?.sum ||
-                        10,
+                    data?.statusOrder?.cancel || 0,
+                    data?.statusOrder?.complete || 0,
                 ],
                 backgroundColor: [
                     "rgba(255, 99, 132, 0.2)",
@@ -49,17 +50,17 @@ const Dashboard = () => {
         ],
     };
     return (
-        <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
-            <div className="h-[69px] w-full"></div>
-            <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
+        <div className="w-full flex flex-col gap-4 bg-gray-50">
+            <div className="w-full"></div>
+            <div className="p-4 border-b w-full bg-gray-50 flex ">
                 <h1 className="text-xl font-bold tracking-tight">DASHBOARD</h1>
             </div>
-            <div className="px-4">
+            <div className="px-4 flex flex-col">
                 <div className="grid grid-cols-4 gap-4">
                     <BoxInfo
                         text="Số thành viên mới"
                         icon={<AiOutlineUserAdd size={22} />}
-                        number={data?.users[0]?.count}
+                        number={data?.countNewUser}
                         className="border-blue-500 text-white bg-blue-500"
                     />
                     <BoxInfo
@@ -71,12 +72,8 @@ const Dashboard = () => {
                             />
                         }
                         number={
-                            data?.totalSuccess?.length > 0
-                                ? formatMoney(
-                                      Math.round(
-                                          data?.totalSuccess[0]?.count * 23500
-                                      )
-                                  )
+                            data?.paid > 0
+                                ? formatMoney(parseInt(data.paid))
                                 : 0
                         }
                         className="border-green-500 text-white bg-green-500"
@@ -90,12 +87,8 @@ const Dashboard = () => {
                             />
                         }
                         number={
-                            data?.totalFailed?.length > 0
-                                ? formatMoney(
-                                      Math.round(
-                                          data?.totalFailed[0]?.count * 23500
-                                      )
-                                  )
+                            data?.unPaid > 0
+                                ? formatMoney(parseInt(data.unPaid))
                                 : 0
                         }
                         className="border-orange-500 text-white bg-orange-500"
@@ -103,16 +96,12 @@ const Dashboard = () => {
                     <BoxInfo
                         text="Số sản phẩm đã bán"
                         // icon={<img src="/dong.svg" className="h-6 object-contain" />}
-                        number={
-                            data?.soldQuantities?.length > 0
-                                ? data?.soldQuantities[0]?.count
-                                : 0
-                        }
+                        number={data?.sold > 0 ? data.sold : 0}
                         className="border-yellow-500 text-white bg-yellow-500"
                     />
                 </div>
-                <div className="mt-6 grid grid-cols-10 gap-4">
-                    <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative rounded-md flex-auto p-4">
+                <div className="mt-6 grid grid-cols-10 gap-4 w-[1230px]">
+                    <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative flex-1 rounded-md  p-4">
                         <div className="flex items-center justify-between">
                             <span className="font-bold flex items-center gap-8">
                                 <span>{`Thông kê doanh thu theo ${
@@ -181,13 +170,13 @@ const Dashboard = () => {
                                 </button>
                             </span>
                         </div>
-                        {data?.chartData && (
-                            <CustomChart
-                                customTime={customTime}
-                                isMonth={isMonth}
-                                data={data?.chartData}
-                            />
-                        )}
+                        {/* {data?.chartData && ( */}
+                        <CustomChart
+                            customTime={customTime}
+                            isMonth={isMonth}
+                            data={data?.chartData}
+                        />
+                        {/* )} */}
                     </div>
                     <div className="col-span-3 rounded-md border p-4">
                         <span className="font-bold gap-8">

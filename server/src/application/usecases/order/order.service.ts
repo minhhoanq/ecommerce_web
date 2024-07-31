@@ -260,4 +260,8 @@ export class OrderService implements IOrderService {
                 return null;
         }
     }
+
+    async getStatistical(): Promise<any> {
+        return await this._orderRepo.getStatistical();
+    }
 }

@@ -87,8 +87,6 @@ export class AuthController {
     }
 
     async updateUser(req: Request, res: Response, next: NextFunction) {
-        console.log("vo day ko vay");
-
         try {
             new SuccessResponse({
                 message: "OK!",
