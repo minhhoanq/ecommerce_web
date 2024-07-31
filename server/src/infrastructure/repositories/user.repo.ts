@@ -47,8 +47,20 @@ export class UserRepoImpl implements IUserRepository {
         });
     }
 
-    findAll(): Promise<User[]> {
-        throw new Error("Method not implemented.");
+    async findAll(): Promise<any[]> {
+        return await this._prisma.user.findMany({
+            where: {
+                roleId: 2,
+            },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                createdAt: true,
+            },
+        });
     }
 
     async findFirst(data: FindFirstUserDTO): Promise<User | null> {

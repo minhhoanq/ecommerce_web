@@ -173,6 +173,14 @@ export class OrderRepositoryImpl implements IOrderRepository {
             where "orderStatusId" = 4
         `;
 
+        const orderDate: any[] = await this._prisma.$queryRaw`
+                SELECT DATE(orders."createdAt") AS date, SUM(orders."total") AS sum
+                FROM orders
+                WHERE orders."createdAt" BETWEEN CURRENT_DATE - INTERVAL '15 days' AND CURRENT_DATE + 1 AND orders."orderStatusId" in (2, 3)
+                GROUP BY DATE(orders."createdAt")
+                ORDER BY DATE(orders."createdAt");
+            `;
+
         return {
             countNewUser: countNewUser[0].count.toString(),
             paid: paid[0].sum.toString(),
@@ -182,6 +190,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
                 complete: completeOrder[0]?.count.toString(),
                 cancel: cancelOrder[0]?.count.toString(),
             },
+            orderDate,
         };
     }
 }

@@ -103,80 +103,15 @@ const Dashboard = () => {
                 <div className="mt-6 grid grid-cols-10 gap-4 w-[1230px]">
                     <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative flex-1 rounded-md  p-4">
                         <div className="flex items-center justify-between">
-                            <span className="font-bold flex items-center gap-8">
-                                <span>{`Thông kê doanh thu theo ${
-                                    isMonth ? "tháng" : "ngày"
-                                }`}</span>
-                                <div className="flex items-center font-thin gap-8">
-                                    <span className="flex items-center gap-2">
-                                        <label htmlFor="from">Từ</label>
-                                        <input
-                                            type="date"
-                                            value={customTime.from}
-                                            onChange={(e) =>
-                                                setCustomTime((prev) => ({
-                                                    ...prev,
-                                                    from: e.target.value,
-                                                }))
-                                            }
-                                            id="from"
-                                        />
-                                    </span>
-                                    <span className="flex items-center gap-2">
-                                        <label htmlFor="from">Đến</label>
-                                        <input
-                                            type="date"
-                                            value={customTime.to}
-                                            onChange={(e) =>
-                                                setCustomTime((prev) => ({
-                                                    ...prev,
-                                                    to: e.target.value,
-                                                }))
-                                            }
-                                            id="to"
-                                        />
-                                    </span>
-                                    <button
-                                        type="button"
-                                        className={`px-4 py-2 rounded-md border-blue-500 text-blue-500 border`}
-                                        onClick={handleCustomTime}
-                                    >
-                                        Default
-                                    </button>
-                                </div>
-                            </span>
-                            <span className="flex items-center">
-                                <button
-                                    type="button"
-                                    className={`px-4 py-2 rounded-md border hover:border-main-blue ${
-                                        isMonth
-                                            ? ""
-                                            : "text-white font-semibold bg-main"
-                                    }`}
-                                    onClick={() => setIsMonth(false)}
-                                >
-                                    Ngày
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`px-4 py-2 rounded-md border hover:border-main-blue ${
-                                        isMonth
-                                            ? "text-white font-semibold bg-main"
-                                            : ""
-                                    }`}
-                                    onClick={() => setIsMonth(true)}
-                                >
-                                    Tháng
-                                </button>
-                            </span>
+                            Thống kê doanh thu
                         </div>
-                        {/* {data?.chartData && ( */}
-                        <CustomChart
-                            customTime={customTime}
-                            isMonth={isMonth}
-                            data={data?.chartData}
-                        />
-                        {/* )} */}
+                        {data?.orderDate && (
+                            <CustomChart
+                                customTime={customTime}
+                                isMonth={false}
+                                data={data?.orderDate}
+                            />
+                        )}
                     </div>
                     <div className="col-span-3 rounded-md border p-4">
                         <span className="font-bold gap-8">

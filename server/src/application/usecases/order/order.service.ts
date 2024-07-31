@@ -153,7 +153,10 @@ export class OrderService implements IOrderService {
 
         payload.paymentMethodId = 2;
 
+        console.log(orderItems);
+
         const response = await this.order(+userId, payload);
+        console.log("res", response);
 
         if (response.order) {
             const session = await stripe.checkout.sessions.create({

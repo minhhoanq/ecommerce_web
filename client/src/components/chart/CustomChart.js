@@ -7,25 +7,20 @@ import {
     getMonthInYear,
     getMonthsInRange,
 } from "ultils/helpers";
+import moment from "moment";
+
+// Sample mock data
 
 const CustomChart = ({ data, isMonth, customTime }) => {
     const [chartData, setChartData] = useState([]);
     useEffect(() => {
-        const number = isMonth
-            ? getMonthsInRange(customTime?.from, customTime?.to)
-            : getDaysInRange(customTime?.from, customTime?.to);
-        const daysInMonth = getDaysInMonth(customTime?.to, number);
-        const monthsInYear = getMonthInYear(customTime?.to, number);
-        const rawData = isMonth ? monthsInYear : daysInMonth;
-        const editedData = rawData.map((el) => {
+        const chartDataConvert = data.map((el) => {
             return {
-                sum: data?.some((i) => i.date === el)
-                    ? data.find((i) => i.date === el)?.sum
-                    : 0,
-                date: el,
+                date: moment(el.date)?.format("DD/MM/YYYY"),
+                sum: el.sum,
             };
         });
-        setChartData(editedData);
+        setChartData(chartDataConvert);
     }, [data]);
     const options = {
         responsive: true,
@@ -36,21 +31,16 @@ const CustomChart = ({ data, isMonth, customTime }) => {
                 ticks: { display: true },
                 grid: { color: "rgba(0,0,0,0.1)", drawTicks: false },
                 min:
-                    Math.min(
-                        ...chartData?.map((el) => Math.round(+el.sum * 23500))
-                    ) -
+                    Math.min(...chartData?.map((el) => Math.round(+el.sum))) -
                         5 <
                     0
                         ? 0
                         : Math.min(
-                              ...chartData?.map((el) =>
-                                  Math.round(+el.sum * 23500)
-                              )
+                              ...chartData?.map((el) => Math.round(+el.sum))
                           ) - 5,
                 max:
-                    Math.max(
-                        ...chartData?.map((el) => Math.round(+el.sum * 23500))
-                    ) + 5,
+                    Math.max(...chartData?.map((el) => Math.round(+el.sum))) +
+                    5,
                 border: { dash: [20, 0] },
             },
             x: {
@@ -76,7 +66,7 @@ const CustomChart = ({ data, isMonth, customTime }) => {
                         datasets: [
                             {
                                 data: chartData?.map((el) =>
-                                    Math.round(+el.sum * 23500)
+                                    Math.round(+el.sum)
                                 ),
                                 borderColor: "#e35050",
                                 tension: 0.2,

@@ -9,6 +9,7 @@ import {
 } from "../../dtos/user.dto";
 
 export interface IAuthService {
+    getAllUsers(): Promise<any[]>;
     me(body: { userId: number }): Promise<User | null>;
     signup(user: CreateUserDTO): Promise<boolean>;
     finalSignup(

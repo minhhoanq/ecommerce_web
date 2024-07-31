@@ -16,9 +16,18 @@ export class AuthController {
         this._authService = authService;
     }
 
-    async me(req: Request, res: Response, next: NextFunction) {
-        console.log("Vo day ko");
+    async getAllUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "OK!",
+                metadata: await this._authService.getAllUsers(),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 
+    async me(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
                 message: "OK!",

@@ -36,7 +36,7 @@ export const apiGetCurrent = () =>
     });
 export const apiGetUsers = (params) =>
     axios({
-        url: "/user/",
+        url: "/auth/",
         method: "get",
         params,
     });

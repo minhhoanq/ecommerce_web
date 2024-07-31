@@ -42,6 +42,10 @@ export class AuthService implements IAuthService {
         this._keyStoreService = keyStoreRepo;
     }
 
+    async getAllUsers(): Promise<any[]> {
+        return await this._userRepo.findAll();
+    }
+
     async me(body: { userId: number }): Promise<User | null> {
         const { userId } = body;
         const user: User | null = await this._userRepo.findById(userId);
