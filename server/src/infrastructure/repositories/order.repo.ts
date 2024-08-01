@@ -193,4 +193,32 @@ export class OrderRepositoryImpl implements IOrderRepository {
             orderDate,
         };
     }
+
+    async findAllOrders(): Promise<any> {
+        return await this._prisma.$queryRaw`
+            SELECT 
+                o.id AS "OrderId", 
+                u.username AS "user",
+                json_agg(
+                    json_build_object(
+                        'productname', sk."name",
+                        'productimage', p."image",
+                        'quantity', oi."quantity",
+                        'price', pr."price",
+                        'attributes', sk."attributes"
+                    )
+                ) AS "products",
+                o."total",
+                o."orderStatusId",
+                o."createdAt"
+            FROM orders o
+            JOIN users u ON o."userId" = u.id
+            JOIN orderitems oi ON o.id = oi."orderId"
+            JOIN skus sk ON oi."skuId" = sk.id
+            JOIN prices pr ON sk.id = pr."skuId"
+            JOIN products p ON sk."productId" = p.id
+            GROUP BY o.id, u.username
+            ORDER BY o.id;
+        `;
+    }
 }

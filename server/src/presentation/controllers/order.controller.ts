@@ -27,6 +27,24 @@ export class OrderController {
         }
     };
 
+    updateOrderStatus = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            new SuccessResponse({
+                message: "Update order successfully!",
+                metadata: await this._orderService.updateOrderStatus(
+                    +req.body.userId,
+                    +req.body.orderId
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     order = async (req: Request, res: Response, next: NextFunction) => {
         try {
             new Created({
@@ -103,6 +121,17 @@ export class OrderController {
             new SuccessResponse({
                 message: "Get statistical successfully!",
                 metadata: await this._orderService.getStatistical(),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            new SuccessResponse({
+                message: "Order successfully!",
+                metadata: await this._orderService.getAllOrders(),
             }).send(res);
         } catch (error) {
             next(error);

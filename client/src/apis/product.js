@@ -64,10 +64,10 @@ export const apiGetOrders = (params) =>
         params,
     });
 
-export const apiUpdateStatus = (oid, data) =>
+export const apiUpdateStatus = (data) =>
     axios({
-        url: "/order/status/" + oid,
-        method: "put",
+        url: "/order/update/status/",
+        method: "patch",
         data,
     });
 export const apiDeleteOrderByAdmin = (oid) =>

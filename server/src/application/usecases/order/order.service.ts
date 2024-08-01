@@ -88,6 +88,10 @@ export class OrderService implements IOrderService {
         };
     }
 
+    async updateOrderStatus(userId: number, orderId: number): Promise<any> {
+        return await this._orderRepo.updateStatus(userId, orderId);
+    }
+
     async order(userId: number, payload: any): Promise<any> {
         console.log("payload: ", payload);
 
@@ -266,5 +270,9 @@ export class OrderService implements IOrderService {
 
     async getStatistical(): Promise<any> {
         return await this._orderRepo.getStatistical();
+    }
+
+    async getAllOrders(): Promise<any> {
+        return await this._orderRepo.findAllOrders();
     }
 }

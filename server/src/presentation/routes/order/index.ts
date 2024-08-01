@@ -28,6 +28,13 @@ router.post(
     asyncHandler(controller.order.bind(controller))
 );
 
+router.patch(
+    "/update/status",
+    auth.authentication,
+    // access.GrantAccess("createOwn", "order"),
+    asyncHandler(controller.order.bind(controller))
+);
+
 router.post(
     "/checkout",
     auth.authentication,
@@ -35,6 +42,8 @@ router.post(
     // access.GrantAccess("createOwn", "order"),
     asyncHandler(controller.checkout.bind(controller))
 );
+
+router.get("/admin", asyncHandler(controller.getAllOrders.bind(controller)));
 
 router.get(
     "/",

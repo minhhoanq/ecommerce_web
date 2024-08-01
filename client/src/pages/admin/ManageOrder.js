@@ -40,9 +40,9 @@ const ManageOrder = () => {
             ...params,
             limit: process.env.REACT_APP_LIMIT,
         });
-        if (response.success) {
+        if (response.status === 200) {
             setCounts(response.counts);
-            setOrders(response.orders);
+            setOrders(response.metadata);
         }
     };
     const render = useCallback(() => {
@@ -79,22 +79,30 @@ const ManageOrder = () => {
             }
         });
     };
+
+    const handleStatusChange = (orderStatusId) => {
+        console.log(orderStatusId);
+        setValue("orderStatusId", orderStatusId);
+    };
+
     const handleUpdate = async () => {
-        const response = await apiUpdateStatus(editOrder._id, {
-            status: watch("status"),
+        const response = await apiUpdateStatus({
+            userId: orders.userId,
+            orderId: editOrder.id,
+            orderStatusId: watch("orderStatusId"),
         });
-        if (response.success) {
-            toast.success(response.mes);
+        if (response.status === 200) {
+            toast.success(response.message);
             setUpdate(!update);
             setEditOrder(null);
-        } else toast.error(response.mes);
+        } else toast.error(response.message);
     };
     return (
         <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
             <div className="h-[69px] w-full"></div>
             <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
-                <h1 className="text-3xl font-bold tracking-tight">
-                    Manage orders
+                <h1 className="text-xl font-bold tracking-tight mt-2">
+                    MANAGER ORDER
                 </h1>
                 {editOrder && (
                     <>
@@ -136,7 +144,7 @@ const ManageOrder = () => {
                     </thead>
                     <tbody>
                         {orders?.map((el, idx) => (
-                            <tr className="border-b" key={el._id}>
+                            <tr className="border-b" key={el.id}>
                                 <td className="text-center py-2">
                                     {(+params.get("page") > 1
                                         ? +params.get("page") - 1
@@ -146,56 +154,65 @@ const ManageOrder = () => {
                                         1}
                                 </td>
                                 <td className="text-center py-2">
-                                    {el.orderBy?.firstname +
-                                        " " +
-                                        el.orderBy?.lastname}
+                                    {el.username}
                                 </td>
                                 <td className="text-center py-2">
                                     <span className="max-w-[350px] flex flex-col gap-2">
-                                        {el.products?.map((n) => (
+                                        {el.products?.map((n, index) => (
                                             <span
-                                                key={n._id}
+                                                key={index}
                                                 className="w-full border-b flex items-center gap-2"
                                             >
                                                 <img
-                                                    src={n.thumbnail}
+                                                    src={n.productimage}
                                                     alt=""
                                                     className="w-12 h-12 object-cover border"
                                                 />
                                                 <span className="flex text-xs flex-col items-start gap-1">
                                                     <h3 className="font-semibold text-red-500">
-                                                        {n.title}
+                                                        {n.productname}
                                                     </h3>
-                                                    <span>{n.color}</span>
                                                     <span>
-                                                        {formatMoney(n.price)}
+                                                        {n.attributes.color}
                                                     </span>
-                                                    <span>
-                                                        {n.quantity + " items"}
-                                                    </span>
+                                                    <div className="flex space-x-4">
+                                                        <span>
+                                                            {formatMoney(
+                                                                n.price
+                                                            )}
+                                                        </span>
+                                                        <span>
+                                                            {n.quantity +
+                                                                " items"}
+                                                        </span>
+                                                    </div>
                                                 </span>
                                             </span>
                                         ))}
                                     </span>
                                 </td>
                                 <td className="text-center py-2">
-                                    {formatMoney(el.total * 23500) + " VND"}
+                                    {formatMoney(el.total) + " VND"}
                                 </td>
                                 <td className="text-center py-2">
                                     {editOrder?._id === el._id ? (
                                         <select
-                                            {...register("status")}
+                                            value={
+                                                watch("orderStatusId")
+                                                    ? watch("orderStatusId")
+                                                    : el.orderStatusId
+                                            } // Ensure this matches the value of the options
+                                            onChange={(e) =>
+                                                handleStatusChange(
+                                                    Number(e.target.value)
+                                                )
+                                            } // Handle state change if needed
                                             className="form-select"
                                         >
-                                            <option value="Cancelled">
-                                                Cancelled
-                                            </option>
-                                            <option value="Succeed">
-                                                Succeed
-                                            </option>
-                                            <option value="Pending">
-                                                Pending
-                                            </option>
+                                            <option value={1}>Pending</option>
+                                            <option value={2}>Paid</option>
+                                            <option value={3}>Completed</option>
+                                            <option value={4}>Cancelled</option>
                                         </select>
                                     ) : (
                                         el.status
@@ -208,7 +225,10 @@ const ManageOrder = () => {
                                     <span
                                         onClick={() => {
                                             setEditOrder(el);
-                                            setValue("status", el.status);
+                                            setValue(
+                                                "orderStatusId",
+                                                parseInt(el.orderStatusId)
+                                            );
                                         }}
                                         className="text-blue-500 hover:text-orange-500 inline-block hover:underline cursor-pointer px-1"
                                     >
@@ -216,7 +236,7 @@ const ManageOrder = () => {
                                     </span>
                                     <span
                                         onClick={() =>
-                                            handleDeleteProduct(el._id)
+                                            handleDeleteProduct(el.id)
                                         }
                                         className="text-blue-500 hover:text-orange-500 inline-block hover:underline cursor-pointer px-1"
                                     >

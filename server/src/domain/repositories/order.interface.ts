@@ -18,4 +18,5 @@ export interface IOrderRepository {
     findMany(userId: number): Promise<any>;
     findFirstOrderItem(orderItemId: number): Promise<any>;
     getStatistical(): Promise<any>;
+    findAllOrders(): Promise<any>;
 }
