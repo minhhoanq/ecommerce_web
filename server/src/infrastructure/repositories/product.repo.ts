@@ -23,7 +23,7 @@ export class ProductRepositoryImpl implements IProductRepository {
     attributeMapping: any = {
         1: "color",
         2: "ram",
-        3: "storage",
+        3: "inch",
         // Add more mappings as needed
     };
 
@@ -356,18 +356,37 @@ export class ProductRepositoryImpl implements IProductRepository {
         return products;
     }
 
-    async findAllVariations(slug: string): Promise<any> {
+    async findAllVariations(slug: string, category: string): Promise<any> {
+        let attributeQuery;
+        switch (category) {
+            case "camera":
+                attributeQuery = 1;
+                break;
+            case "smartphone":
+            case "laptop":
+            case "tablet":
+                attributeQuery = 2;
+                break;
+            case "television":
+                attributeQuery = 3;
+                break;
+            default:
+                break;
+        }
+
+        console.log(attributeQuery);
+
         const sku: any[] = await this._prisma.$queryRaw`
             SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
             JOIN skuattributes as sa ON sk.id = sa."skuId"
-            WHERE sk."slug" = ${slug} AND sa."attributeId" = 2;
+            WHERE sk."slug" = ${slug} AND sa."attributeId" = ${attributeQuery};
         `;
 
         const colors: any[] = await this._prisma.$queryRaw`
-        SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
-        JOIN skuattributes as sa ON sk.id = sa."skuId"
-        WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 1;
-    `;
+            SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 1;
+        `;
 
         const storages: any[] = await this._prisma.$queryRaw`
             SELECT DISTINCT sk."productId", sk."slug", sa."attributeValue" FROM skus as sk
@@ -375,14 +394,44 @@ export class ProductRepositoryImpl implements IProductRepository {
             WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 2;
         `;
 
+        const inchs: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT sk."productId", sk."slug", sa."attributeValue" FROM skus as sk
+            JOIN skuattributes as sa ON sk.id = sa."skuId"
+            WHERE sk."productId" = ${sku[0]?.productId} AND sa."attributeId" = 3;
+            `;
+
         return {
             sku,
             colors,
             storages,
+            inchs,
         };
     }
 
     async findProduct(slug: string): Promise<any> {
+        const category: any[] = await this._prisma.$queryRaw`
+            select DISTINCT c.id, c."name" from skus as sk
+            join products as pr on sk."productId" = pr.id
+            join categorybrands as cb on pr."categoryBrandId" = cb.id
+            join categories as c on cb."categoryId" = c.id
+            where sk."slug" = ${slug}
+        `;
+        let attributeIdQuery;
+        switch (category[0]?.id) {
+            case 1:
+            case 2:
+            case 3:
+                attributeIdQuery = 1;
+                break;
+            case 4:
+                attributeIdQuery = 3;
+                break;
+            default:
+                break;
+        }
+
+        console.log("attributeId: ", attributeIdQuery);
+
         const products: any[] = await this._prisma.$queryRaw`
             WITH filtered_skus AS (
                 SELECT sk.id
@@ -396,7 +445,7 @@ export class ProductRepositoryImpl implements IProductRepository {
             JOIN skuattributes as sa ON sk.id = sa."skuId"
             JOIN prices as pr ON sk.id = pr."skuId"
             JOIN inventories as i ON sk.id = i."skuId"
-            WHERE sa."skuId" IN (SELECT id FROM filtered_skus) AND sa."attributeId" = 1;
+            WHERE sa."skuId" IN (SELECT id FROM filtered_skus) AND sa."attributeId" = ${attributeIdQuery};
         `;
         const images: any[] = await this._prisma.imageProduct.findMany({
             where: {

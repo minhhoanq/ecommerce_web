@@ -113,6 +113,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
                         'id', oi.id,
                         'orderId', oi."orderId",
                         'productName', p."name",
+                        'image', p."image",
                         'slug', sk."slug",
                         'attributes', sk."attributes",
                         'quantity', oi."quantity",

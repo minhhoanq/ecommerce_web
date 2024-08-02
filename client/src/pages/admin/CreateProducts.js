@@ -10,6 +10,8 @@ import { IoImagesOutline } from "react-icons/io5";
 import { CiCirclePlus } from "react-icons/ci";
 import SmartphoneFrom from "components/form/SmartphoneFrom";
 import { uploadImages } from "apis/image";
+import TelevisionFrom from "components/form/TelevisionForm";
+import CameraFrom from "components/form/CameraForm";
 
 const defaultValues = {
     name: "",
@@ -27,6 +29,7 @@ const CreateProducts = () => {
     const [checkAttributes, setCheckAttributes] = useState({
         storage: false,
         color: false,
+        inch: false,
     });
 
     const {
@@ -287,9 +290,46 @@ const CreateProducts = () => {
                         </div>
                     )}
 
-                    {watch("skus") &&
+                    {[1, 2, 5].includes(+productType) &&
+                        watch("skus") &&
                         watch("skus").map((sku, index) => (
                             <SmartphoneFrom
+                                setAttributesCheck={(el) =>
+                                    setCheckAttributes(el)
+                                }
+                                checkAttributes={checkAttributes}
+                                key={index}
+                                sku={sku}
+                                index={index}
+                                onChange={(idx, data) => {
+                                    const updatedSKUs = [...watch("skus")];
+                                    updatedSKUs[idx] = data;
+                                    setValue("skus", updatedSKUs);
+                                }}
+                            />
+                        ))}
+                    {+productType === 3 &&
+                        watch("skus") &&
+                        watch("skus").map((sku, index) => (
+                            <CameraFrom
+                                setAttributesCheck={(el) =>
+                                    setCheckAttributes(el)
+                                }
+                                checkAttributes={checkAttributes}
+                                key={index}
+                                sku={sku}
+                                index={index}
+                                onChange={(idx, data) => {
+                                    const updatedSKUs = [...watch("skus")];
+                                    updatedSKUs[idx] = data;
+                                    setValue("skus", updatedSKUs);
+                                }}
+                            />
+                        ))}
+                    {+productType === 4 &&
+                        watch("skus") &&
+                        watch("skus").map((sku, index) => (
+                            <TelevisionFrom
                                 setAttributesCheck={(el) =>
                                     setCheckAttributes(el)
                                 }

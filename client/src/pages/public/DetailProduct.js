@@ -46,6 +46,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     const params = useParams();
     const { current } = useSelector((state) => state.user);
     const [colors, setColors] = useState([]);
+    const [inchs, setInchs] = useState([]);
     const [imageProducts, setImagesProducts] = useState([]);
     const [storages, setStorages] = useState([]);
     const [products, setProducts] = useState([]);
@@ -131,10 +132,11 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     //     if (response.success) setRelatedProducts(response.products);
     // };
     const fetchVariations = async () => {
-        const response = await apiGetVariations(params.title);
+        const response = await apiGetVariations(params.title, params.category);
         if (response.status === 200) {
             setStorages(response.metadata.storages);
             setColors(response.metadata.colors);
+            setInchs(response.metadata.inchs);
 
             console.log(response.metadata.sku[0].attributeValue);
 
@@ -372,74 +374,112 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                             ></div>
                         )}
                     </ul>
-                    <div className="my-4 flex gap-4">
-                        <span className="font-bold">Storage:</span>
-                        <div className="flex flex-wrap gap-4 items-center w-full">
-                            {storages?.map((el, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() =>
-                                        handleChooseVariations(el, index)
-                                    }
-                                    className={clsx(
-                                        "flex items-center gap-2 p-2 border cursor-pointer",
-                                        attribute.storage ===
-                                            el.attributeValue &&
-                                            "border-red-500"
-                                    )}
-                                >
-                                    {/* <img
+                    {storages.length > 0 && (
+                        <div className="my-4 flex gap-4">
+                            <span className="font-bold">Storage:</span>
+                            <div className="flex flex-wrap gap-4 items-center w-full">
+                                {storages?.map((el, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() =>
+                                            handleChooseVariations(el, index)
+                                        }
+                                        className={clsx(
+                                            "flex items-center gap-2 p-2 border cursor-pointer",
+                                            attribute.storage ===
+                                                el.attributeValue &&
+                                                "border-red-500"
+                                        )}
+                                    >
+                                        {/* <img
                                         src={el.thumbnail}
                                         alt="thumbnail"
                                         className="w-8 h-8 rounded-md object-cover"
                                     /> */}
-                                    <span className="flex flex-col">
-                                        <span>{el.attributeValue}</span>
-                                        {/* <span className="text-sm">
+                                        <span className="flex flex-col">
+                                            <span>{el.attributeValue}</span>
+                                            {/* <span className="text-sm">
                                             {el.originalPrice}
                                         </span> */}
-                                    </span>
-                                </div>
-                            ))}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                    <div className="my-4 flex gap-4">
-                        <span className="font-bold">Color:</span>
-                        <div className="flex flex-wrap gap-4 items-center w-full">
-                            {updatedColor?.map((el, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() =>
-                                        setAttribute((prev) => ({
-                                            ...prev,
-                                            color: el.attributeValue,
-                                        }))
-                                    }
-                                    className={clsx(
-                                        "flex items-center gap-2 p-2 border cursor-pointer",
-                                        attribute.color === el.attributeValue &&
-                                            "border-red-500",
-                                        el.isCommon
-                                            ? "common"
-                                            : "text-gray-200 hover:cursor-not-allowed"
-                                    )}
-                                    disabled={!el.isCommon}
-                                >
-                                    {/* <img
+                    )}
+                    {inchs.length > 0 && (
+                        <div className="my-4 flex gap-4">
+                            <span className="font-bold">Storage:</span>
+                            <div className="flex flex-wrap gap-4 items-center w-full">
+                                {inchs?.map((el, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() =>
+                                            handleChooseVariations(el, index)
+                                        }
+                                        className={clsx(
+                                            "flex items-center gap-2 p-2 border cursor-pointer",
+                                            attribute.storage ===
+                                                el.attributeValue &&
+                                                "border-red-500"
+                                        )}
+                                    >
+                                        {/* <img
                                         src={el.thumbnail}
                                         alt="thumbnail"
                                         className="w-8 h-8 rounded-md object-cover"
                                     /> */}
-                                    <span className="flex flex-col">
-                                        <span>{el.attributeValue}</span>
-                                        {/* <span className="text-sm">
+                                        <span className="flex flex-col">
+                                            <span>{el.attributeValue}</span>
+                                            {/* <span className="text-sm">
                                             {el.originalPrice}
                                         </span> */}
-                                    </span>
-                                </button>
-                            ))}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    {colors.length > 0 && (
+                        <div className="my-4 flex gap-4">
+                            <span className="font-bold">Color:</span>
+                            <div className="flex flex-wrap gap-4 items-center w-full">
+                                {updatedColor?.map((el, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() =>
+                                            setAttribute((prev) => ({
+                                                ...prev,
+                                                color: el.attributeValue,
+                                            }))
+                                        }
+                                        className={clsx(
+                                            "flex items-center gap-2 p-2 border cursor-pointer",
+                                            attribute.color ===
+                                                el.attributeValue &&
+                                                "border-red-500",
+                                            el.isCommon
+                                                ? "common"
+                                                : "text-gray-200 hover:cursor-not-allowed"
+                                        )}
+                                        disabled={!el.isCommon}
+                                    >
+                                        {/* <img
+                                        src={el.thumbnail}
+                                        alt="thumbnail"
+                                        className="w-8 h-8 rounded-md object-cover"
+                                    /> */}
+                                        <span className="flex flex-col">
+                                            <span>{el.attributeValue}</span>
+                                            {/* <span className="text-sm">
+                                            {el.originalPrice}
+                                        </span> */}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <div className="flex flex-col gap-8">
                         <div className="flex items-center gap-4">
                             <span className="font-semibold">Quantity</span>

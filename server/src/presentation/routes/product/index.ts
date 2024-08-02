@@ -66,7 +66,10 @@ router.get(
 );
 router.get("/", asyncHandler(controller.getProducts.bind(controller)));
 router.get("/search", asyncHandler(controller.searchProducts.bind(controller)));
-router.get("/:slug/variations", controller.getVariations.bind(controller));
+router.get(
+    "/varriant/:slug/:category",
+    controller.getVariations.bind(controller)
+);
 router.get(
     "/feedback/:slug",
     asyncHandler(controller.getFeedbackProductItem.bind(controller))

@@ -55,20 +55,33 @@ const Cart = ({ dispatch, navigate }) => {
                             <div className="flex gap-2 min-w-[300px]">
                                 <img
                                     src={
-                                        el.thumbnail ||
+                                        el.image ||
                                         `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
                                     }
                                     alt="thumb"
-                                    className="w-16 h-16 object-cover"
+                                    className="w-20 h-20 object-cover"
                                 />
-                                <div className="flex flex-col gap-1 w-full">
-                                    <span className="text-sm text-main">
-                                        {el.name}
-                                    </span>
-                                    <span className="text-[10px]">
-                                        {el.attributes.color} |{" "}
-                                        {el.attributes.ram}
-                                    </span>
+                                <div className="flex flex-col gap-1 w-full justify-between">
+                                    <div className="flex flex-col gap-1 w-ful">
+                                        <span className="text-sm text-main">
+                                            {el.name}
+                                        </span>
+                                        {el.attributes?.color && (
+                                            <span className="text-[10px] font-main">
+                                                {el.attributes.color}
+                                            </span>
+                                        )}
+                                        {el.attributes.ram && (
+                                            <span className="text-[10px] font-main">
+                                                {el.attributes.ram}
+                                            </span>
+                                        )}
+                                        {el.attributes.inch && (
+                                            <span className="text-[10px] font-main">
+                                                {el.attributes.inch}
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm">
                                             {formatMoney(el.price) + " VND"}

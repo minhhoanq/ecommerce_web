@@ -61,7 +61,7 @@ const DetailCart = ({ location, navigate }) => {
                         dfQuantity={el.quantity}
                         attributes={el.attributes}
                         name={el.name}
-                        // thumbnail={el.thumbnail}
+                        image={el.image}
                         salePrice={el.price}
                         id={el?.id}
                     />

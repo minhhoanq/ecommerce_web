@@ -22,7 +22,7 @@ export interface IProductService {
         filter: any;
     }): Promise<any>;
 
-    getVariations(slug: string): Promise<any>;
+    getVariations(slug: string, category: string): Promise<any>;
 
     getProduct(slug: string): Promise<any>;
     getFeedbackProductItem(slug: string): Promise<any>;

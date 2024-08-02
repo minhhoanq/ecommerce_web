@@ -109,8 +109,8 @@ export class ProductService implements IProductService {
         return data;
     }
 
-    async getVariations(slug: string): Promise<any> {
-        return await this._productRepo.findAllVariations(slug);
+    async getVariations(slug: string, category: string): Promise<any> {
+        return await this._productRepo.findAllVariations(slug, category);
     }
 
     async getProducts({

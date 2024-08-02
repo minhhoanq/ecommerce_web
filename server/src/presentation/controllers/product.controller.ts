@@ -156,7 +156,8 @@ export class ProductController {
             new SuccessResponse({
                 message: "getProducts successfully!",
                 metadata: await this._productService.getVariations(
-                    req.params.slug
+                    req.params.slug,
+                    req.params.category
                 ),
             }).send(res);
         } catch (error) {

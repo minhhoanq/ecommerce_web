@@ -10,7 +10,7 @@ const OrderItem = ({
     dfQuantity,
     salePrice,
     name,
-    thumbnail,
+    image,
     id,
 }) => {
     const [quantity, setQuantity] = useState(() => dfQuantity);
@@ -48,7 +48,7 @@ const OrderItem = ({
                 <div className="flex gap-2 px-4 py-3">
                     <img
                         src={
-                            // thumbnail |
+                            image ||
                             `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
                         }
                         alt="thumb"
@@ -57,8 +57,13 @@ const OrderItem = ({
                     <div className="flex flex-col items-start gap-1">
                         <span className="text-sm text-main">{name}</span>
                         <span className="text-[10px] font-main">
-                            {attributes.color} | {attributes.ram} |{" "}
-                            {attributes.storage}
+                            {attributes.color}
+                        </span>
+                        <span className="text-[10px] font-main">
+                            {attributes.ram}
+                        </span>
+                        <span className="text-[10px] font-main">
+                            {attributes.inch}
                         </span>
                     </div>
                 </div>

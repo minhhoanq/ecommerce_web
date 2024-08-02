@@ -170,7 +170,7 @@ const History = ({ navigate, location }) => {
                                                 <div>
                                                     <img
                                                         className="h-[70px]"
-                                                        src="https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png"
+                                                        src={item?.image}
                                                     />
                                                 </div>
                                                 <div className="text-left p-2">

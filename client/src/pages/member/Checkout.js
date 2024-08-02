@@ -127,7 +127,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                             <td className="">
                                                 <img
                                                     className="h-[100px]"
-                                                    src="https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png"
+                                                    src={el.image}
                                                 />
                                             </td>
                                             <td className="text-left p-2">

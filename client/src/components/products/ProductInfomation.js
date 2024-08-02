@@ -80,6 +80,8 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
         setTotalRatings(averageStar.toFixed(2));
     }, [feedbacks]);
 
+    console.log(typeof totalRatings);
+
     return (
         <div>
             <div className="flex items-center gap-2 relative bottom-[-1px]">
@@ -105,7 +107,9 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
             <div className="flex flex-col py-8 w-main">
                 <div className="flex border">
                     <div className="flex-4 flex-col flex items-center justify-center ">
-                        <span className="font-semibold text-3xl">{`${totalRatings}/5`}</span>
+                        <span className="font-semibold text-3xl">{`${
+                            +totalRatings > 0 ? totalRatings : 0
+                        }/5`}</span>
                         <span className="flex items-center gap-1">
                             {renderStarFromNumber(totalRatings)?.map(
                                 (el, index) => (
