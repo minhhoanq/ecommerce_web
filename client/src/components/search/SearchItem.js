@@ -3,6 +3,7 @@ import icons from "ultils/icons";
 import { colors } from "ultils/contants";
 import {
     createSearchParams,
+    useLocation,
     useNavigate,
     useParams,
     useSearchParams,
@@ -20,6 +21,7 @@ const SearchItem = ({
 }) => {
     const navigate = useNavigate();
     const { category } = useParams();
+    const location = useLocation();
     const [selected, setSelected] = useState([]);
     const [params] = useSearchParams();
     const [price, setPrice] = useState({
@@ -56,28 +58,40 @@ const SearchItem = ({
         if (type === "input") fetchBestPriceProduct();
     }, [type]);
 
-    useEffect(() => {
-        if (price.from && price.to && price.from > price.to)
-            alert("From price cannot greater than To price");
-    }, [price]);
+    // useEffect(() => {
+    //     if (price.from && price.to && price.from > price.to)
+    //         alert("From price cannot greater than To price");
+    // }, [price]);
 
-    const deboucePriceFrom = useDebounce(price.from, 500);
-    const deboucePriceTo = useDebounce(price.to, 500);
+    const deboucePriceFrom = useDebounce(price.from, 800);
+    const deboucePriceTo = useDebounce(price.to, 800);
     useEffect(() => {
-        // let param = [];
-        // for (let i of params.entries()) param.push(i);
-        // const queries = {};
-        // for (let i of param) queries[i[0]] = i[1];
-        // if (Number(price.from) > 0) queries.from = price.from;
-        // else delete queries.from;
-        // if (Number(price.to) > 0) queries.to = price.to;
-        // else delete queries.to;
-        // queries.page = 1;
-        // // navigate({
-        // //     pathname: `/${category}`,
-        // //     search: createSearchParams(queries).toString(),
-        // // });
-        setPriceChange({ from: deboucePriceFrom, to: deboucePriceTo });
+        console.log(deboucePriceFrom + " and " + deboucePriceTo);
+        if (
+            +deboucePriceFrom &&
+            +deboucePriceTo &&
+            +deboucePriceFrom >= +deboucePriceTo
+        ) {
+            alert("From price cannot greater than To price");
+            return;
+        }
+
+        let param = [];
+        for (let i of params.entries()) param.push(i);
+        const queriesPrice = {};
+        for (let i of param) queriesPrice[i[0]] = i[1];
+        if (Number(price.from) > 0) params.set("minPrice", price.from);
+        else params.delete("minPrice");
+        if (Number(price.to) > 0) params.set("maxPrice", price.to);
+        else params.delete("maxPrice");
+        params.set("page", 1);
+        console.log("params: ", params);
+        const queries = Object.fromEntries([...params]);
+
+        navigate({
+            pathname: location.pathname,
+            search: createSearchParams(queries).toString(),
+        });
     }, [deboucePriceFrom, deboucePriceTo]);
 
     return (
@@ -98,6 +112,7 @@ const SearchItem = ({
                                         e.stopPropagation();
                                         setSelected([]);
                                         changeActiveFitler(null);
+                                        setPrice({ from: "", to: "" });
                                     }}
                                     className="underline cursor-pointer hover:text-main"
                                 >

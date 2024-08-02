@@ -4,6 +4,7 @@ import {
     useSearchParams,
     createSearchParams,
     useNavigate,
+    useLocation,
 } from "react-router-dom";
 import {
     Breadcrumb,
@@ -25,6 +26,7 @@ const breakpointColumnsObj = {
 
 const Products = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [products, setProducts] = useState([]);
     const [count, setCount] = useState(0);
     const [categoryBrands, setCategoryBrands] = useState(null);
@@ -39,15 +41,12 @@ const Products = () => {
     const { category } = useParams();
 
     const fetchProductsByCategory = async (queries) => {
-        if (category && category !== "products") {
-            queries.category = category;
-        }
-        if (brand && brand !== "products") queries.brand = brand;
-        if (!category || category === "products") {
-            delete queries.brand;
-        }
+        navigate({
+            pathname: location.pathname,
+            search: createSearchParams(queries).toString(),
+        });
         queries.limit = 8;
-        // queries.page = 2;
+
         const response = await apiSearchProducts(queries);
         console.log(response);
         if (response.status === 200) {
@@ -59,7 +58,7 @@ const Products = () => {
     useEffect(() => {
         (async () => {
             const data =
-                category.charAt(0).toLocaleUpperCase() + category.slice(1);
+                category?.charAt(0).toLocaleUpperCase() + category?.slice(1);
             console.log(data);
             const res = await apiGetCategory(data);
             setCategoryBrands(res?.metadata?.categories[0]);
@@ -67,16 +66,26 @@ const Products = () => {
     }, []);
 
     useEffect(() => {
-        console.log(params);
-        console.log(category);
-        const queries = Object.fromEntries([...params]);
-        queries.brand = brand;
-        if (price.from !== "" && price.to !== "") {
-            queries.minPrice = price.from;
-            queries.maxPrice = price.to;
+        console.log("params");
+
+        if (category && category !== "products") {
+            params.set("category", category);
+            params.delete("brand");
+        }
+        if (brand && brand !== "products") {
+            params.set("brand", brand);
+        }
+        if (!category || category === "products") {
+            params.delete("category");
+            params.delete("brand");
         }
 
-        console.log(price);
+        const queries = Object.fromEntries([...params]);
+
+        // if (price.from !== "" && price.to !== "") {
+        //     queries.minPrice = price.from;
+        //     queries.maxPrice = price.to;
+        // }
 
         // delete queries.to;
         // delete queries.from;
@@ -84,6 +93,7 @@ const Products = () => {
         fetchProductsByCategory(q);
         window.scrollTo(0, 0);
     }, [params, brand, price, category]);
+
     const changeActiveFitler = useCallback(
         (name) => {
             if (activeClick === name) setActiveClick(null);
@@ -107,7 +117,6 @@ const Products = () => {
     //     }
     // }, [sort]);
 
-    console.log(categoryBrands);
     return (
         <div className="w-full">
             <div className="h-[81px] flex justify-center items-center bg-gray-100">
@@ -125,7 +134,10 @@ const Products = () => {
                             <div
                                 key={index}
                                 className="border p-2 cursor-pointer"
-                                onClick={() => setBrand(el.name)}
+                                onClick={() => {
+                                    setBrand(el.name);
+                                    params.set("page", 1);
+                                }}
                             >
                                 {el.name}
                             </div>
