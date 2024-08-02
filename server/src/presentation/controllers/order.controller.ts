@@ -37,7 +37,8 @@ export class OrderController {
                 message: "Update order successfully!",
                 metadata: await this._orderService.updateOrderStatus(
                     +req.body.userId,
-                    +req.body.orderId
+                    +req.body.orderId,
+                    +req.body.orderStatusId
                 ),
             }).send(res);
         } catch (error) {

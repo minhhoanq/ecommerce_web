@@ -26,6 +26,7 @@ const breakpointColumnsObj = {
 const Products = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [count, setCount] = useState(0);
     const [categoryBrands, setCategoryBrands] = useState(null);
     const [brand, setBrand] = useState(null);
     const [price, setPrice] = useState({
@@ -45,9 +46,14 @@ const Products = () => {
         if (!category || category === "products") {
             delete queries.brand;
         }
+        queries.limit = 8;
+        // queries.page = 2;
         const response = await apiSearchProducts(queries);
         console.log(response);
-        if (response.status === 200) setProducts(response?.metadata);
+        if (response.status === 200) {
+            setProducts(response?.metadata.result);
+            setCount(response?.metadata.total);
+        }
     };
 
     useEffect(() => {
@@ -175,9 +181,9 @@ const Products = () => {
                 )}
             </div>
             <div className="w-main m-auto my-4 flex justify-end">
-                <Pagination totalCount={products?.counts | 10} />
+                <Pagination totalCount={count || 10} />
             </div>
-            <div className="w-full h-[500px]"></div>
+            <div className="w-full h-[50px]"></div>
         </div>
     );
 };

@@ -41,7 +41,7 @@ const ManageOrder = () => {
             limit: process.env.REACT_APP_LIMIT,
         });
         if (response.status === 200) {
-            setCounts(response.counts);
+            setCounts(response.metadata.length);
             setOrders(response.metadata);
         }
     };
@@ -80,15 +80,15 @@ const ManageOrder = () => {
         });
     };
 
-    const handleStatusChange = (orderStatusId) => {
-        console.log(orderStatusId);
-        setValue("orderStatusId", orderStatusId);
-    };
-
     const handleUpdate = async () => {
+        console.log({
+            userId: editOrder.userId,
+            orderId: editOrder.orderId,
+            orderStatusId: watch("orderStatusId"),
+        });
         const response = await apiUpdateStatus({
-            userId: orders.userId,
-            orderId: editOrder.id,
+            userId: editOrder.userId,
+            orderId: editOrder.orderId,
             orderStatusId: watch("orderStatusId"),
         });
         if (response.status === 200) {
@@ -97,6 +97,9 @@ const ManageOrder = () => {
             setEditOrder(null);
         } else toast.error(response.message);
     };
+
+    console.log(editOrder);
+
     return (
         <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
             <div className="h-[69px] w-full"></div>
@@ -144,7 +147,7 @@ const ManageOrder = () => {
                     </thead>
                     <tbody>
                         {orders?.map((el, idx) => (
-                            <tr className="border-b" key={el.id}>
+                            <tr className="border-b" key={el.orderId}>
                                 <td className="text-center py-2">
                                     {(+params.get("page") > 1
                                         ? +params.get("page") - 1
@@ -195,18 +198,10 @@ const ManageOrder = () => {
                                     {formatMoney(el.total) + " VND"}
                                 </td>
                                 <td className="text-center py-2">
-                                    {editOrder?._id === el._id ? (
+                                    {editOrder &&
+                                    editOrder?.orderId === el.orderId ? (
                                         <select
-                                            value={
-                                                watch("orderStatusId")
-                                                    ? watch("orderStatusId")
-                                                    : el.orderStatusId
-                                            } // Ensure this matches the value of the options
-                                            onChange={(e) =>
-                                                handleStatusChange(
-                                                    Number(e.target.value)
-                                                )
-                                            } // Handle state change if needed
+                                            {...register("orderStatusId")}
                                             className="form-select"
                                         >
                                             <option value={1}>Pending</option>
@@ -215,7 +210,7 @@ const ManageOrder = () => {
                                             <option value={4}>Cancelled</option>
                                         </select>
                                     ) : (
-                                        el.status
+                                        el.orderStatusId
                                     )}
                                 </td>
                                 <td className="text-center py-2">
@@ -236,7 +231,7 @@ const ManageOrder = () => {
                                     </span>
                                     <span
                                         onClick={() =>
-                                            handleDeleteProduct(el.id)
+                                            handleDeleteProduct(el.orderId)
                                         }
                                         className="text-blue-500 hover:text-orange-500 inline-block hover:underline cursor-pointer px-1"
                                     >

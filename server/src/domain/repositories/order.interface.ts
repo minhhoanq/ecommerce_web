@@ -12,7 +12,11 @@ export interface IOrderRepository {
             }
         ]
     ): Promise<any>;
-    updateStatus(userId: number, orderId: number): Promise<any>;
+    updateStatus(
+        userId: number,
+        orderId: number,
+        orderStatusId: number
+    ): Promise<any>;
     delete(userId: number, orderId: number): Promise<any>;
     findFirst(userId: number, orderId: number): Promise<any>;
     findMany(userId: number): Promise<any>;

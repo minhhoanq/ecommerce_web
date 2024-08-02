@@ -64,14 +64,18 @@ export class OrderRepositoryImpl implements IOrderRepository {
         }
     }
 
-    async updateStatus(userId: number, orderId: number): Promise<any> {
+    async updateStatus(
+        userId: number,
+        orderId: number,
+        orderStatusId: number
+    ): Promise<any> {
         return await this._prisma.order.update({
             where: {
-                userId,
                 id: orderId,
+                userId,
             },
             data: {
-                orderStatusId: 2,
+                orderStatusId,
             },
         });
     }
@@ -197,8 +201,9 @@ export class OrderRepositoryImpl implements IOrderRepository {
     async findAllOrders(): Promise<any> {
         return await this._prisma.$queryRaw`
             SELECT 
-                o.id AS "OrderId", 
-                u.username AS "user",
+                o.id AS "orderId", 
+                u.id AS "userId",
+                u.username AS "username",
                 json_agg(
                     json_build_object(
                         'productname', sk."name",
@@ -217,7 +222,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             JOIN skus sk ON oi."skuId" = sk.id
             JOIN prices pr ON sk.id = pr."skuId"
             JOIN products p ON sk."productId" = p.id
-            GROUP BY o.id, u.username
+            GROUP BY o.id, u.username, u.id
             ORDER BY o.id;
         `;
     }

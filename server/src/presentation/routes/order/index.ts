@@ -32,7 +32,7 @@ router.patch(
     "/update/status",
     auth.authentication,
     // access.GrantAccess("createOwn", "order"),
-    asyncHandler(controller.order.bind(controller))
+    asyncHandler(controller.updateOrderStatus.bind(controller))
 );
 
 router.post(

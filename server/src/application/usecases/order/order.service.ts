@@ -88,8 +88,16 @@ export class OrderService implements IOrderService {
         };
     }
 
-    async updateOrderStatus(userId: number, orderId: number): Promise<any> {
-        return await this._orderRepo.updateStatus(userId, orderId);
+    async updateOrderStatus(
+        userId: number,
+        orderId: number,
+        orderStatusId: number
+    ): Promise<any> {
+        return await this._orderRepo.updateStatus(
+            userId,
+            orderId,
+            orderStatusId
+        );
     }
 
     async order(userId: number, payload: any): Promise<any> {
@@ -212,7 +220,7 @@ export class OrderService implements IOrderService {
             if (session.metadata) {
                 const userId = session.metadata.userId;
                 const orderId = session.metadata.orderId;
-                await this._orderRepo.updateStatus(+userId, +orderId);
+                await this._orderRepo.updateStatus(+userId, +orderId, 2);
                 // console.log(userId + " | " + orderId);
             }
         } else {
