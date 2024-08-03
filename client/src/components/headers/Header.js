@@ -41,16 +41,16 @@ const Header = () => {
                         <RiPhoneFill color="red" />
                         <span className="font-semibold">(+1800) 000 8808</span>
                     </span>
-                    <span>Mon-Sat 9:00AM - 8:00PM</span>
+                    <span>Thứ Hai - Thứ Bảy 9:00 sáng - 8:00 tối</span>
                 </div>
                 <div className="md:flex hidden flex-col items-center px-6 border-r">
                     <span className="flex gap-4 items-center">
                         <MdEmail color="red" />
                         <span className="font-semibold">
-                            SUPPORT@TADATHEMES.COM
+                            MH.TRANMINHHOANG@GMAIL.COM
                         </span>
                     </span>
-                    <span>Online Support 24/7</span>
+                    <span>Hỗ trợ trực tuyến 24/7</span>
                 </div>
                 {current && (
                     <Fragment>
@@ -74,9 +74,9 @@ const Header = () => {
                             id="profile"
                         >
                             <FaUserCircle size={20} color="red" />
-                            <span className="hidden md:inline-block">
-                                Profile
-                            </span>
+                            {/* <span className="hidden md:inline-block">
+                                Tài khoản của tôi
+                            </span> */}
                             {isShowOption && (
                                 <div
                                     onClick={(e) => e.stopPropagation()}
@@ -86,21 +86,21 @@ const Header = () => {
                                         className="p-2 w-full hover:bg-sky-100"
                                         to={`/${path.MEMBER}/${path.PERSONAL}`}
                                     >
-                                        Personal
+                                        Tài khoản của tôi
                                     </Link>
-                                    {+current.role === 1945 && (
+                                    {+current.roleId === 2 && (
                                         <Link
                                             className="p-2 w-full hover:bg-sky-100"
                                             to={`/${path.ADMIN}/${path.DASHBOARD}`}
                                         >
-                                            Admin workspace
+                                            Quản lí cửa hàng
                                         </Link>
                                     )}
                                     <span
                                         onClick={() => dispatch(logout())}
                                         className="p-2 w-full hover:bg-sky-100"
                                     >
-                                        Logout
+                                        Đăng xuất
                                     </span>
                                 </div>
                             )}

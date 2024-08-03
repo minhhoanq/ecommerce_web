@@ -38,7 +38,7 @@ const Home = ({ navigate }) => {
             </div>
             <div className="my-8 w-main m-auto">
                 <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
-                    NEW ARRIVALS
+                    ĐIỂM ĐẾN MỚI
                 </h3>
                 <div className="mt-4 hidden md:block mx-[-10px]">
                     <CustomSlider products={newProducts} />
@@ -60,7 +60,7 @@ const Home = ({ navigate }) => {
             </div>
             <div className="my-8 w-main m-auto">
                 <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
-                    HOT COLLECTIONS
+                    DANH MỤC HOT
                 </h3>
                 <div className="w-screen lg:hidden pr-4">
                     {categories

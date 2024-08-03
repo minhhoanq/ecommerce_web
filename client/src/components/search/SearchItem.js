@@ -72,7 +72,7 @@ const SearchItem = ({
             +deboucePriceTo &&
             +deboucePriceFrom >= +deboucePriceTo
         ) {
-            alert("From price cannot greater than To price");
+            alert("Giá bắt đầu phải nhỏ hơn giá kết thúc");
             return;
         }
 
@@ -153,9 +153,10 @@ const SearchItem = ({
                     {type === "input" && (
                         <div onClick={(e) => e.stopPropagation()}>
                             <div className="p-4 items-center flex justify-between gap-8 border-b">
-                                <span className="whitespace-nowrap">{`The highest price is ${Number(
-                                    bestPrice
-                                ).toLocaleString()} VND`}</span>
+                                <span className="whitespace-nowrap">
+                                    Lọc theo khoảng giá sẽ giúp bạn chọn sản
+                                    phẩm nhanh hơn
+                                </span>
                                 <span
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -164,14 +165,15 @@ const SearchItem = ({
                                     }}
                                     className="underline cursor-pointer hover:text-main"
                                 >
-                                    Reset
+                                    Bỏ lọc
                                 </span>
                             </div>
                             <div className="flex items-center p-2 gap-2">
                                 <div className="flex items-center gap-2">
-                                    <label htmlFor="from">From</label>
+                                    <label htmlFor="from">Từ</label>
                                     <input
                                         className="form-input"
+                                        placeholder="Ví dụ: 20000000"
                                         type="number"
                                         id="from"
                                         value={price.from}
@@ -184,9 +186,10 @@ const SearchItem = ({
                                     />
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <label htmlFor="to">To</label>
+                                    <label htmlFor="to">Đến</label>
                                     <input
                                         className="form-input"
+                                        placeholder="Ví dụ: 30000000"
                                         type="number"
                                         id="to"
                                         value={price.to}

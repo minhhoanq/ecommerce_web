@@ -12,6 +12,16 @@ import { useSelector } from "react-redux";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getDealDaily } from "store/products/productSlice";
 
+const product = {
+    time: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
+    data: {
+        title: "Samsung Galaxy M55 (12GB 256GB)",
+        price: 10750000,
+        thumb: "https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/d/i/dien-thoai-samsung-galaxy-m55.png",
+        totalRatings: 5, // Example rating
+    },
+};
+
 const { AiFillStar, AiOutlineMenu } = icons;
 let idInterval;
 const DealDaily = ({ dispatch }) => {
@@ -19,7 +29,8 @@ const DealDaily = ({ dispatch }) => {
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
     const [expireTime, setExpireTime] = useState(false);
-    const { dealDaily } = useSelector((s) => s.products);
+    // const { dealDaily } = useSelector((s) => s.products);
+    const [dealDaily, setDealDaily] = useState(product);
 
     const fetchDealDaily = async () => {
         const response = await apiGetProducts({
@@ -100,7 +111,7 @@ const DealDaily = ({ dispatch }) => {
                     <AiFillStar size={20} color="#DD1111" />
                 </span>
                 <span className="flex-8 font-semibold text-[20px] flex justify-center text-gray-700">
-                    DEAL DAILY
+                    ƯU ĐÃI HÀNG NGÀY
                 </span>
                 <span className="flex-1"></span>
             </div>
@@ -128,16 +139,16 @@ const DealDaily = ({ dispatch }) => {
             </div>
             <div className="px-4 mt-8">
                 <div className="flex justify-center gap-2 items-center mb-4">
-                    <Countdown unit={"Hours"} number={hour} />
-                    <Countdown unit={"Minutes"} number={minute} />
-                    <Countdown unit={"Seconds"} number={second} />
+                    <Countdown unit={"Giờ"} number={hour} />
+                    <Countdown unit={"Phút"} number={minute} />
+                    <Countdown unit={"Giây"} number={second} />
                 </div>
                 <button
                     type="button"
                     className="flex gap-2 items-center justify-center w-full bg-main hover:bg-gray-800 text-white font-medium py-2"
                 >
                     <AiOutlineMenu />
-                    <span>Options</span>
+                    <span>Tùy chọn</span>
                 </button>
             </div>
         </div>

@@ -37,7 +37,7 @@ const Products = () => {
     });
     const [activeClick, setActiveClick] = useState(null);
     const [params] = useSearchParams();
-    const [sort, setSort] = useState("");
+    const [sortPrice, setSortPrice] = useState("");
     const { category } = useParams();
 
     const fetchProductsByCategory = async (queries) => {
@@ -92,7 +92,7 @@ const Products = () => {
         const q = { ...queries };
         fetchProductsByCategory(q);
         window.scrollTo(0, 0);
-    }, [params, brand, price, category]);
+    }, [params, brand, price, category, sortPrice]);
 
     const changeActiveFitler = useCallback(
         (name) => {
@@ -101,21 +101,12 @@ const Products = () => {
         },
         [activeClick]
     );
-    const changeValue = useCallback(
-        (value) => {
-            setSort(value);
-        },
-        [sort]
-    );
 
-    // useEffect(() => {
-    //     if (sort) {
-    //         navigate({
-    //             pathname: `/${category}`,
-    //             search: createSearchParams({ sort }).toString(),
-    //         });
-    //     }
-    // }, [sort]);
+    const changeValue = (value) => {
+        setSortPrice(value);
+        params.set("sortPrice", value);
+        window.scrollTo(0, 0);
+    };
 
     return (
         <div className="w-full">
@@ -146,7 +137,7 @@ const Products = () => {
             </div>
             <div className="lg:w-main border p-4 flex lg:pr-4 pr-8 flex-col md:flex-row gap-4 md:justify-between mt-2 m-auto">
                 <div className="w-4/5 flex-auto flex flex-col gap-3">
-                    <span className="font-semibold text-sm">Filter by</span>
+                    <span className="font-semibold text-sm">Lọc theo</span>
                     <div className="flex items-center gap-4">
                         <SearchItem
                             setPriceChange={(el) =>
@@ -155,7 +146,7 @@ const Products = () => {
                                     to: el.to,
                                 })
                             }
-                            name="price"
+                            name="Khoảng giá"
                             activeClick={activeClick}
                             changeActiveFitler={changeActiveFitler}
                             type="input"
@@ -168,11 +159,11 @@ const Products = () => {
                     </div>
                 </div>
                 <div className="w-1/5 flex flex-col gap-3">
-                    <span className="font-semibold text-sm">Sort by</span>
+                    <span className="font-semibold text-sm">Sắp xếp theo</span>
                     <div className="w-full">
                         <InputSelect
                             changeValue={changeValue}
-                            value={sort}
+                            value={sortPrice}
                             options={sorts}
                         />
                     </div>

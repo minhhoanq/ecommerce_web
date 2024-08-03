@@ -9,17 +9,17 @@ const Footer = () => {
                 <div className="w-main flex items-center flex-col lg:flex-row justify-center lg:justify-between">
                     <div className="flex flex-col flex-1">
                         <span className="text-[20px] text-gray-100">
-                            SIGN UP TO NEWSLETTER
+                            ĐĂNG KÝ BẢN TIN
                         </span>
                         <small className="text-[13px] text-gray-300">
-                            Subscribe now and receive weekly newsletter
+                            Đăng ký ngay và nhận bản tin hàng tuần
                         </small>
                     </div>
                     <div className="flex-1 flex items-center">
                         <input
                             className="p-4 pr-0 rounded-l-full w-full bg-[#F04646] outline-none text-gray-100 placeholder:text-sm placeholder:text-gray-200 placeholder:italic placeholder:opacity-50"
                             type="text"
-                            placeholder="Email address"
+                            placeholder="Địa chỉ email"
                         />
                         <div className="h-[56px] w-[56px] bg-[#F04646] rounded-r-full flex items-center justify-center text-white">
                             <MdEmail size={18} />
@@ -28,47 +28,47 @@ const Footer = () => {
                 </div>
             </div>
             <div className="lg:h-[407px] w-full bg-gray-900 flex items-center justify-center text-white text-[13px]">
-                <div className="lg:w-main flex lg:flex-grow-0 flex">
+                <div className="lg:w-main lg:flex-grow-0 flex">
                     <div className="flex-2 flex flex-col gap-2">
                         <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-                            ABOUT US
+                            VỀ CHÚNG TÔI
                         </h3>
                         <span>
-                            <span>Address: </span>
+                            <span>Địa chỉ: </span>
                             <span className="opacity-70">
-                                474 Ontario St Toronto, ON M4X 1M7 Canada
+                                Thành phố Hồ Chí Minh
                             </span>
                         </span>
                         <span>
-                            <span>Phone: </span>
+                            <span>Số điện thoại: </span>
                             <span className="opacity-70">(+1234)56789xxx</span>
                         </span>
                         <span>
                             <span>Mail: </span>
                             <span className="opacity-70">
-                                tadathemes@gmail.com
+                                mh.tranminhhoang@gmail.com
                             </span>
                         </span>
                     </div>
                     <div className="flex-1 flex flex-col gap-2">
                         <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-                            INFORMATION
+                            THÔNG TIN
                         </h3>
-                        <span>Typography</span>
-                        <span>Gallery</span>
-                        <span>Store Location</span>
-                        <span>Today's Deals</span>
-                        <span>Contacts</span>
+                        <span>Kiểu chữ</span>
+                        <span>Phòng trưng bày</span>
+                        <span>Vị trí cửa hàng</span>
+                        <span>Ưu đãi hôm nay</span>
+                        <span>Liên hệ</span>
                     </div>
                     <div className="flex-1 flex flex-col gap-2">
                         <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-                            WHO WE ARE
+                            CHÚNG TA LÀ AI
                         </h3>
-                        <span>Help</span>
-                        <span>Free Shipping</span>
-                        <span>FAQs</span>
-                        <span>Return & Exchange</span>
-                        <span>Testimonials</span>
+                        <span>Hỗ trợ</span>
+                        <span>Miễn phí vận chuyển</span>
+                        <span>Hỏi đáp</span>
+                        <span>Hoàn trả & Đổi trả</span>
+                        <span>Giấy phép kinh doanh</span>
                     </div>
                     <div className="flex-1 flex flex-col gap-2">
                         <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">

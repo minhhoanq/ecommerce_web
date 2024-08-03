@@ -34,12 +34,12 @@ const TopHeaders = () => {
         <div className="h-[38px] w-full bg-main flex items-center justify-center">
             <div className="w-main flex items-center justify-between text-xs text-white">
                 <span className="hidden md:inline-block">
-                    ORDER ONLINE OR CALL US (+1800) 000 8808
+                    ĐẶT HÀNG TRỰC TUYẾN HOẶC GỌI CHO CHÚNG TÔI (+1800) 000 8808
                 </span>
                 {isLoggedIn && current ? (
                     <div className=" flex gap-4 w-full md:w-fit text-sm justify-between md:justify-start items-center">
                         {/* <span className="pl-2">{`Welcome, ${current?.lastname} ${current?.firstname}`}</span> */}
-                        <span className="pl-2">{`Welcome, ${current?.lastName} ${current?.firstName}`}</span>
+                        <span className="pl-2">{`Chào mừng, ${current?.lastName} ${current?.firstName}`}</span>
                         <span
                             onClick={() => dispatch(logout())}
                             className="hover:rounded-full hover:bg-gray-200 cursor-pointer hover:text-main p-2"
@@ -49,7 +49,7 @@ const TopHeaders = () => {
                     </div>
                 ) : (
                     <Link className="hover:text-gray-800" to={`/${path.LOGIN}`}>
-                        Sign In or Create Account
+                        Đăng nhập hoặc Tạo tài khoản
                     </Link>
                 )}
             </div>

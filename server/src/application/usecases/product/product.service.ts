@@ -147,7 +147,16 @@ export class ProductService implements IProductService {
 
     async searchProducts(query: any): Promise<any> {
         console.log("query: ", query);
-        const { q, category, brand, minPrice, maxPrice, page, limit } = query;
+        const {
+            q,
+            category,
+            brand,
+            minPrice,
+            maxPrice,
+            page,
+            limit,
+            sortPrice,
+        } = query;
 
         const skip = (+page - 1) * +limit;
 
@@ -200,6 +209,7 @@ export class ProductService implements IProductService {
             },
             from: skip || 0,
             size: limit || 8,
+            ...(sortPrice ? { sort: [{ price: { order: sortPrice } }] } : {}),
         };
         console.log(JSON.stringify(esQuery));
 

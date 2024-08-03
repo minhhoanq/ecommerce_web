@@ -4,12 +4,12 @@ import icons from "./icons";
 export const navigation = [
     {
         id: 1,
-        value: "HOME",
+        value: "TRANG CHỦ",
         path: `/${path.HOME}`,
     },
     {
         id: 2,
-        value: "PRODUCTS",
+        value: "SẢN PHẨM",
         path: `/${path.PRODUCTS}`,
     },
     {
@@ -19,12 +19,12 @@ export const navigation = [
     },
     {
         id: 4,
-        value: "OUR SERVICES",
+        value: "DỊCH VỤ CỦA CHÚNG TÔI",
         path: `/${path.OUR_SERVICES}`,
     },
     {
         id: 5,
-        value: "FAQs",
+        value: "HỎI ĐÁP",
         path: `/${path.FAQ}`,
     },
 ];
@@ -124,38 +124,13 @@ export const colors = [
 export const sorts = [
     {
         id: 1,
-        value: "-sold",
-        text: "Best selling",
+        value: "asc",
+        text: "Giá: Thấp đến cao",
     },
     {
         id: 2,
-        value: "-title",
-        text: "Alphabetically, A-Z",
-    },
-    {
-        id: 3,
-        value: "title",
-        text: "Alphabetically, Z-A",
-    },
-    {
-        id: 4,
-        value: "-price",
-        text: "Price, high to low",
-    },
-    {
-        id: 5,
-        value: "price",
-        text: "Price, low to high",
-    },
-    {
-        id: 6,
-        value: "-createdAt",
-        text: "Date, new to old",
-    },
-    {
-        id: 7,
-        value: "createdAt",
-        text: "Date, old to new",
+        value: "desc",
+        text: "GIá: Cao đến thấp",
     },
 ];
 
@@ -243,21 +218,21 @@ export const memberSidebar = [
     {
         id: 1,
         type: "SINGLE",
-        text: "Profile",
+        text: "Thông tin cá nhân",
         path: `/${path.MEMBER}/${path.PERSONAL}`,
         icon: <AiOutlineDashboard size={20} />,
     },
     {
         id: 2,
         type: "SINGLE",
-        text: "My cart",
+        text: "Giỏ hàng",
         path: `/${path.MEMBER}/${path.MY_CART}`,
         icon: <MdGroups size={20} />,
     },
     {
         id: 4,
         type: "SINGLE",
-        text: "Buy histories",
+        text: "Đơn đã mua",
         path: `/${path.MEMBER}/${path.HISTORY}`,
         icon: <RiBillLine size={20} />,
     },
