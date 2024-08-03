@@ -50,6 +50,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     const [imageProducts, setImagesProducts] = useState([]);
     const [storages, setStorages] = useState([]);
     const [products, setProducts] = useState([]);
+    const [currentProducts, setCurrentProducts] = useState([]);
     const [currentImage, setCurrentImage] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [relatedProducts, setRelatedProducts] = useState(null);
@@ -117,11 +118,12 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 )[0]?.skuid,
                 quantity: quantity,
             }));
+
             const matchedProduct = products.find(
                 (product) => product?.attributeValue === attribute?.color
             );
+            setCurrentProducts(matchedProduct);
             const quantityHTML = matchedProduct ? matchedProduct.quantity : 0;
-            console.log(quantityHTML);
             document.getElementById(
                 "quantityDisplay"
             ).textContent = `In stock: ${quantityHTML}`;
@@ -131,6 +133,9 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     //     const response = await apiGetProducts({ category });
     //     if (response.success) setRelatedProducts(response.products);
     // };
+
+    console.log(currentProducts);
+
     const fetchVariations = async () => {
         const response = await apiGetVariations(params.title, params.category);
         if (response.status === 200) {
@@ -242,10 +247,10 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 <div className="h-[81px] flex justify-center items-center bg-gray-100">
                     <div ref={nameRef} className="w-main">
                         <h3 className="font-semibold">
-                            {currentProduct.slug || products?.slug}
+                            {currentProducts?.name}
                         </h3>
                         <Breadcrumb
-                            title={currentProduct.name || products?.name}
+                            title={currentProduct?.name}
                             category={category}
                         />
                     </div>
@@ -336,10 +341,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                 >
                     <div className="flex items-center justify-between">
                         <h2 className="text-[30px] font-semibold">{`${formatMoney(
-                            fotmatPrice(
-                                currentProduct.originalPrice ||
-                                    products[0]?.price
-                            )
+                            fotmatPrice(currentProducts?.price)
                         )} VNĐ`}</h2>
                         <span
                             className="text-sm text-main"
@@ -357,13 +359,13 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                         } pieces)`}</span>
                     </div>
                     <ul className="list-square text-sm text-gray-500 pl-4">
-                        {products?.description?.length > 1 &&
+                        {currentProducts?.desc?.length > 1 &&
                             products?.description?.map((el) => (
                                 <li className="leading-6" key={el}>
                                     {el}
                                 </li>
                             ))}
-                        {products?.description?.length === 1 && (
+                        {currentProducts?.desc?.length === 1 && (
                             <div
                                 className="text-sm line-clamp-[10] mb-8"
                                 dangerouslySetInnerHTML={{
