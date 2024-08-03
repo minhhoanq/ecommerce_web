@@ -249,8 +249,9 @@ export class OrderService implements IOrderService {
         return await this._orderRepo.findFirst(userId, orderId);
     }
 
-    async getOrders(userId: number): Promise<any> {
-        return await this._orderRepo.findMany(userId);
+    //phan trang
+    async getOrders(userId: number, query: any): Promise<any> {
+        return await this._orderRepo.findMany(userId, query);
     }
 
     async checkInfoFeedback(data: {

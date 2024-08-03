@@ -19,7 +19,7 @@ export interface IOrderRepository {
     ): Promise<any>;
     delete(userId: number, orderId: number): Promise<any>;
     findFirst(userId: number, orderId: number): Promise<any>;
-    findMany(userId: number): Promise<any>;
+    findMany(userId: number, query: any): Promise<any>;
     findFirstOrderItem(orderItemId: number): Promise<any>;
     getStatistical(): Promise<any>;
     findAllOrders(): Promise<any>;

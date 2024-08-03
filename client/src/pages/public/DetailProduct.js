@@ -126,7 +126,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             const quantityHTML = matchedProduct ? matchedProduct.quantity : 0;
             document.getElementById(
                 "quantityDisplay"
-            ).textContent = `In stock: ${quantityHTML}`;
+            ).textContent = `${quantityHTML} sản phẩm có sẵn`;
         }
     }, [attribute, quantity]);
     // const fetchProducts = async () => {
@@ -134,7 +134,11 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     //     if (response.success) setRelatedProducts(response.products);
     // };
 
-    console.log(currentProducts);
+    useEffect(() => {
+        if (quantity >= currentProducts?.quantity) {
+            setQuantity(currentProducts?.quantity);
+        }
+    }, [currentProducts]);
 
     const fetchVariations = async () => {
         const response = await apiGetVariations(params.title, params.category);
@@ -172,20 +176,27 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
         (number) => {
             if (!Number(number) || Number(number) < 1) {
                 return;
+            } else if (Number(number) >= currentProducts.quantity) {
+                setQuantity(currentProducts.quantity);
             } else {
                 setQuantity(number);
             }
         },
         [quantity]
     );
-    const handleChangeQuantity = useCallback(
-        (flag) => {
-            if (flag === "minus" && quantity === 1) return;
-            if (flag === "minus") setQuantity((prev) => +prev - 1);
-            if (flag === "plus") setQuantity((prev) => +prev + 1);
-        },
-        [quantity]
-    );
+    const handleChangeQuantity = (flag) => {
+        if (quantity >= currentProducts.quantity) {
+            setQuantity(currentProducts.quantity);
+            return;
+        }
+        if (flag === "minus" && quantity === 1) return;
+        if (flag === "minus") setQuantity((prev) => +prev - 1);
+        // if (flag === "plus" && quantity >= currentProducts.quantity) {
+        //     setQuantity(currentProducts.quantity);
+        //     return;
+        // }
+        if (flag === "plus") setQuantity((prev) => +prev + 1);
+    };
 
     const updatedColor = colors.map((color) => ({
         ...color,
@@ -354,9 +365,9 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                 <span key={index}>{el}</span>
                             )
                         )}
-                        <span className="text-sm text-main italic">{`(Sold: ${
+                        <span className="text-sm text-main italic">{`(Đã bán: ${
                             products?.sold || 23
-                        } pieces)`}</span>
+                        })`}</span>
                     </div>
                     <ul className="list-square text-sm text-gray-500 pl-4">
                         {currentProducts?.desc?.length > 1 &&
@@ -378,7 +389,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     </ul>
                     {storages.length > 0 && (
                         <div className="my-4 flex gap-4">
-                            <span className="font-bold">Storage:</span>
+                            <span className="font-bold">Cấu hình:</span>
                             <div className="flex flex-wrap gap-4 items-center w-full">
                                 {storages?.map((el, index) => (
                                     <div
@@ -411,7 +422,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     )}
                     {inchs.length > 0 && (
                         <div className="my-4 flex gap-4">
-                            <span className="font-bold">Storage:</span>
+                            <span className="font-bold">Màn hình:</span>
                             <div className="flex flex-wrap gap-4 items-center w-full">
                                 {inchs?.map((el, index) => (
                                     <div
@@ -444,7 +455,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     )}
                     {colors.length > 0 && (
                         <div className="my-4 flex gap-4">
-                            <span className="font-bold">Color:</span>
+                            <span className="font-bold">Màu:</span>
                             <div className="flex flex-wrap gap-4 items-center w-full">
                                 {updatedColor?.map((el, index) => (
                                     <button
@@ -484,7 +495,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     )}
                     <div className="flex flex-col gap-8">
                         <div className="flex items-center gap-4">
-                            <span className="font-semibold">Quantity</span>
+                            <span className="font-semibold">Số lượng</span>
                             <SelectQuantity
                                 quantity={quantity}
                                 handleQuantity={handleQuantity}
@@ -492,7 +503,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                             />
                         </div>
                         <Button handleOnClick={handleAddToCart} fw>
-                            Add to Cart
+                            Thêm vào giỏ hàng
                         </Button>
                     </div>
                 </div>

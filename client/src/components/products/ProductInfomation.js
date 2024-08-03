@@ -73,7 +73,7 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
 
     useEffect(() => {
         socket?.on("serverComment", (msg) => {
-            setFeedback((prev) => [...prev, { ...msg }]);
+            setFeedback((prev) => [{ ...msg }, ...prev]);
         });
 
         // Cleanup khi component unmount
@@ -114,7 +114,7 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                     </span>
                 ))}
             </div>
-            <div className="w-full border p-4">
+            <div className="w-full border p-4 whitespace-pre-line">
                 {productInfoTabs.some((el) => el.id === activedTab) &&
                     productInfoTabs.find((el) => el.id === activedTab)?.content}
             </div>
@@ -132,7 +132,7 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                                 )
                             )}
                         </span>
-                        <span className="text-sm">{`${feedbacks?.length} reviewers and commentors`}</span>
+                        <span className="text-sm">{`${feedbacks?.length} người đánh giá và phản hồi`}</span>
                     </div>
                     <div className="flex-6 flex gap-2 flex-col p-4">
                         {Array.from(Array(5).keys())
@@ -163,13 +163,14 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                             updatedAt={el?.createdAt}
                             comment={el?.content}
                             name={`${el?.user.username}`}
+                            avatar={el?.user.avatar}
                             images={el?.imageFeedbacks}
                         />
                     ))}
                     {feedbacks.length > 0 && (
                         <PaginationFeedback
                             currentPage={currentPage}
-                            totalPages={feedbacks.length / 4}
+                            totalPages={Math.ceil(feedbacks.length / 4)}
                             onPageChange={setCurrentPage}
                         />
                     )}

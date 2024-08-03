@@ -5,7 +5,7 @@ import { CiStar } from "react-icons/ci";
 import { IoImagesOutline } from "react-icons/io5";
 import Button from "components/buttons/Button";
 import moment from "moment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showFeedback, showModal } from "store/app/appSlice";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -18,6 +18,7 @@ const SOCKET_SERVER_URL = "http://localhost:7000";
 const InputFeedback = (props) => {
     const orderItem = props.item;
     const dispatch = useDispatch();
+    const { current } = useSelector((state) => state.user);
 
     const [socket, setSocket] = useState();
     const [star, setStar] = useState(null);
@@ -85,7 +86,7 @@ const InputFeedback = (props) => {
     const handleFeedback = async (data) => {
         // const data = { star, comment };
         // setValue("star", star);
-        data.userId = 1;
+        data.userId = current.id;
         data.orderItemId = orderItem.id;
         data.images = preview;
         console.log(data);

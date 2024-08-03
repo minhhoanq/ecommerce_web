@@ -105,7 +105,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
         `;
     }
 
-    async findMany(userId: number): Promise<any> {
+    async findMany(userId: number, query: any): Promise<any> {
         const orders: any[] = await this._prisma.$queryRaw`
             SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
             json_agg(
@@ -134,7 +134,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             GROUP BY
                 o.id
             ORDER BY o."createdAt" DESC
-            LIMIT 7
+            LIMIT 
             `;
 
         return orders;
