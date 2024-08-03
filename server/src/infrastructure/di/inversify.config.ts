@@ -40,6 +40,8 @@ import { OrderController } from "../../presentation/controllers/order.controller
 import { OrderRepositoryImpl } from "../repositories/order.repo";
 import { OrderService } from "../../application/usecases/order/order.service";
 import { IOrderService } from "../../application/usecases/order/order.interface";
+import { InventoryRepositoryImpl } from "../repositories/inventory.repo";
+import { IInventoryRepository } from "../../domain/repositories/inventory.inteface";
 
 const container = new Container();
 
@@ -89,5 +91,8 @@ container
 container.bind<IOrderRepository>(TYPES.OrderRepository).to(OrderRepositoryImpl);
 container.bind<IOrderService>(TYPES.OrderService).to(OrderService);
 container.bind(TYPES.OrderController).to(OrderController);
-
+//Inventory
+container
+    .bind<IInventoryRepository>(TYPES.InventoryRepository)
+    .to(InventoryRepositoryImpl);
 export { container };

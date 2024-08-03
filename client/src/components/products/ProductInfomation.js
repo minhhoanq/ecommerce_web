@@ -8,11 +8,13 @@ import { showModal } from "../../store/app/appSlice";
 import Swal from "sweetalert2";
 import path from "../../ultils/path";
 import { useNavigate, useParams } from "react-router-dom";
+import PaginationFeedback from "components/pagination/PaginationFeedback";
 
 const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
     const [activedTab, setActivedTab] = useState(1);
     const [feedbacks, setFeedback] = useState([]);
     const [totalRatings, setTotalRatings] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
@@ -55,6 +57,19 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
             setFeedback(res.metadata);
         })();
     }, []);
+    const limit = 4;
+
+    // Function to paginate data
+    const paginate = (data, page, limit) => {
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        return data.slice(start, end);
+    };
+
+    // Example usage
+    const paginatedData = paginate(feedbacks, currentPage, limit);
+
+    console.log(paginatedData);
 
     useEffect(() => {
         socket?.on("serverComment", (msg) => {
@@ -141,7 +156,7 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                     <Button handleOnClick={handleVoteNow}>Vote now!</Button>
                 </div> */}
                 <div className="flex flex-col gap-4 pt-4">
-                    {feedbacks?.map((el, index) => (
+                    {paginatedData?.map((el, index) => (
                         <Comment
                             key={index}
                             star={el?.star}
@@ -151,6 +166,13 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                             images={el?.imageFeedbacks}
                         />
                     ))}
+                    {feedbacks.length > 0 && (
+                        <PaginationFeedback
+                            currentPage={currentPage}
+                            totalPages={feedbacks.length / 4}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
                 </div>
             </div>
         </div>

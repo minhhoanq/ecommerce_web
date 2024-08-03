@@ -1,6 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { IInventoryRepository } from "../../domain/repositories/inventory.inteface";
+import "reflect-metadata";
+import { injectable } from "inversify";
+import {
+    JsonArray,
+    JsonObject,
+    JsonValue,
+} from "@prisma/client/runtime/library";
 
+@injectable()
 export class InventoryRepositoryImpl implements IInventoryRepository {
     private _prisma: PrismaClient;
 
@@ -25,23 +33,32 @@ export class InventoryRepositoryImpl implements IInventoryRepository {
         });
 
         if (!inventoryItem) {
-            throw new Error("Not enough stock or item not found");
+            throw new Error(
+                "Đã có sự thay đổi, vui lòng quay lại giỏ hàng để kiểm tra!"
+            );
         }
 
-        const update = {
-            stock: {
-                decrement: quantity,
-            },
-            reservations: {
-                userId,
-                quantity,
-                createdAt: new Date(),
-            },
+        let currentReservations: JsonArray = [];
+        if (Array.isArray(inventoryItem.reservations)) {
+            currentReservations = inventoryItem.reservations as JsonArray;
+        }
+
+        // Tạo bản ghi đặt hàng mới
+        const newReservation: JsonObject = {
+            userId,
+            quantity,
+            createdAt: new Date().toISOString(),
         };
 
+        // Cập nhật tồn kho và reservations
         const updateInventory = await this._prisma.inventory.update({
-            where: { id: inventoryItem.id }, // Use unique identifier
-            data: update,
+            where: { id: inventoryItem.id }, // Sử dụng id duy nhất
+            data: {
+                stock: {
+                    decrement: quantity,
+                },
+                reservations: [...currentReservations, newReservation],
+            },
         });
 
         return updateInventory;

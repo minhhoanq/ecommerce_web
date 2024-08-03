@@ -36,6 +36,9 @@ class FeedbackRepository {
                     },
                 },
             },
+            orderBy: {
+                createdAt: "desc",
+            },
         });
     }
 }

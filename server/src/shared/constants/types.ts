@@ -33,6 +33,8 @@ const TYPES = {
     OrderRepository: Symbol.for("OrderRepository"),
     OrderService: Symbol.for("OrderService"),
     OrderController: Symbol.for("OrderController"),
+    //Inventory
+    InventoryRepository: Symbol.for("InventoryRepository"),
 };
 
 export { TYPES };

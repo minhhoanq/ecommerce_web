@@ -13,6 +13,7 @@ import { ICartItemRepository } from "../../../domain/repositories/cartItem.inter
 import { acquireLock, releaseLock } from "../redis/redis.service";
 import { IUserRepository } from "../../../domain/repositories/user.interface";
 import Stripe from "stripe";
+import { IInventoryRepository } from "../../../domain/repositories/inventory.inteface";
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY as string);
 
 @injectable()
@@ -22,6 +23,7 @@ export class OrderService implements IOrderService {
     private _cartItemRepo: ICartItemRepository;
     private _productItemRepo: IProductItemRepository;
     private _userRepo: IUserRepository;
+    private _invenRepo: IInventoryRepository;
 
     constructor(
         @inject(TYPES.OrderRepository) checkoutRepo: IOrderRepository,
@@ -29,13 +31,15 @@ export class OrderService implements IOrderService {
         @inject(TYPES.CartItemRepository) cartItemRepo: ICartItemRepository,
         @inject(TYPES.ProductItemRepository)
         productItemRepo: IProductItemRepository,
-        @inject(TYPES.UserRepository) userRepo: IUserRepository
+        @inject(TYPES.UserRepository) userRepo: IUserRepository,
+        @inject(TYPES.InventoryRepository) invenRepo: IInventoryRepository
     ) {
         this._orderRepo = checkoutRepo;
         this._cartRepo = cartRepo;
         this._productItemRepo = productItemRepo;
         this._cartItemRepo = cartItemRepo;
         this._userRepo = userRepo;
+        this._invenRepo = invenRepo;
     }
 
     //checkout review all product items for user
@@ -113,7 +117,11 @@ export class OrderService implements IOrderService {
 
         // payload.listItems;
 
-        // const products = orderItems;
+        const products = orderItems;
+        for (let i = 0; i < products.length; i++) {
+            const { id, quantity } = products[i];
+            await this._invenRepo.revervation(id, quantity, userId);
+        }
         // const acquireProduct: boolean[] = [];
         // for (let i = 0; i < products.length; i++) {
         //     const { id, quantity } = products[i];
@@ -142,6 +150,7 @@ export class OrderService implements IOrderService {
             checkoutOrder.total,
             orderItems
         );
+
         if (!order) {
             return false;
         }
