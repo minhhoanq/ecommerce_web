@@ -106,8 +106,8 @@ const Login = () => {
                 <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col justify-center items-center">
                     <div className="bg-white w-[90%] max-w-[500px] rounded-md p-8">
                         <h4 className="mb-4">
-                            We sent a code to your mail. Please check your mail
-                            and enter your code:
+                            Chúng tôi đã gửi mã xác nhận cho bạn, vui lòng kiểm
+                            tra email và nhập mã tại đây:
                         </h4>
                         <input
                             type="text"
@@ -120,7 +120,7 @@ const Login = () => {
                             className="px-4 py-2 mt-4 mx-auto bg-blue-500 font-semibold text-white rounded-md ml-4"
                             onClick={finalRegister}
                         >
-                            Submit
+                            XÁC NHẬN
                         </button>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ const Login = () => {
             {isForgotPassword && (
                 <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center px-4 py-8 z-50">
                     <div className="flex w-full flex-col gap-4">
-                        <label htmlFor="email">Enter your email:</label>
+                        <label htmlFor="email">Email của bạn:</label>
                         <input
                             type="text"
                             id="email"
@@ -143,13 +143,13 @@ const Login = () => {
                                 handleOnClick={handleForgotPassword}
                                 style="px-4 py-2 rounded-md text-white bg-blue-500 text-semibold my-2"
                             >
-                                Submit
+                                XÁC NHẬN
                             </Button>
                             <Button
                                 name="Back"
                                 handleOnClick={() => setIsForgotPassword(false)}
                             >
-                                Back
+                                TRỞ VỀ
                             </Button>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ const Login = () => {
             <div className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center flex">
                 <div className="p-8 bg-white flex flex-col items-center rounded-md md:min-w-[500px]">
                     <h1 className="text-[28px] font-semibold text-main mb-8">
-                        {isRegister ? "Register" : "Login"}
+                        {isRegister ? "TẠO TÀI KHOẢN" : "ĐĂNG NHẬP"}
                     </h1>
                     {isRegister && (
                         <InputField
@@ -212,7 +212,7 @@ const Login = () => {
                         fullWidth
                     />
                     <Button handleOnClick={handleSubmit} fw>
-                        {isRegister ? "Register" : "Login"}
+                        {isRegister ? "TẠO TÀI KHOẢN" : "ĐĂNG NHẬP"}
                     </Button>
                     <div className="flex items-center justify-between my-2 w-full text-sm">
                         {!isRegister && (
@@ -220,7 +220,7 @@ const Login = () => {
                                 onClick={() => setIsForgotPassword(true)}
                                 className="text-blue-500 hover:underline cursor-pointer"
                             >
-                                Forgot your account?
+                                Quên mật khẩu?
                             </span>
                         )}
                         {!isRegister && (
@@ -228,7 +228,7 @@ const Login = () => {
                                 className="text-blue-500 hover:underline cursor-pointer"
                                 onClick={() => setIsRegister(true)}
                             >
-                                Create account
+                                Tạo tài khoản
                             </span>
                         )}
                         {isRegister && (
@@ -236,7 +236,7 @@ const Login = () => {
                                 className="text-blue-500 hover:underline cursor-pointer w-full text-center"
                                 onClick={() => setIsRegister(false)}
                             >
-                                Go login
+                                Đi tới đăng nhập
                             </span>
                         )}
                     </div>
@@ -244,7 +244,7 @@ const Login = () => {
                         className="text-blue-500 text-sm hover:underline cursor-pointer"
                         to={`/${path.HOME}`}
                     >
-                        Go home?
+                        Về trang chủ?
                     </Link>
                 </div>
             </div>

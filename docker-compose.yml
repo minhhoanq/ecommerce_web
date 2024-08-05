@@ -1,0 +1,173 @@
+version: "3.8"
+services:
+    zookeeper:
+        container_name: zookeeper-cntr
+        image: confluentinc/cp-zookeeper:7.2.0
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        networks:
+            - kafka_elk_nw
+
+    kafka:
+        container_name: kafka-cntr
+        image: confluentinc/cp-kafka:7.2.0
+        depends_on:
+            - zookeeper
+        ports:
+            - 29092:29092
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper-cntr:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-cntr:9092,PLAINTEXT_HOST://localhost:29092
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_ADVERTISED_HOST_NAME: localhost
+        networks:
+            - kafka_elk_nw
+        healthcheck:
+            test: nc -vz kafka-cntr 9092 || exit -1
+            # start_period: 15s
+            interval: 5s
+            timeout: 10s
+            retries: 10
+
+    elasticsearch:
+        container_name: elasticsearch-cntr
+        image: elasticsearch:7.13.1
+        environment:
+            - cluster.name=kafka-cluster
+            - bootstrap.memory_lock=true
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - xpack.security.enabled=false
+            - xpack.license.self_generated.type=basic
+        volumes:
+            - elasticsearch_data:/usr/share/elasticsearch/data:rw
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        ports:
+            - 9200:9200
+            - 9300:9300
+        depends_on:
+            - kafka
+        stdin_open: true
+        tty: true
+        restart: always
+        networks:
+            - kafka_elk_nw
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "50"
+        healthcheck:
+            test: curl -u elastic:elastic -s -f elasticsearch-cntr:9200/_cat/health >/dev/null || exit 1
+            interval: 10s
+            timeout: 10s
+            retries: 5
+
+    logstash:
+        container_name: logstash-cntr
+        image: logstash:7.13.1
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+        ports:
+            - 5044:5044
+        depends_on:
+            - elasticsearch
+        stdin_open: true
+        tty: true
+        restart: always
+        networks:
+            - kafka_elk_nw
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "50"
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "curl",
+                    "--silent",
+                    "--fail",
+                    "http://logstash-cntr:9600",
+                ]
+            interval: 30s
+            timeout: 15s
+            retries: 3
+
+    kibana:
+        container_name: kibana-cntr
+        image: kibana:7.13.1
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        ports:
+            - 5601:5601
+        depends_on:
+            - elasticsearch
+        stdin_open: true
+        tty: true
+        restart: always
+        networks:
+            - kafka_elk_nw
+        links: ["elasticsearch"]
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "50"
+        healthcheck:
+            test: curl --fail http://kibana-cntr:5601 || exit 1
+            interval: 30s
+            retries: 3
+            timeout: 10s
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        networks:
+            - kafka_elk_nw
+
+    # debezium:
+    #     container_name: debezium-cntr
+    #     image: debezium/connect:1.6
+    #     ports:
+    #         - 8083:8083
+    #     environment:
+    #         - BOOTSTRAP_SERVERS=kafka-cntr:9092
+    #         - GROUP_ID=1
+    #         - CONFIG_STORAGE_TOPIC=my_connect_configs
+    #         - OFFSET_STORAGE_TOPIC=my_connect_offsets
+    #         - STATUS_STORAGE_TOPIC=my_connect_statuses
+    #         - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    #         - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    #         - INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    #         - INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    #         - PLUGIN_PATH=/kafka/connect
+    #     networks:
+    #         - kafka_elk_nw
+    #     depends_on:
+    #         - kafka
+
+networks:
+    kafka_elk_nw:
+        driver: bridge
+
+volumes:
+    elasticsearch_data:
+        driver: local

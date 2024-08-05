@@ -53,7 +53,9 @@ const Dashboard = () => {
         <div className="w-full flex flex-col gap-4 bg-gray-50">
             <div className="w-full"></div>
             <div className="p-4 border-b w-full bg-gray-50 flex ">
-                <h1 className="text-xl font-bold tracking-tight">DASHBOARD</h1>
+                <h1 className="text-xl font-bold tracking-tight">
+                    QUẢN LÍ CHUNG
+                </h1>
             </div>
             <div className="px-4 flex flex-col">
                 <div className="grid grid-cols-4 gap-4">

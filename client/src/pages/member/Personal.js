@@ -66,7 +66,7 @@ const Personal = ({ navigate }) => {
     return (
         <div className="w-full relative px-4">
             <header className="text-xl font-semibold py-4 border-b border-b-blue-200">
-                <h3 className="uppercase">Profile</h3>
+                <h3 className="uppercase">Hồ sơ cá nhân</h3>
             </header>
             <form
                 onSubmit={handleSubmit(handleUpdateInfor)}
@@ -76,10 +76,10 @@ const Personal = ({ navigate }) => {
                     <label htmlFor="file">
                         <img
                             src={
-                                preview
-                                    ? preview
-                                    : current?.avatar ||
-                                      "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
+                                // preview
+                                //     ? preview
+                                //     : current?.avatar ||
+                                "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
                             }
                             alt="avatar"
                             className="w-20 h-20 ml-8 object-cover rounded-full cursor-pointer"
@@ -95,7 +95,7 @@ const Personal = ({ navigate }) => {
                 <div className="flex space-x-4">
                     <InputForm
                         style={"flex-1"}
-                        label="Firstname"
+                        label="Tên"
                         register={register}
                         errors={errors}
                         id="firstName"
@@ -105,7 +105,7 @@ const Personal = ({ navigate }) => {
                     />
                     <InputForm
                         style={"flex-1"}
-                        label="Lastname"
+                        label="Họ"
                         register={register}
                         errors={errors}
                         id="lastName"
@@ -115,7 +115,7 @@ const Personal = ({ navigate }) => {
                     />
                 </div>
                 <InputForm
-                    label="Email address"
+                    label="Địa chỉ email"
                     register={register}
                     errors={errors}
                     disabled={true}
@@ -129,7 +129,7 @@ const Personal = ({ navigate }) => {
                     }}
                 />
                 <InputForm
-                    label="Phone"
+                    label="Số điện thoại"
                     register={register}
                     errors={errors}
                     id="phone"
@@ -142,7 +142,7 @@ const Personal = ({ navigate }) => {
                     }}
                 />
                 <InputForm
-                    label="Address"
+                    label="Địa chỉ"
                     register={register}
                     errors={errors}
                     id="address"
@@ -151,17 +151,17 @@ const Personal = ({ navigate }) => {
                     }}
                 />
                 <div className="flex items-center gap-2">
-                    <span className="font-medium">Account status:</span>
-                    <span>{current?.isBlocked ? "Blocked" : "Actived"}</span>
+                    <span className="font-medium">Trạng thái tài khoản:</span>
+                    <span>{current?.isBlocked ? "Bị chặn" : "Hoạt động"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="font-medium">Created At:</span>
+                    <span className="font-medium">Ngày tạo:</span>
                     <span>{moment(current?.createdAt).fromNow()}</span>
                 </div>
 
                 {isDirty && (
                     <div className="w-full flex justify-end">
-                        <Button type="submit">Update information</Button>
+                        <Button type="submit">Cập nhật thông tin</Button>
                     </div>
                 )}
             </form>

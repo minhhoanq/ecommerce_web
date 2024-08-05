@@ -9,7 +9,7 @@ export interface IOrderService {
     createPayment(userId: number, payload: any): Promise<any>;
     eventWebhooks(signature: string, payload: any): Promise<any>;
     getOrderDetail(userId: number, orderId: number): Promise<any>;
-    getOrders(userId: number): Promise<any>;
+    getOrders(userId: number, query: any): Promise<any>;
     checkInfoFeedback(data: {
         userId: number;
         orderItemId: number;

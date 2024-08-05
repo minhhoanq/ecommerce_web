@@ -119,16 +119,13 @@ const InputFeedback = (props) => {
             onClick={(e) => e.stopPropagation()}
         >
             <div className="bg-white h-[620px] w-[450px] p-4 flex flex-col rounded-sm">
-                <h3 className="font-semibold">Feedback</h3>
+                <h3 className="font-semibold">Đánh giá</h3>
                 <div
                     className="flex justify-between items-start border-b py-2"
                     key={orderItem.id}
                 >
                     <div className="">
-                        <img
-                            className="h-[70px]"
-                            src="https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png"
-                        />
+                        <img className="h-[70px]" src={orderItem?.image} />
                     </div>
                     <div className="text-left ">
                         <div className="flex-col">
@@ -147,7 +144,7 @@ const InputFeedback = (props) => {
                 </div>
                 <div className="w-full h-max flex items-center justify-between border-b pt-2 pb-2">
                     <div className="flex items-center font-semibold">
-                        Overall rating
+                        Đánh giá tổng thể
                     </div>
                     <div className="flex">
                         {[...Array(5)].map((item, index) => {
@@ -194,12 +191,10 @@ const InputFeedback = (props) => {
                 </div>
                 <div className="w-full flex items-center border-b pt-2 pb-4">
                     <div className="flex flex-col items-start space-y-2">
-                        <span className="font-semibold">
-                            Add a photo or video
-                        </span>
+                        <span className="font-semibold">Thêm ảnh</span>
                         <p className="text-sm text-gray-500">
-                            Shoppers find images and videos more helpful than
-                            text alone
+                            Người mua hàng nhận thấy hình ảnh hữu ích hơn chỉ có
+                            văn bản
                         </p>
                         <input
                             id="images"
@@ -235,11 +230,11 @@ const InputFeedback = (props) => {
                 </div>
                 <div className="mt-2">
                     <span className="font-semibold">
-                        Add a written feedback
+                        Thêm phản hồi bằng văn bản
                     </span>
                     <textarea
                         className="w-full h-[150px] border border-black outline-none rounded-sm p-2 text-sm mt-2"
-                        placeholder="What did you like or dislike? What did you use this product for?"
+                        placeholder="Bạn thích hay không thích điều gì? Bạn sử dụng sản phẩm này để làm gì?"
                         id="comment"
                         {...register("comment", {
                             required: true,
@@ -259,9 +254,9 @@ const InputFeedback = (props) => {
                             )
                         }
                     >
-                        Cancle
+                        HỦY
                     </button>
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">XÁC NHẬN</Button>
                 </div>
             </div>
         </form>

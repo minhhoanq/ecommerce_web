@@ -2,13 +2,21 @@ import React, { memo } from "react";
 import { NavLink } from "react-router-dom";
 import { createSlug } from "ultils/helpers";
 import { useSelector } from "react-redux";
-import { MdNavigateNext } from "react-icons/md";
+import { TfiViewListAlt } from "react-icons/tfi";
+import { BsPhone } from "react-icons/bs";
+import { IoIosLaptop } from "react-icons/io";
+import { IoCameraOutline } from "react-icons/io5";
+import { RiComputerLine } from "react-icons/ri";
 
 const Sidebar = () => {
     const { categories } = useSelector((state) => state.app);
 
     return (
-        <div className="hidden md:flex flex-col border">
+        <div className="hidden md:flex flex-col border h-[500px]">
+            <div className="h-[40px] bg-main text-white flex items-center space-x-2 pl-6">
+                <TfiViewListAlt size={20} />
+                <span className="font-semibold">TẤT CẢ DANH MỤC</span>
+            </div>
             {categories?.map((el) => (
                 <NavLink
                     key={createSlug(el.name)}
@@ -19,8 +27,11 @@ const Sidebar = () => {
                             : "px-5 pt-[15px] pb-[14px] text-sm hover:text-main flex items-center w-full"
                     }
                 >
-                    <MdNavigateNext />
-                    {el.name}
+                    {el.id === 1 && <BsPhone size={25} />}
+                    {el.id === 2 && <IoIosLaptop size={25} />}
+                    {el.id === 3 && <IoCameraOutline size={25} />}
+                    {el.id === 4 && <RiComputerLine size={25} />}
+                    <span className="ml-2">{el.name}</span>
                 </NavLink>
             ))}
         </div>

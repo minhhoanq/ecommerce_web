@@ -257,7 +257,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             {!isQuickView && (
                 <div className="h-[81px] flex justify-center items-center bg-gray-100">
                     <div ref={nameRef} className="w-main">
-                        <h3 className="font-semibold">
+                        <h3 className="font-semibold uppercase">
                             {currentProducts?.name}
                         </h3>
                         <Breadcrumb
@@ -369,24 +369,24 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                             products?.sold || 23
                         })`}</span>
                     </div>
-                    <ul className="list-square text-sm text-gray-500 pl-4">
+                    {/* <ul className="list-square text-sm text-gray-500 pl-4">
                         {currentProducts?.desc?.length > 1 &&
                             products?.description?.map((el) => (
                                 <li className="leading-6" key={el}>
                                     {el}
                                 </li>
                             ))}
-                        {currentProducts?.desc?.length === 1 && (
+                        {products?.desc && (
                             <div
                                 className="text-sm line-clamp-[10] mb-8"
                                 dangerouslySetInnerHTML={{
                                     __html: DOMPurify.sanitize(
-                                        products?.description[0]
+                                        products?.description
                                     ),
                                 }}
                             ></div>
                         )}
-                    </ul>
+                    </ul> */}
                     {storages.length > 0 && (
                         <div className="my-4 flex gap-4">
                             <span className="font-bold">Cấu hình:</span>

@@ -91,21 +91,39 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
     async findFirst(userId: number, orderId: number): Promise<any> {
         return await this._prisma.$queryRaw`
-            SELECT 
-                oi.id, u."username", u."phone", o."paymentMethodId", 
-                o."total", p."name" as "productName", sk."attributes", 
-                oi."quantity", pr."price" 
-            FROM users as u
-            JOIN orders as o on u.id = o."userId"
-            JOIN orderitems as oi on o.id = oi."orderId"
-            JOIN skus as sk on oi."skuId" = sk.id
+             SELECT o.id AS "orderId", u."firstName", u."lastName", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
+            json_agg(
+                    json_build_object(
+                        'id', oi.id,
+                        'productName', p."name",
+                        'image', p."image",
+                        'slug', sk."slug",
+                        'attributes', sk."attributes",
+                        'quantity', oi."quantity",
+                        'price', pr."price"
+                    )
+                ) AS orderitems
+            FROM
+                orders o
+            JOIN
+                orderitems oi ON o.id = oi."orderId"
+            JOIN skus sk on oi."skuId" = sk.id
             JOIN prices as pr on sk.id = pr."skuId"
-            JOIN products as p on sk."productId" = p.id
-            WHERE o.id = ${orderId} AND o."userId" = ${userId}
+            JOIN products p ON sk."productId" = p.id
+            JOIN users u on o."userId" = u.id
+            WHERE
+                o."id" = ${orderId} and o."userId" = ${userId}
+            GROUP BY
+                o.id, u.id
         `;
     }
 
     async findMany(userId: number, query: any): Promise<any> {
+        console.log("Order query: ", query);
+
+        const { page, limit } = query;
+        const skip = (+page - 1) * +limit;
+
         const orders: any[] = await this._prisma.$queryRaw`
             SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
             json_agg(
@@ -134,7 +152,8 @@ export class OrderRepositoryImpl implements IOrderRepository {
             GROUP BY
                 o.id
             ORDER BY o."createdAt" DESC
-            LIMIT 
+            LIMIT ${+limit}
+            OFFSET ${+skip}
             `;
 
         return orders;

@@ -1,15 +1,15 @@
-import React, { memo } from "react"
+import React, { memo } from "react";
 
 const Banner = () => {
-  return (
-    <div className="w-full">
-      <img
-        src="https://img.freepik.com/premium-vector/shopping-online-modern-marketing-mobile-application-internet-shops-website-concept-web-page-design-website-banner-mobile-website-3d-vector-illustration_473922-253.jpg"
-        alt="banner"
-        className="md:h-[400px] w-full md:object-cover object-contain"
-      />
-    </div>
-  )
-}
+    return (
+        <div className="w-full h-[500px]">
+            <img
+                src="https://digital-world-2.myshopify.com/cdn/shop/files/slideshow3-home2_1920x.jpg?v=1613166679"
+                alt="banner"
+                className="md:h-[500px] w-full md:object-cover object-contain h-[500px]"
+            />
+        </div>
+    );
+};
 
-export default memo(Banner)
+export default memo(Banner);

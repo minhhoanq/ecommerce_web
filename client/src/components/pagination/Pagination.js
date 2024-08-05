@@ -21,18 +21,18 @@ const Pagination = ({ totalCount }) => {
     return (
         <div className="flex w-full justify-between items-center">
             {!+params.get("page") ? (
-                <span className="text-sm hidden lg:inline-block italic">{`Show products ${Math.min(
+                <span className="text-sm hidden lg:inline-block italic">{`Hiển thị ${Math.min(
                     totalCount,
                     1
                 )} - ${Math.min(
                     +process.env.REACT_APP_LIMIT,
                     totalCount
-                )} of ${totalCount}`}</span>
+                )} trong số ${totalCount}`}</span>
             ) : (
                 ""
             )}
             {+params.get("page") ? (
-                <span className="text-sm hidden lg:inline-block italic">{`Show products ${range()} of ${totalCount}`}</span>
+                <span className="text-sm hidden lg:inline-block italic">{`Hiển thị ${range()} trong số ${totalCount}`}</span>
             ) : (
                 ""
             )}

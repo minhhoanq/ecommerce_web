@@ -32,32 +32,32 @@ const { RiTruckFill, BsShieldShaded, BsReplyFill, FaTty, AiFillGift } = icons;
 export const productExtraInfomation = [
     {
         id: "1",
-        title: "Guarantee",
-        sub: "Quality Checked",
+        title: "Bảo đảm",
+        sub: "Đã kiểm tra chất lượng",
         icon: <BsShieldShaded />,
     },
     {
         id: "2",
-        title: "Free Shipping",
-        sub: "Free On All Products",
+        title: "Miễn phí vận chuyển",
+        sub: "Miễn phí toàn bộ sản phẩm",
         icon: <RiTruckFill />,
     },
     {
         id: "3",
-        title: "Special Gift Cards",
-        sub: "Special Gift Cards",
+        title: "Thẻ quà tặng đặc biệt",
+        sub: "Thẻ quà tặng đặc biệt",
         icon: <AiFillGift />,
     },
     {
         id: "4",
-        title: "Free Return",
-        sub: "Within 7 Days",
+        title: "Miễn phí hoàn trả",
+        sub: "Trong vòng 7 ngày",
         icon: <BsReplyFill />,
     },
     {
         id: "5",
-        title: "Consultancy",
-        sub: "Lifetime 24/7/356",
+        title: "Tư vấn",
+        sub: "Trọn đời 27/7/365",
         icon: <FaTty />,
     },
 ];
@@ -172,29 +172,29 @@ export const adminSidebar = [
     {
         id: 1,
         type: "SINGLE",
-        text: "Dashboard",
+        text: "Quản lí chung",
         path: `/${path.ADMIN}/${path.DASHBOARD}`,
         icon: <AiOutlineDashboard size={20} />,
     },
     {
         id: 2,
         type: "SINGLE",
-        text: "Manage users",
+        text: "Quản lí người dùng",
         path: `/${path.ADMIN}/${path.MANAGE_USER}`,
         icon: <MdGroups size={20} />,
     },
     {
         id: 3,
         type: "PARENT",
-        text: "Products",
+        text: "Quản lí sản phẩm",
         icon: <TbBrandProducthunt size={20} />,
         submenu: [
             {
-                text: "Create product",
+                text: "Tạo sản phẩm",
                 path: `/${path.ADMIN}/${path.CREATE_PRODUCTS}`,
             },
             {
-                text: "Manage products",
+                text: "Danh sách sản phẩm",
                 path: `/${path.ADMIN}/${path.MANAGE_PRODUCTS}`,
             },
         ],
@@ -202,26 +202,26 @@ export const adminSidebar = [
     {
         id: 4,
         type: "SINGLE",
-        text: "Manage orders",
+        text: "Quản lí đơn hàng",
         path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
         icon: <RiBillLine size={20} />,
     },
-    {
-        id: 31,
-        type: "PARENT",
-        text: "Blogs",
-        icon: <TbBrandProducthunt size={20} />,
-        submenu: [
-            {
-                text: "Create blog",
-                path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
-            },
-            {
-                text: "Manage blogs",
-                path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
-            },
-        ],
-    },
+    // {
+    //     id: 31,
+    //     type: "PARENT",
+    //     text: "Blogs",
+    //     icon: <TbBrandProducthunt size={20} />,
+    //     submenu: [
+    //         {
+    //             text: "Create blog",
+    //             path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
+    //         },
+    //         {
+    //             text: "Manage blogs",
+    //             path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
+    //         },
+    //     ],
+    // },
 ];
 export const memberSidebar = [
     {
@@ -232,24 +232,10 @@ export const memberSidebar = [
         icon: <AiOutlineDashboard size={20} />,
     },
     {
-        id: 2,
-        type: "SINGLE",
-        text: "Giỏ hàng",
-        path: `/${path.MEMBER}/${path.MY_CART}`,
-        icon: <MdGroups size={20} />,
-    },
-    {
         id: 4,
         type: "SINGLE",
         text: "Đơn đã mua",
         path: `/${path.MEMBER}/${path.HISTORY}`,
-        icon: <RiBillLine size={20} />,
-    },
-    {
-        id: 40,
-        type: "SINGLE",
-        text: "Wishlist",
-        path: `/${path.MEMBER}/${path.WISHLIST}`,
         icon: <RiBillLine size={20} />,
     },
 ];

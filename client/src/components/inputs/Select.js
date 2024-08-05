@@ -1,5 +1,5 @@
-import React, { memo } from 'react'
-import clsx from 'clsx'
+import React, { memo } from "react";
+import clsx from "clsx";
 
 const Select = ({
     label,
@@ -13,22 +13,34 @@ const Select = ({
     defaultValue,
 }) => {
     return (
-        <div className={clsx('flex flex-col gap-2', style)}>
-            {label && <label htmlFor={id}>{label}</label>}
+        <div className={clsx("flex flex-col gap-2", style)}>
+            {label && (
+                <label htmlFor={id} className="font-semibold">
+                    {label}
+                </label>
+            )}
             <select
                 defaultValue={defaultValue}
-                className={clsx('form-select max-h-[42px]', fullWidth && 'w-full', style)}
+                className={clsx(
+                    "form-select max-h-[42px]",
+                    fullWidth && "w-full",
+                    style
+                )}
                 id={id}
                 {...register(id, validate)}
             >
-                <option value="">---CHOOSE---</option>
-                {options?.map(el => (
+                <option value="">---CHỌN---</option>
+                {options?.map((el) => (
                     <option value={el.code}>{el.value}</option>
                 ))}
             </select>
-            {errors[id] && <small className='text-xs text-red-500'>{errors[id]?.message}</small>}
+            {errors[id] && (
+                <small className="text-xs text-red-500">
+                    {errors[id]?.message}
+                </small>
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default memo(Select)
+export default memo(Select);

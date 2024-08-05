@@ -65,7 +65,7 @@ const History = ({ navigate, location }) => {
     return (
         <div className="w-full relative px-4">
             <header className="text-xl font-semibold py-4 border-b border-b-blue-200">
-                <h3 className="uppercase">History</h3>
+                <h3 className="uppercase">Đơn đã mua</h3>
             </header>
             <div className="flex justify-end items-center px-4">
                 <form className="w-[45%] grid grid-cols-2 gap-4">
@@ -75,7 +75,7 @@ const History = ({ navigate, location }) => {
                             register={register}
                             errors={errors}
                             fullWidth
-                            placeholder="Search orders by status,..."
+                            placeholder="Tìm kiểm theo trạng thái,..."
                         />
                     </div>
                     <div className="col-span-1 flex items-center">
@@ -92,9 +92,9 @@ const History = ({ navigate, location }) => {
                 <thead>
                     <tr className="border bg-gray-200 text-sm text-gray-400">
                         <th className="text-center py-2">STT</th>
-                        <th className="text-center py-2">TOTAL</th>
-                        <th className="text-center py-2">STATUS</th>
-                        <th className="text-center py-2">CREATE AT</th>
+                        <th className="text-center py-2">TỔNG</th>
+                        <th className="text-center py-2">TRẠNG THÁi</th>
+                        <th className="text-center py-2">NGÀY TẠO</th>
                         <th className="text-center py-2"></th>
                     </tr>
                 </thead>
@@ -132,12 +132,12 @@ const History = ({ navigate, location }) => {
                                     {showOrderDetail.open === true &&
                                     showOrderDetail.orderId === el.orderId ? (
                                         <div className="flex justify-center items-center space-x-4">
-                                            <span>View Detail</span>
+                                            <span>CHI TIẾT</span>
                                             <IoIosArrowUp color="" />
                                         </div>
                                     ) : (
                                         <div className="flex justify-center items-center space-x-4">
-                                            <span>View Detail</span>
+                                            <span>CHI TIẾT</span>
                                             <IoIosArrowDown />
                                         </div>
                                     )}
@@ -155,9 +155,9 @@ const History = ({ navigate, location }) => {
                                 >
                                     <Stepper
                                         steps={[
-                                            { label: "Pending" },
-                                            { label: "Paid" },
-                                            { label: "Completed" },
+                                            { label: "Đang xử lí" },
+                                            { label: "Đã thanh toán" },
+                                            { label: "Hoàn thành" },
                                         ]}
                                         activeStep={el?.orderStatusId}
                                     />
@@ -209,7 +209,7 @@ const History = ({ navigate, location }) => {
                                                             }
                                                             className="border h-[35px] w-[100px] border-main text-main hover:bg-red-50"
                                                         >
-                                                            Feedback
+                                                            Đánh giá
                                                         </button>
                                                     </div>
                                                 )}

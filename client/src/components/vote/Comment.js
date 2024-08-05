@@ -4,7 +4,7 @@ import moment from "moment";
 import { renderStarFromNumber } from "ultils/helpers";
 
 const Comment = ({
-    avatar = avatar,
+    // avatar = avatar,
     name = "Anonymous",
     updatedAt = Date.now,
     comment,

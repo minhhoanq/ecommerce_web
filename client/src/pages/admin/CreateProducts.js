@@ -135,37 +135,37 @@ const CreateProducts = () => {
     return (
         <div className="w-full">
             <h1 className="h-[75px] flex justify-between items-center text-xl px-4 font-bold border-b">
-                <span>CREATE PRODUCT</span>
+                <span>SẢN PHẨM MỚI</span>
             </h1>
             <div className="p-4">
                 <form onSubmit={handleSubmit(handleCreateProduct)}>
                     <InputForm
-                        label="Product Representative Name (Ex: Macbook)"
+                        label="Tên đại diện sản phẩm"
                         register={register}
                         errors={errors}
                         id="name"
                         validate={{
-                            required: "Need fill this field",
+                            required: "Không để trống",
                         }}
                         fullWidth
-                        placeholder="Name of new product"
+                        placeholder="Ví dụ: Macbook"
                     />
                     <div className="w-full my-6 flex gap-4">
                         <Select
-                            label="Category"
+                            label="Loại sản phẩm"
                             options={categories?.map((el) => ({
                                 code: el.id,
                                 value: el.name,
                             }))}
                             register={register}
                             id="categoryId"
-                            validate={{ required: "Need fill this field" }}
+                            validate={{ required: "Không để trống" }}
                             style="flex-auto"
                             errors={errors}
                             fullWidth
                         />
                         <Select
-                            label="Brand"
+                            label="Thương hiệu"
                             options={categories
                                 ?.find((el) => el.id == watch("categoryId"))
                                 ?.brands?.map((el) => ({
@@ -181,7 +181,7 @@ const CreateProducts = () => {
                     </div>
                     <textarea
                         className="w-full h-[200px] p-2"
-                        placeholder="Description"
+                        placeholder="Mô tả"
                         id="desc"
                         {...register("desc")}
                         changeValue={changeValue}
@@ -195,7 +195,7 @@ const CreateProducts = () => {
                                 className="font-semibold flex flex-col space-y-2"
                                 htmlFor="image"
                             >
-                                <span>Upload representative image</span>
+                                <span>Tải lên ảnh đại diện sản phẩm</span>
                                 {preview.image?.length ? (
                                     preview.image?.map((el, index) => (
                                         <div className="my-4" key={index}>
@@ -219,7 +219,7 @@ const CreateProducts = () => {
                                 type="file"
                                 id="image"
                                 {...register("image", {
-                                    required: "Need fill",
+                                    required: "Không để trống",
                                 })}
                                 hidden
                             />
@@ -235,7 +235,7 @@ const CreateProducts = () => {
                                 className="font-semibold  flex flex-col space-y-2"
                                 htmlFor="products"
                             >
-                                <span>Upload images</span>
+                                <span>Tải lên nhiều ảnh mô tả</span>
                                 {preview.images?.length > 0 ? (
                                     <div className="my-4 flex w-full gap-3 flex-wrap">
                                         {preview.images?.map((el, idx) => (
@@ -265,7 +265,7 @@ const CreateProducts = () => {
                                 id="products"
                                 multiple
                                 {...register("images", {
-                                    required: "Need fill",
+                                    required: "Không để trống",
                                 })}
                                 hidden
                             />

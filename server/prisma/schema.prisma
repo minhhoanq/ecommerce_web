@@ -19,6 +19,7 @@ model User {
   gender               String?
   dob                  String?
   phone                Int?
+  address              String?
   roleId               Int       @default(3)
   status               Boolean?  @default(true)
   isVerify             Boolean?  @default(false)
@@ -97,7 +98,7 @@ model Session {
 model Category {
   id             Int             @id @default(autoincrement())
   name           String          @db.VarChar(50)
-  thumbnail      String?         @db.VarChar(50)
+  thumbnail      String?         @db.VarChar(255)
   createdAt      DateTime        @default(now()) @db.Timestamp(6)
   updatedAt      DateTime        @updatedAt @db.Timestamp(6)
   CategoryBrands CategoryBrand[]
@@ -132,7 +133,7 @@ model Brand {
 model ImageProduct {
   id        Int      @id @default(autoincrement())
   productId Int
-  src       Float
+  src       String
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
   product   Product  @relation(fields: [productId], references: [id])
@@ -141,22 +142,23 @@ model ImageProduct {
 }
 
 model Price {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   skuId     Int
   price     Float
   startDate DateTime // Ngày bắt đầu áp dụng giá
-  endDate   DateTime // Ngày ket thuc áp dụng giá
-  active    Boolean  @default(false) // Trạng thái: false là chưa được áp dụng, true là được áp dụng
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
-  sku       Sku      @relation(fields: [skuId], references: [id])
+  endDate   DateTime? // Ngày ket thuc áp dụng giá
+  active    Boolean   @default(false) // Trạng thái: false là chưa được áp dụng, true là được áp dụng
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  sku       Sku       @relation(fields: [skuId], references: [id])
 
   @@map("prices")
 }
 
 model Product {
   id              Int            @id @default(autoincrement())
-  name            String         @db.VarChar(255)
+  name            String?         @db.VarChar(255)
+  image           String?        @db.VarChar(255)
   imageProducts   ImageProduct[]
   desc            String
   categoryBrandId Int
@@ -176,7 +178,6 @@ model Sku {
   productId     Int
   name          String         @db.VarChar(255)
   slug          String         @db.VarChar(255)
-  skuNo         String         @unique
   attributes    Json?
   createdAt     DateTime       @default(now()) @db.Timestamp(6)
   updatedAt     DateTime       @updatedAt @db.Timestamp(6)

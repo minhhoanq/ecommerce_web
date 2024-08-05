@@ -78,21 +78,21 @@ const SmartphoneFrom = ({
     return (
         <form className="max-h-max">
             <InputForm
-                label="Product name with attributes (Ex: Macbook 256GB)"
+                label="Tên sản phẩm kèm thuộc tính"
                 register={register}
                 errors={errors}
                 id="name"
                 validate={{
-                    required: "Need fill this field",
+                    required: "Không để trống",
                 }}
                 fullWidth
-                placeholder="Name of new product"
+                placeholder="VÍ dụ: Macbook 256GB"
             />
             <div className="w-full my-6 flex gap-4">
                 <div className={"flex flex-col w-[450px] gap-2"}>
                     <div className="flex flex-col items-start space-y-2 min-h-[170px]">
                         <label className="font-medium">
-                            {"Attributes" + ":"}
+                            {"Thuộc tính" + ":"}
                         </label>
                         <div className="flex flex-col justify-center items-start space-y-4 w-full">
                             <div className="flex items-center w-full">
@@ -113,7 +113,7 @@ const SmartphoneFrom = ({
                                     // for="checkbox-default"
                                     className="flex items-center space-x-2 flex-1 justify-between text-sm font-norma cursor-pointer text-gray-600"
                                 >
-                                    <span>Storage</span>
+                                    <span>Bộ nhớ trong</span>
                                     {checkAttributes.storage && (
                                         <div className="w-[300px]">
                                             <InputForm
@@ -122,11 +122,10 @@ const SmartphoneFrom = ({
                                                 errors={errors}
                                                 id="storage"
                                                 validate={{
-                                                    required:
-                                                        "Need fill this field",
+                                                    required: "Không để trống",
                                                 }}
                                                 style="flex-auto"
-                                                placeholder="Storage of new product"
+                                                placeholder="12GB - 256GB"
                                             />
                                         </div>
                                     )}
@@ -150,7 +149,7 @@ const SmartphoneFrom = ({
                                     for="checked-checkbox"
                                     className="flex items-center space-x-2 flex-1 justify-between text-sm font-normal cursor-pointer text-gray-600"
                                 >
-                                    <span>Color</span>
+                                    <span>Màu</span>
                                     {checkAttributes.color && (
                                         <div className="w-[300px]">
                                             <InputForm
@@ -163,7 +162,7 @@ const SmartphoneFrom = ({
                                                         "Need fill this field",
                                                 }}
                                                 style="flex-auto"
-                                                placeholder="Color of new product"
+                                                placeholder="Đen"
                                             />
                                         </div>
                                     )}
@@ -174,27 +173,27 @@ const SmartphoneFrom = ({
                 </div>
                 <div className="flex flex-col flex-1 space-y-4 h-[78px]">
                     <InputForm
-                        label="Price"
+                        label="Giá"
                         register={register}
                         errors={errors}
                         id="price"
                         validate={{
-                            required: "Need fill this field",
+                            required: "Không để trống",
                         }}
                         style="flex-auto"
-                        placeholder="Price of new product"
+                        placeholder="12000000"
                         type="number"
                     />
                     <InputForm
-                        label="stock"
+                        label="Số lượng"
                         register={register}
                         errors={errors}
                         id="stock"
                         validate={{
-                            required: "Need fill this field",
+                            required: "Không để trống",
                         }}
                         style="flex-auto"
-                        placeholder="stock of new product"
+                        placeholder="10"
                         type="number"
                     />
                 </div>

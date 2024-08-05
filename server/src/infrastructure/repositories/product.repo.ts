@@ -305,7 +305,7 @@ export class ProductRepositoryImpl implements IProductRepository {
             where: filter,
             orderBy: [sortBy],
             skip: skip,
-            take: 20,
+            take: 9,
             include: {
                 skus: {
                     take: 1, // Lấy 1 SKU đại diện cho mỗi sản phẩm

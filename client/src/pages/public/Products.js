@@ -112,7 +112,9 @@ const Products = () => {
         <div className="w-full">
             <div className="h-[81px] flex justify-center items-center bg-gray-100">
                 <div className="lg:w-main w-screen px-4 lg:px-0">
-                    <h3 className="font-semibold uppercase">{category}</h3>
+                    <h3 className="font-semibold uppercase">
+                        {category || "Sản phẩm"}
+                    </h3>
                     <Breadcrumb category={category} />
                 </div>
             </div>

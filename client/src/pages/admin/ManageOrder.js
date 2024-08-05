@@ -105,7 +105,7 @@ const ManageOrder = () => {
             <div className="h-[69px] w-full"></div>
             <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
                 <h1 className="text-xl font-bold tracking-tight mt-2">
-                    MANAGER ORDER
+                    QUẢN LÍ ĐƠN HÀNG
                 </h1>
                 {editOrder && (
                     <>
@@ -113,10 +113,10 @@ const ManageOrder = () => {
                             handleOnClick={handleUpdate}
                             style="bg-blue-500 text-white px-4 py-2 rounded-md mx-6"
                         >
-                            Update
+                            CẬP NHẬT
                         </Button>
                         <Button handleOnClick={() => setEditOrder(null)}>
-                            Cancel
+                            HỦY
                         </Button>
                     </>
                 )}
@@ -137,12 +137,12 @@ const ManageOrder = () => {
                     <thead>
                         <tr className="border bg-sky-900 text-white border-white">
                             <th className="text-center py-2">#</th>
-                            <th className="text-center py-2">Ordered By</th>
-                            <th className="text-center py-2">Products</th>
-                            <th className="text-center py-2">Total</th>
-                            <th className="text-center py-2">Status</th>
-                            <th className="text-center py-2">Ordered Date</th>
-                            <th className="text-center py-2">Actions</th>
+                            <th className="text-center py-2">NGƯỜI ĐẶT</th>
+                            <th className="text-center py-2">SẢN PHẨM</th>
+                            <th className="text-center py-2">TỔNG</th>
+                            <th className="text-center py-2">TRẠNG THÁI</th>
+                            <th className="text-center py-2">NGÀY ĐẶT</th>
+                            <th className="text-center py-2"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -204,10 +204,16 @@ const ManageOrder = () => {
                                             {...register("orderStatusId")}
                                             className="form-select"
                                         >
-                                            <option value={1}>Pending</option>
-                                            <option value={2}>Paid</option>
-                                            <option value={3}>Completed</option>
-                                            <option value={4}>Cancelled</option>
+                                            <option value={1}>
+                                                Đang xử lí
+                                            </option>
+                                            <option value={2}>
+                                                Đã thanh toán
+                                            </option>
+                                            <option value={3}>
+                                                Hoành thành
+                                            </option>
+                                            <option value={4}>Đã hủy</option>
                                         </select>
                                     ) : (
                                         el.orderStatusId

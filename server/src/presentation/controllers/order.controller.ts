@@ -106,7 +106,10 @@ export class OrderController {
         try {
             new SuccessResponse({
                 message: "Order successfully!",
-                metadata: await this._orderService.getOrders(+req.user.userId),
+                metadata: await this._orderService.getOrders(
+                    +req.user.userId,
+                    req.query
+                ),
             }).send(res);
         } catch (error) {
             next(error);

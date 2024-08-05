@@ -108,7 +108,7 @@ const Checkout = ({ dispatch, navigate }) => {
             <div className="flex w-full flex-col justify-center items-center col-span-6 gap-6 mb-12 ">
                 <div className="h-[81px] w-full flex justify-center items-center  bg-gray-100">
                     <div className="lg:w-main w-screen px-4 lg:px-0">
-                        <h3 className="font-semibold uppercase">Checkout</h3>
+                        <h3 className="font-semibold uppercase">Thanh toán</h3>
                         <Breadcrumb
                             category={location?.pathname
                                 ?.replace("/", "")
@@ -156,7 +156,7 @@ const Checkout = ({ dispatch, navigate }) => {
                         </div>
                         <div className="space-y-6">
                             <div className="space-x-4">
-                                <span>Payment method</span>
+                                <span>Phương thức thanh toán</span>
                                 <button
                                     onClick={() => setPaymentMethod(1)}
                                     className={`${
@@ -165,7 +165,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                             : "text-red-600 outline outline-1 hover:bg-red-50"
                                     }  text-sm p-2 outline outline-1 hover:bg-red-50`}
                                 >
-                                    Cash On Delivery
+                                    Thanh toán khi nhận hàng
                                 </button>
                                 <button
                                     onClick={() => setPaymentMethod(2)}
@@ -175,7 +175,7 @@ const Checkout = ({ dispatch, navigate }) => {
                                             : "text-red-600 outline outline-1 hover:bg-red-50"
                                     }   text-sm p-2 `}
                                 >
-                                    Banking
+                                    Thẻ tín dụng/Ghi nợ
                                 </button>
                             </div>
                             <div className="text-sm">
@@ -194,11 +194,11 @@ const Checkout = ({ dispatch, navigate }) => {
                     <div className="w-[350px] flex flex-col justify-between gap-[30px] ">
                         <div className="space-y-4 border-b border-solid border-gray-300 pb-8">
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold text-sm">
-                                    HOW TO GET IT
+                                <span className="font-semibold text-sm uppercase">
+                                    Thông tin nhận hàng
                                 </span>
-                                <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 hover:bg-red-50">
-                                    CHANGE
+                                <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 uppercase hover:bg-red-50">
+                                    Thay đổi
                                 </button>
                             </div>
                             <div className="space-y-1">
@@ -217,54 +217,56 @@ const Checkout = ({ dispatch, navigate }) => {
                         </div>
                         <div className="space-y-4 border-b border-solid border-gray-300 pb-8">
                             <div className="flex justify-between items-center">
-                                <span className="font-semibold text-sm">
-                                    COUPONS
+                                <span className="font-semibold text-sm uppercase">
+                                    Phiếu giảm giá
                                 </span>
-                                <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 hover:bg-red-50">
-                                    GET
+                                <button className="rounded-sm uppercase text-sm text-red-600 p-1 outline outline-1 hover:bg-red-50">
+                                    Nhận
                                 </button>
                             </div>
                             <div className="space-x-1 flex items-center border border-solid border-gray-300 rounded-sm pl-2 pr-2">
                                 <MdOutlineDiscount />
                                 <input
                                     className="h-[40px] outline-none pl-2 flex-1"
-                                    placeholder="Add coupons or git cards"
+                                    placeholder="Thêm thẻ giảm giá hoặc thẻ quà tặng"
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">
-                                    Transport fee:
+                                    Phí vận chuyển:
                                 </span>
                                 <span className="text-main font-bold">{`${formatMoney(
                                     reviewCheckout?.checkoutOrder?.feeShip
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Total:</span>
+                                <span className="font-medium">
+                                    Tổng tiền hàng:
+                                </span>
                                 <span className="text-main font-bold">{`${formatMoney(
                                     reviewCheckout?.checkoutOrder?.total
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Discount:</span>
+                                <span className="font-medium">Giảm giá:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
                                     reviewCheckout?.checkoutOrder?.totalDiscount
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Subtotal:</span>
+                                <span className="font-medium">Thanh toán:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
                                     reviewCheckout?.checkoutOrder?.totalCheckout
                                 )} VND`}</span>
                             </span>
                         </div>
                         <button
-                            className="bg-main h-[40px] text-white"
+                            className="bg-main h-[40px] text-white uppercase"
                             onClick={handleSaveOrder}
                         >
-                            ORDER
+                            Đặt hàng
                         </button>
                     </div>
                 </div>

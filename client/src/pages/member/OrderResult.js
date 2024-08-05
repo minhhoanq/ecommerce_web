@@ -22,7 +22,7 @@ const OrderResult = () => {
         (async () => {
             const orderDetail = await apiGetOrder(orderId);
             console.log(orderDetail);
-            setOrder(orderDetail.metadata);
+            setOrder(orderDetail.metadata[0]);
         })();
     }, []);
     return (
@@ -31,19 +31,19 @@ const OrderResult = () => {
             <div className="w-full flex flex-col items-center justify-center bg-white pt-4 pb-4">
                 <BsCheckCircle size={80} color="#32CD32" />
                 <span className="text-xl font-semibold">
-                    Order successfully
+                    Đặt hàng thành công
                 </span>
                 <p className="text-base">
-                    We will contact you soon, thank you!
+                    Chúng tôi sẽ liên hệ với bạn sớm nhất, cảm ơn đã mua hàng!
                 </p>
             </div>
             <div className="w-full bg-gray-100 flex justify-center items-center pt-4 pb-4">
-                <div className="flex  w-[1000px] gap-6 bg-white h-[400px] shadow-md rounded">
+                <div className="flex  w-[1000px] gap-6 bg-white h-[450px] shadow-md rounded">
                     <div className="flex-1 mr-10">
                         <div className="w-full max-h-[350px] overflow-y-auto">
                             <table className="table-auto w-full ">
                                 <tbody>
-                                    {order?.map((el) => (
+                                    {order.orderitems?.map((el) => (
                                         <tr className="" key={el.id}>
                                             <td className="">
                                                 <img
@@ -57,8 +57,16 @@ const OrderResult = () => {
                                                         {el.productName}
                                                     </span>
                                                     <p className="text-sm">
-                                                        {el.attributes.color} |{" "}
-                                                        {el.attributes.ram}
+                                                        {el.attributes?.color}
+                                                    </p>
+                                                    <p className="text-sm">
+                                                        {el.attributes?.storage}
+                                                    </p>
+                                                    <p className="text-sm">
+                                                        {el.attributes?.ram}
+                                                    </p>
+                                                    <p className="text-sm">
+                                                        {el.attributes?.inch}
                                                     </p>
                                                 </div>
                                             </td>
@@ -78,24 +86,27 @@ const OrderResult = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="w-[350px] flex flex-col justify-between gap-[20px] p-2">
+                    <div className="w-[400px] flex flex-col justify-between gap-[20px] p-2">
                         <div className="space-y-4 border-b border-solid border-gray-300 pb-4">
                             <div className="flex justify-between items-center">
                                 <span className="font-semibold text-md">
-                                    Receiver's information
+                                    Thông tin người nhận
                                 </span>
                             </div>
                             <div className="space-y-1">
                                 <div className="flex flex-col items-start space-y-2">
                                     <span className="text-sm">
-                                        Full name: {order[0]?.username}
+                                        Họ và tên: {order?.lastName}{" "}
+                                        {order?.firstName}
                                     </span>
                                     <span className="text-sm">
-                                        Phone: 0353727257
+                                        Số điện thoại:{" "}
+                                        {order?.phone || "0353727257"}
                                     </span>
                                     <span className="text-sm">
-                                        Address: 9B Trịnh Hoài Đức, Hiệp Phú,
-                                        Thủ Đức, HCM
+                                        Địa chỉ nhận hàng:{" "}
+                                        {order?.address ||
+                                            "9B Trịnh Hoài Đức,Hiệp Phú, Thủ Đức, HCM"}
                                     </span>
                                 </div>
                             </div>
@@ -103,52 +114,52 @@ const OrderResult = () => {
                         <div className="flex flex-col gap-2">
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">
-                                    Payment method:
+                                    Phương thức thanh toán:
                                 </span>
                                 <span className="text-main font-bold">
                                     {order[0]?.paymentMethodId === 1
-                                        ? "Cash on delivery"
-                                        : "Banking"}
+                                        ? "Thanh toán khi nhận hàng"
+                                        : "Thẻ tín dụng/Ghi nợ"}
                                 </span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
                                 <span className="font-medium">
-                                    Transport fee:
+                                    Phí vận chuyển:
                                 </span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    order?.checkoutOrder?.feeShip
+                                    order?.checkoutOrder?.feeShip || 0
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Total:</span>
+                                <span className="font-medium">Tiền hàng:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    order?.checkoutOrder?.total
+                                    order?.total
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Discount:</span>
+                                <span className="font-medium">Giảm giá:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    order?.checkoutOrder?.totalDiscount
+                                    order?.checkoutOrder?.totalDiscount || 0
                                 )} VND`}</span>
                             </span>
                             <span className="flex items-center justify-between gap-8 text-sm">
-                                <span className="font-medium">Subtotal:</span>
+                                <span className="font-medium">Thanh toán:</span>
                                 <span className="text-main font-bold">{`${formatMoney(
-                                    order[0]?.total
+                                    order?.total
                                 )} VND`}</span>
                             </span>
                         </div>
                         <div className="flex space-x-2 text-sm justify-end">
                             <NavLink to={"/member/order/history"}>
                                 <Button
-                                    style={`bg-black px-4 py-2 rounded-none text-white flex items-center justify-center text-semibold my-2 flex-1 hover:bg-main`}
+                                    style={`bg-black px-4 py-2 uppercase rounded-none text-white flex items-center justify-center text-semibold my-2 flex-1 hover:bg-main`}
                                 >
-                                    Order history
+                                    LỊCH SỬ MUA HÀNG
                                 </Button>
                             </NavLink>
 
                             <NavLink to={"/"}>
-                                <Button>HOME</Button>
+                                <Button>TRANG CHỦ</Button>
                             </NavLink>
                         </div>
                     </div>

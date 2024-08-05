@@ -174,7 +174,7 @@ export class OrderService implements IOrderService {
 
         payload.paymentMethodId = 2;
 
-        console.log(orderItems);
+        console.log("order 2", orderItems);
 
         const response = await this.order(+userId, payload);
         console.log("res", response);
@@ -184,11 +184,14 @@ export class OrderService implements IOrderService {
                 payment_method_types: ["card"],
                 mode: "payment",
                 line_items: orderItems.map((item: any) => {
+                    console.log("item: ", item);
+
                     return {
                         price_data: {
                             currency: "vnd",
                             product_data: {
                                 name: item.name,
+                                images: [item.image],
                             },
                             unit_amount: item.price,
                         },
