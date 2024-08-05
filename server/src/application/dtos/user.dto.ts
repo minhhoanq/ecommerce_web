@@ -22,6 +22,7 @@ const updateUserSchema = z.object({
     avatar: z.string().optional(),
     gender: z.string().optional(),
     dob: z.string().optional(),
+    address: z.string().optional(),
     phone: z.number().optional(),
     roleId: z.number().optional(),
     status: z.boolean().optional(),

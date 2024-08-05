@@ -137,6 +137,8 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     useEffect(() => {
         if (quantity >= currentProducts?.quantity) {
             setQuantity(currentProducts?.quantity);
+        } else {
+            setQuantity(1);
         }
     }, [currentProducts]);
 
@@ -502,7 +504,11 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                 handleChangeQuantity={handleChangeQuantity}
                             />
                         </div>
-                        <Button handleOnClick={handleAddToCart} fw>
+                        <Button
+                            handleOnClick={handleAddToCart}
+                            fw
+                            disabled={quantity === 0}
+                        >
                             Thêm vào giỏ hàng
                         </Button>
                     </div>

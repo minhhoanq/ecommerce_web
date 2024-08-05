@@ -8,9 +8,10 @@ import { getCurrent } from "store/user/asyncActions";
 import Swal from "sweetalert2";
 import { apiCheckout, apiCreateOrder, apiCreatePayment, apiOrder } from "apis";
 import { IoLocationOutline } from "react-icons/io5";
-import { BsClock } from "react-icons/bs";
+import { FaPhoneAlt } from "react-icons/fa";
 import { MdOutlineDiscount } from "react-icons/md";
-import { useLocation } from "react-router-dom";
+import { createSearchParams, useLocation } from "react-router-dom";
+import path from "ultils/path";
 
 const Checkout = ({ dispatch, navigate }) => {
     const { currentCart, current } = useSelector((state) => state.user);
@@ -64,7 +65,35 @@ const Checkout = ({ dispatch, navigate }) => {
             setReviewCheckout(checkout.metadata);
         })();
     }, []);
+
+    const changeInfoReceive = () => {
+        navigate({
+            pathname: `/member/${path.PERSONAL}`,
+            search: createSearchParams({
+                redirect: location.pathname,
+            }).toString(),
+        });
+    };
+
     const handleSaveOrder = async () => {
+        if (current.address === null || current.phone === null) {
+            return Swal.fire({
+                name: "Kiểm tra lại thông tin",
+                text: "Hãy cung cấp địa chỉ giao hàng và số điện thoại!",
+                icon: "info",
+                cancelButtonText: "Hủy bỏ",
+                showCancelButton: true,
+                confirmButtonText: "Tiến hành cập nhật!",
+            }).then(async (rs) => {
+                if (rs.isConfirmed)
+                    navigate({
+                        pathname: `/member/${path.PERSONAL}`,
+                        search: createSearchParams({
+                            redirect: location.pathname,
+                        }).toString(),
+                    });
+            });
+        }
         //Banking
         if (paymentMethod === 2) {
             const payload = {
@@ -197,7 +226,10 @@ const Checkout = ({ dispatch, navigate }) => {
                                 <span className="font-semibold text-sm uppercase">
                                     Thông tin nhận hàng
                                 </span>
-                                <button className="rounded-sm text-sm text-red-600 p-1 outline outline-1 uppercase hover:bg-red-50">
+                                <button
+                                    onClick={changeInfoReceive}
+                                    className="rounded-sm text-sm text-red-600 p-1 outline outline-1 uppercase hover:bg-red-50"
+                                >
                                     Thay đổi
                                 </button>
                             </div>
@@ -205,13 +237,18 @@ const Checkout = ({ dispatch, navigate }) => {
                                 <div className="flex items-center justify-between space-x-1">
                                     <IoLocationOutline />
                                     <span>
-                                        9B Trịnh Hoài Đức, Hiệp Phú, Thủ Đức,
-                                        HCM
+                                        {current?.address
+                                            ? current.address
+                                            : "Chưa có địa chỉ cụ thể"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between space-x-1">
-                                    <BsClock />
-                                    <span>08:00 am</span>
+                                    <FaPhoneAlt />
+                                    <span>
+                                        {current?.phone
+                                            ? current.phone
+                                            : "Vui lòng cập nhật"}
+                                    </span>
                                 </div>
                             </div>
                         </div>
