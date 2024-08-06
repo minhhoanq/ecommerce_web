@@ -11,25 +11,6 @@ const DetailCart = ({ location, navigate }) => {
     const { currentCart, current } = useSelector((state) => state.user);
     console.log(currentCart);
     const handleSubmit = () => {
-        // if (!current?.address)
-        //     return Swal.fire({
-        //         icon: "info",
-        //         title: "Almost!",
-        //         text: "Please update your address before checkout.",
-        //         showCancelButton: true,
-        //         showConfirmButton: true,
-        //         confirmButtonText: "Go update",
-        //         cancelButtonText: "Cancel",
-        //     }).then((result) => {
-        //         if (result.isConfirmed)
-        //             navigate({
-        //                 pathname: `/${path.MEMBER}/${path.PERSONAL}`,
-        //                 search: createSearchParams({
-        //                     redirect: location.pathname,
-        //                 }).toString(),
-        //             });
-        //     });
-        // else
         navigate(`/${path.CHECKOUT}`, "_blank");
     };
     return (
@@ -64,8 +45,8 @@ const DetailCart = ({ location, navigate }) => {
                         attributes={el.attributes}
                         name={el.name}
                         image={el.image}
-                        salePrice={el.price}
-                        id={el?.id}
+                        price={el.price}
+                        id={el.id}
                     />
                 ))}
             </div>

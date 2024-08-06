@@ -497,12 +497,18 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                     )}
                     <div className="flex flex-col gap-8">
                         <div className="flex items-center gap-4">
-                            <span className="font-semibold">Số lượng</span>
-                            <SelectQuantity
-                                quantity={quantity}
-                                handleQuantity={handleQuantity}
-                                handleChangeQuantity={handleChangeQuantity}
-                            />
+                            <span className="font-semibold">Số lượng: </span>
+                            {quantity === 0 ? (
+                                <div className="h-[40px] flex items-center">
+                                    Hàng sắp về
+                                </div>
+                            ) : (
+                                <SelectQuantity
+                                    quantity={quantity}
+                                    handleQuantity={handleQuantity}
+                                    handleChangeQuantity={handleChangeQuantity}
+                                />
+                            )}
                         </div>
                         <Button
                             handleOnClick={handleAddToCart}

@@ -14,12 +14,12 @@ const Button = ({
             className={
                 style
                     ? style
-                    : `px-4 py-2 rounded-none text-white flex items-center justify-center bg-main text-semibold my-2 hover:bg-red-500 ${
+                    : `px-4 py-2 rounded-none text-white flex items-center justify-center bg-main text-semibold my-2  ${
                           fw ? "w-full" : "w-fit"
                       } ${
                           disabled
                               ? "bg-red-200 cursor-not-allowed hover:bg-red-200"
-                              : ""
+                              : "hover:bg-red-500"
                       }`
             }
             onClick={() => {

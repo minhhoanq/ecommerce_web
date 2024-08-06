@@ -126,7 +126,11 @@ const Products = () => {
                         categoryBrands?.brands.map((el, index) => (
                             <div
                                 key={index}
-                                className="border p-2 cursor-pointer"
+                                className={` border p-2 cursor-pointer ${
+                                    brand === el.name
+                                        ? "bg-main text-white hover:bg-red-500"
+                                        : ""
+                                } `}
                                 onClick={() => {
                                     setBrand(el.name);
                                     params.set("page", 1);

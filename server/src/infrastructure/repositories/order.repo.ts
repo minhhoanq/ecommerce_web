@@ -91,7 +91,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
     async findFirst(userId: number, orderId: number): Promise<any> {
         return await this._prisma.$queryRaw`
-             SELECT o.id AS "orderId", u."firstName", u."lastName", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
+             SELECT o.id AS "orderId", u."firstName", u."lastName", u."phone", u."address", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
             json_agg(
                     json_build_object(
                         'id', oi.id,

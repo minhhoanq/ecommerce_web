@@ -8,7 +8,7 @@ const OrderItem = ({
     dispatch,
     attributes,
     dfQuantity,
-    salePrice,
+    price,
     name,
     image,
     id,
@@ -18,6 +18,8 @@ const OrderItem = ({
         if (+number > 1) setQuantity(number);
     };
     const handleChangeQuantity = async (flag) => {
+        console.log("item id", id);
+
         if (flag === "minus" && quantity === 1) return;
         if (flag === "minus") {
             setQuantity((prev) => +prev - 1);
@@ -37,6 +39,8 @@ const OrderItem = ({
                 oldQuantity: quantity,
             });
             const carts = await getCartItems();
+            console.log(carts);
+
             dispatch(updateCart(carts));
         }
     };
@@ -79,7 +83,7 @@ const OrderItem = ({
             </span>
             <span className="col-span-3 w-full h-full flex items-center justify-center text-center">
                 <span className="text-lg">
-                    {formatMoney(salePrice * quantity) + " VND"}
+                    {formatMoney(price * quantity) + " VND"}
                 </span>
             </span>
         </div>

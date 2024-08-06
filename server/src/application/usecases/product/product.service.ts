@@ -177,8 +177,12 @@ export class ProductService implements IProductService {
                         ...(q
                             ? [
                                   {
-                                      match_phrase_prefix: {
-                                          name: q,
+                                      match: {
+                                          name: {
+                                              query: q,
+                                              fuzziness: "AUTO",
+                                              operator: "or",
+                                          },
                                       },
                                   },
                               ]

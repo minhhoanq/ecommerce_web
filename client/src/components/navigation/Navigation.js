@@ -1,6 +1,11 @@
 import React, { memo, useEffect, useState } from "react";
 import { navigation } from "ultils/contants";
-import { NavLink, createSearchParams, useNavigate } from "react-router-dom";
+import {
+    NavLink,
+    createSearchParams,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 import InputForm from "components/inputs/InputForm";
 import { useForm } from "react-hook-form";
 import path from "ultils/path";
@@ -14,12 +19,14 @@ const Navigation = () => {
     } = useForm();
     const q = watch("q");
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [showMenu, setShowMenu] = useState(false);
     useEffect(() => {
         const handleEnter = (e) => {
             if (e.keyCode === 13) {
                 navigate({
-                    pathname: `/${path.PRODUCTS}`,
+                    pathname: location.pathname,
                     search: createSearchParams({ q }).toString(),
                 });
             }
