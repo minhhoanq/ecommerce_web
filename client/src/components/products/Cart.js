@@ -33,7 +33,7 @@ const Cart = ({ dispatch, navigate }) => {
         >
             <header className="border-b border-gray-500 flex justify-between items-center row-span-1 h-full font-bold ">
                 <span className="text-base font-semibold uppercase">
-                    Your cart
+                    GIỎ HÀNG CỦA TÔI
                 </span>
                 <span
                     onClick={() => dispatch(showCart())}
@@ -44,7 +44,9 @@ const Cart = ({ dispatch, navigate }) => {
             </header>
             <section className="row-span-7 flex flex-col gap-4 h-full max-h-full overflow-y-auto py-3">
                 {!currentCart && (
-                    <span className="text-xs italic">Your cart is empty.</span>
+                    <span className="text-xs italic">
+                        Chưa có sản phẩm nào trong giỏ hàng.
+                    </span>
                 )}
                 {currentCart &&
                     currentCart?.map((el) => (
@@ -54,10 +56,7 @@ const Cart = ({ dispatch, navigate }) => {
                         >
                             <div className="flex gap-2 min-w-[300px]">
                                 <img
-                                    src={
-                                        el.image ||
-                                        `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
-                                    }
+                                    src={el.image}
                                     alt="thumb"
                                     className="w-20 h-20 object-cover"
                                 />
@@ -101,7 +100,7 @@ const Cart = ({ dispatch, navigate }) => {
             </section>
             <div className="row-span-2 flex flex-col justify-between h-full">
                 <div className="flex items-center justify-between pt-4 border-t border-gray-500">
-                    <span>Subtotal:</span>
+                    <span>Tạm tính:</span>
                     <span>
                         {formatMoney(
                             currentCart?.reduce(
@@ -113,7 +112,7 @@ const Cart = ({ dispatch, navigate }) => {
                     </span>
                 </div>
                 <span className="text-center text-gray-700 italic text-xs">
-                    Shipping, taxes, and discounts calculated at checkout.
+                    Phí vận chuyển, thuế và chiết khấu được tính khi thanh toán.
                 </span>
                 <Button
                     handleOnClick={() => {
@@ -122,7 +121,7 @@ const Cart = ({ dispatch, navigate }) => {
                     }}
                     style="rounded-none w-full bg-main py-3"
                 >
-                    Shopping Cart
+                    CHI TIẾT GIỎ HÀNG
                 </Button>
             </div>
         </div>

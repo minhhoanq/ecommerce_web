@@ -115,10 +115,12 @@ const History = ({ navigate, location }) => {
                                 </td>
                                 <td className="text-center py-2">
                                     {el.orderStatusId === 1
-                                        ? "Pending"
+                                        ? "Đang xử lí"
                                         : el.orderStatusId === 2
-                                        ? "Paid"
-                                        : "Completed"}
+                                        ? "Đã thanh toán"
+                                        : el.orderStatusId === 3
+                                        ? "Hoàn thành"
+                                        : "Đã hủy"}
                                 </td>
                                 <td className="text-center py-2">
                                     {moment(el.createdAt)?.format("DD/MM/YYYY")}
@@ -167,34 +169,53 @@ const History = ({ navigate, location }) => {
                                                 className="flex justify-between my-2"
                                                 key={item.id}
                                             >
-                                                <div>
+                                                <div className="w-[200px]">
                                                     <img
                                                         className="h-[70px]"
                                                         src={item?.image}
                                                     />
                                                 </div>
-                                                <div className="text-left p-2">
+                                                <div className="text-left p-2  flex-1">
                                                     <div className="flex-col">
                                                         <span>
                                                             {item.productName}
                                                         </span>
-                                                        <p className="text-sm">
-                                                            {
-                                                                item.attributes
-                                                                    ?.color
-                                                            }{" "}
-                                                            |{" "}
-                                                            {
-                                                                item.attributes
-                                                                    ?.ram
-                                                            }
-                                                        </p>
+                                                        {item.attributes
+                                                            .ram && (
+                                                            <p className="text-sm">
+                                                                {
+                                                                    item
+                                                                        .attributes
+                                                                        .ram
+                                                                }
+                                                            </p>
+                                                        )}
+                                                        {item.attributes
+                                                            .inch && (
+                                                            <p className="text-sm">
+                                                                {
+                                                                    item
+                                                                        .attributes
+                                                                        .inch
+                                                                }
+                                                            </p>
+                                                        )}
+                                                        {item.attributes
+                                                            .color && (
+                                                            <p className="text-sm">
+                                                                {
+                                                                    item
+                                                                        .attributes
+                                                                        .color
+                                                                }
+                                                            </p>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="text-center p-2">
                                                     x {item.quantity}
                                                 </div>
-                                                <div className="text-right p-2">
+                                                <div className="text-right p-2 w-[200px]">
                                                     {formatMoney(item.price) +
                                                         " VND"}
                                                 </div>

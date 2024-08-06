@@ -95,6 +95,7 @@ export class CartItemRepositoryImpl implements ICartItemRepository {
             JOIN carts as c on ci."cartId" = c.id
             JOIN users as u on c."userId" = u.id
             WHERE u."id" = ${userId}
+            order by ci."createdAt" asc
         `;
     }
 }

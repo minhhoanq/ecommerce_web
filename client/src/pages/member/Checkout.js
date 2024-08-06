@@ -106,6 +106,14 @@ const Checkout = ({ dispatch, navigate }) => {
             };
             const response = await apiCreatePayment(payload);
             console.log(response);
+            if (response.status === "error") {
+                return Swal.fire({
+                    name: "Kiểm tra lại thông tin",
+                    text: "Sản phẩm đã có thay đổi về giá hoặc số lượng, vui lòng quay lại chi tiết các sản phẩm để cập nhật lại!",
+                    icon: "warning",
+                    confirmButtonText: "Đồng ý!",
+                });
+            }
             window.location.href = response.metadata.url;
         }
         if (paymentMethod === 1) {
@@ -121,6 +129,14 @@ const Checkout = ({ dispatch, navigate }) => {
             const order = await apiOrder(data);
             if (order.status === 201)
                 window.location = order.metadata.urlResult;
+            if (order.status === "error") {
+                return Swal.fire({
+                    name: "Kiểm tra lại thông tin",
+                    text: "Sản phẩm đã có thay đổi về giá hoặc số lượng, vui lòng quay lại chi tiết các sản phẩm để cập nhật lại!",
+                    icon: "info",
+                    confirmButtonText: "Đồng ý!",
+                });
+            }
         }
         //Payment upon delivery
     };

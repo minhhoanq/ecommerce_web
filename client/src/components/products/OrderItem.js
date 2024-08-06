@@ -51,10 +51,7 @@ const OrderItem = ({
             <span className="col-span-6 w-full text-center">
                 <div className="flex gap-2 px-4 py-3">
                     <img
-                        src={
-                            image ||
-                            `https://cdn2.cellphones.com.vn/358x/media/catalog/product/g/a/galaxy-s24-ultra-den-1_1_3.png`
-                        }
+                        src={image}
                         alt="thumb"
                         className="w-28 h-28 object-cover"
                     />
