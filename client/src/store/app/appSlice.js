@@ -23,7 +23,6 @@ export const appSlice = createSlice({
             state.isShowCart = state.isShowCart === false ? true : false;
         },
         showFeedback: (state, action) => {
-            console.log(action.payload);
             state.isShowFeedback.open =
                 state.isShowFeedback.open === false ? true : false;
             state.isShowFeedback.item = action.payload.item;

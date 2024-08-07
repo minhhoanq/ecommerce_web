@@ -38,8 +38,6 @@ export class ProductRepositoryImpl implements IProductRepository {
     };
 
     async create(payload: any): Promise<any> {
-        console.log("payload: ", payload);
-
         const { name, desc, categoryId, brandId, image, images, skus } =
             payload;
 
@@ -52,7 +50,6 @@ export class ProductRepositoryImpl implements IProductRepository {
                 categoryId
             )} and "brandId" = ${parseInt(brandId)}
         `;
-        console.log(categoryBrand);
 
         try {
             await this._prisma.$transaction(async (prisma) => {
@@ -90,8 +87,6 @@ export class ProductRepositoryImpl implements IProductRepository {
                                 },
                             })
                     );
-
-                    console.log(createdSku.id);
 
                     await prisma.price.create({
                         data: {
@@ -197,7 +192,6 @@ export class ProductRepositoryImpl implements IProductRepository {
             thumbnail,
             skus,
         } = payload;
-        console.log("payload", { productId, productItemId, skus });
         const updatedAt = new Date();
         let slug;
         if (name) {
@@ -246,8 +240,6 @@ export class ProductRepositoryImpl implements IProductRepository {
     }
 
     async publishProductById(productId: number): Promise<any> {
-        console.log(productId);
-
         return await this._prisma.$queryRaw`
             UPDATE "products" 
             SET 
@@ -282,7 +274,6 @@ export class ProductRepositoryImpl implements IProductRepository {
 
     async searchProducts(params: string): Promise<any> {
         // const regexSearch = new RegExp(params);
-        // console.log(regexSearch);
         return await this._prisma.product.findMany({
             where: {
                 name: {
@@ -374,8 +365,6 @@ export class ProductRepositoryImpl implements IProductRepository {
                 break;
         }
 
-        console.log(attributeQuery);
-
         const sku: any[] = await this._prisma.$queryRaw`
             SELECT DISTINCT sk."productId", sa."attributeValue" FROM skus as sk
             JOIN skuattributes as sa ON sk.id = sa."skuId"
@@ -424,13 +413,14 @@ export class ProductRepositoryImpl implements IProductRepository {
                 attributeIdQuery = 1;
                 break;
             case 4:
+                attributeIdQuery = 1;
+                break;
+            case 5:
                 attributeIdQuery = 3;
                 break;
             default:
                 break;
         }
-
-        console.log("attributeId: ", attributeIdQuery);
 
         const products: any[] = await this._prisma.$queryRaw`
             WITH filtered_skus AS (
@@ -476,8 +466,6 @@ export class ProductRepositoryImpl implements IProductRepository {
             data: orderItems,
         };
 
-        console.log("Call rpc");
-
         const response: any[] = (await RPCRequest(
             process.env.MAIN_FEEDBACK_RPC as string,
             payload
@@ -486,7 +474,6 @@ export class ProductRepositoryImpl implements IProductRepository {
         const userIds = [
             ...new Set(response.map((feedback) => feedback.userId)),
         ];
-        console.log(userIds);
         const users = await this._prisma.user.findMany({
             where: {
                 id: {

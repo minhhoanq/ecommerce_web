@@ -11,7 +11,6 @@ export class RoleResourceRepoImpl implements IRoleResourceRepository {
     }
 
     async getResource(roleId: number, resource: string): Promise<any> {
-        // console.log(typeof roleId + " | " + typeof resource);
         const access: [
             { name: string; code: string; action: string; attributes: string }
         ] = await this._prisma
@@ -22,7 +21,6 @@ export class RoleResourceRepoImpl implements IRoleResourceRepository {
         `;
 
         const grantList: any[] = [];
-        // console.log("a", access);
         access.map((item) => {
             return grantList.push({
                 role: item.name,

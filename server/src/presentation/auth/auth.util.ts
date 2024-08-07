@@ -83,7 +83,6 @@ export class Auth {
                 const decodeUser = <TokenData>(
                     await JWT.verify(accessToken, keyStore.publicKey)
                 );
-                console.log("retrn");
 
                 if (userId !== decodeUser.userId)
                     throw new AuthFailureError("Invalid User");

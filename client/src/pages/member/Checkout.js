@@ -60,7 +60,6 @@ const Checkout = ({ dispatch, navigate }) => {
                     };
                 }),
             };
-            console.log(data);
             const checkout = await apiCheckout(data);
             setReviewCheckout(checkout.metadata);
         })();
@@ -105,7 +104,6 @@ const Checkout = ({ dispatch, navigate }) => {
                 }),
             };
             const response = await apiCreatePayment(payload);
-            console.log(response);
             if (response.status === "error") {
                 return Swal.fire({
                     name: "Kiểm tra lại thông tin",

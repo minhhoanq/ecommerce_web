@@ -4,6 +4,7 @@ import { createSlug } from "ultils/helpers";
 import { useSelector } from "react-redux";
 import { TfiViewListAlt } from "react-icons/tfi";
 import { BsPhone } from "react-icons/bs";
+import { BsTablet } from "react-icons/bs";
 import { IoIosLaptop } from "react-icons/io";
 import { IoCameraOutline } from "react-icons/io5";
 import { RiComputerLine } from "react-icons/ri";
@@ -28,9 +29,10 @@ const Sidebar = () => {
                     }
                 >
                     {el.id === 1 && <BsPhone size={25} />}
-                    {el.id === 2 && <IoIosLaptop size={25} />}
-                    {el.id === 3 && <IoCameraOutline size={25} />}
-                    {el.id === 4 && <RiComputerLine size={25} />}
+                    {el.id === 2 && <BsTablet size={25} />}
+                    {el.id === 3 && <IoIosLaptop size={25} />}
+                    {el.id === 4 && <IoCameraOutline size={25} />}
+                    {el.id === 5 && <RiComputerLine size={25} />}
                     <span className="ml-2">{el.name}</span>
                 </NavLink>
             ))}

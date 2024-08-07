@@ -77,7 +77,6 @@ const InputFeedback = (props) => {
         setPreview(imagesArray);
     };
 
-    console.log(preview);
     useEffect(() => {
         if (watch("images") instanceof FileList && watch("images").length > 0)
             handlePreviewThumb();
@@ -89,7 +88,6 @@ const InputFeedback = (props) => {
         data.userId = current.id;
         data.orderItemId = orderItem.id;
         data.images = preview;
-        console.log(data);
         dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
         const createFeedback = await axios({
             url: "http://localhost:7000/api/v1/feedback",
@@ -105,7 +103,6 @@ const InputFeedback = (props) => {
                 },
             },
         });
-        console.log(createFeedback);
         if (createFeedback.status === 201) {
             dispatch(showModal({ isShowModal: false, modalChildren: null }));
             dispatch(showFeedback({ item: null }));

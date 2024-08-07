@@ -19,7 +19,6 @@ const acquireLock = async (
     for (let i = 0; i < retryTimes; i++) {
         //Tao 1 key de nam giu thanh toan
         const result = await redisClient.setNX(key, exprireTime.toString());
-        console.log("result", result);
         if (result === true) {
             // Thay doi thoi gian xac nhan
             const isRevervation = await invenRepo.revervation(
@@ -27,7 +26,6 @@ const acquireLock = async (
                 quantity,
                 userId
             );
-            console.log(isRevervation);
             if (isRevervation) {
                 await redisClient.pExpire(key, exprireTime);
                 return key;

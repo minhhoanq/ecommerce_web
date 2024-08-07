@@ -6,8 +6,6 @@ let amqplibConnection: any = null;
 
 const getChannel = async () => {
     try {
-        console.log(process.env.URL_RABBITMQ);
-
         if (amqplibConnection === null) {
             amqplibConnection = await amqplib.connect(
                 process.env.URL_RABBITMQ as string

@@ -105,8 +105,6 @@ export class OrderService implements IOrderService {
     }
 
     async order(userId: number, payload: any): Promise<any> {
-        console.log("payload: ", payload);
-
         const cart = await this._cartRepo.findByUserId(userId);
 
         if (!cart) throw new NotFoundError("Cart not found!");
@@ -164,7 +162,6 @@ export class OrderService implements IOrderService {
 
     async createPayment(userId: number, payload: any): Promise<any> {
         const cart = await this._cartRepo.findByUserId(userId);
-        console.log(userId + " | " + payload);
 
         if (!cart) throw new NotFoundError("Cart not found!");
         const { orderItems, checkoutOrder } = await this.checkout(
@@ -174,18 +171,13 @@ export class OrderService implements IOrderService {
 
         payload.paymentMethodId = 2;
 
-        console.log("order 2", orderItems);
-
         const response = await this.order(+userId, payload);
-        console.log("res", response);
 
         if (response.order) {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
                 mode: "payment",
                 line_items: orderItems.map((item: any) => {
-                    console.log("item: ", item);
-
                     return {
                         price_data: {
                             currency: "vnd",
@@ -213,7 +205,6 @@ export class OrderService implements IOrderService {
     async eventWebhooks(signature: string, payload: any): Promise<any> {
         const endpointSecret = process.env.STRIPE_END_POINT_SECRET as string;
         let event: Stripe.Event;
-        console.log("Vo webhook");
 
         try {
             // Construct the event from the payload and signature
@@ -262,10 +253,8 @@ export class OrderService implements IOrderService {
         orderItemId: number;
     }): Promise<any> {
         const { userId, orderItemId } = data;
-        console.log(data);
 
         const orderItem = await this._orderRepo.findFirstOrderItem(orderItemId);
-        console.log(orderItem);
         const user = await this._userRepo.findById(userId);
         if (!orderItem) {
             return null;
@@ -278,7 +267,6 @@ export class OrderService implements IOrderService {
 
     async SubscribeEvents(payload: { event: string; data: any }) {
         const { event, data } = payload;
-        console.log("chgeck");
 
         switch (event) {
             case "CHECK_INFO_FEEDBACK":

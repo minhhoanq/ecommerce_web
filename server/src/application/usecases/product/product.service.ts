@@ -58,7 +58,6 @@ export class ProductService implements IProductService {
             productItemId
         );
 
-        console.log(productItem);
         if (!productItem) throw new NotFoundError("Product not found!");
 
         const updateProduct = await this._productRepo.update(
@@ -146,7 +145,6 @@ export class ProductService implements IProductService {
     }
 
     async searchProducts(query: any): Promise<any> {
-        console.log("query: ", query);
         const {
             q,
             category,
@@ -215,7 +213,6 @@ export class ProductService implements IProductService {
             size: limit || 8,
             ...(sortPrice ? { sort: [{ price: { order: sortPrice } }] } : {}),
         };
-        console.log(JSON.stringify(esQuery));
 
         const resultEs = await clientEs.elasticClient?.search({
             index: "products_idx",

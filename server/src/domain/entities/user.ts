@@ -12,7 +12,6 @@ export default class User {
         public phone: number | null,
         public roleId: number,
         public status: boolean | null,
-        public isVerify: boolean | null,
         public passwordChangedAt: string | null,
         public passwordResetToken: string | null,
         public passwordResetExpires: string | null,

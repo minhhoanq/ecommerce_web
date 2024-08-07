@@ -16,12 +16,9 @@ const OrderResult = () => {
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get("orderId");
 
-    console.log(orderId);
-
     useEffect(() => {
         (async () => {
             const orderDetail = await apiGetOrder(orderId);
-            console.log(orderDetail);
             setOrder(orderDetail.metadata[0]);
         })();
     }, []);

@@ -13,16 +13,12 @@ instance.interceptors.request.use(
         store.dispatch(
             showModal({ isShowModal: true, modalChildren: <Loading /> })
         );
-        console.log("loading");
         let localStorageData = window.localStorage.getItem("persist:shop/user");
         if (localStorageData && typeof localStorageData === "string") {
             localStorageData = JSON.parse(localStorageData);
-            console.log("localStorageData", localStorageData);
             const accessToken = JSON.parse(localStorageData?.token);
             config.headers = { authorization: `Bearer ${accessToken}` };
             const user = JSON.parse(localStorageData?.current);
-            console.log(user);
-            console.log(JSON.parse(localStorageData?.current));
             config.headers["x-client-id"] = `${user?.id ? user?.id : null}`;
             return config;
         } else return config;

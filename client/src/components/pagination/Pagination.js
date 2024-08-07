@@ -12,7 +12,6 @@ const Pagination = ({ totalCount }) => {
         const pageSize = +process.env.REACT_APP_LIMIT || 10;
         const start = Math.min((currentPage - 1) * pageSize + 1, totalCount);
         const end = Math.min(currentPage * pageSize, totalCount);
-        console.log(+params.get("page"));
 
         return `${start} - ${end}`;
     };

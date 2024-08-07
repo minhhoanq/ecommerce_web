@@ -18,8 +18,6 @@ const OrderItem = ({
         if (+number > 1) setQuantity(number);
     };
     const handleChangeQuantity = async (flag) => {
-        console.log("item id", id);
-
         if (flag === "minus" && quantity === 1) return;
         if (flag === "minus") {
             setQuantity((prev) => +prev - 1);
@@ -39,7 +37,6 @@ const OrderItem = ({
                 oldQuantity: quantity,
             });
             const carts = await getCartItems();
-            console.log(carts);
 
             dispatch(updateCart(carts));
         }

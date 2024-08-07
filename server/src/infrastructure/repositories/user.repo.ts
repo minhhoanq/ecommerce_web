@@ -37,7 +37,6 @@ export class UserRepoImpl implements IUserRepository {
     }
 
     async findByCodeVerify(codeverify: CodeVerifyDTO): Promise<User | null> {
-        console.log(codeverify.token);
         return await this._prisma.user.findFirst({
             where: {
                 email: {
@@ -71,7 +70,6 @@ export class UserRepoImpl implements IUserRepository {
             email,
             password,
             status,
-            isVerify,
             passwordChangedAt,
             passwordResetToken,
             passwordResetExpires,
@@ -84,7 +82,6 @@ export class UserRepoImpl implements IUserRepository {
                 email: email,
                 password: password,
                 status: status,
-                isVerify: isVerify,
                 passwordChangedAt: passwordChangedAt,
                 passwordResetToken: passwordResetToken,
                 passwordResetExpires: {
@@ -97,12 +94,9 @@ export class UserRepoImpl implements IUserRepository {
     async findById(id: number): Promise<User | null> {
         const user: User[] = await this._prisma
             .$queryRaw`SELECT * FROM "users" WHERE id=${id}`;
-        console.log(user);
         return user.length > 0 ? user[0] : null;
     }
     async create(data: any): Promise<any> {
-        console.log("user sign up data: ", data);
-
         return await this._prisma.user.create({
             data: data,
         });
@@ -123,30 +117,11 @@ export class UserRepoImpl implements IUserRepository {
             phone,
             roleId,
             status,
-            isVerify,
             passwordChangedAt,
             passwordResetToken,
             passwordResetExpires,
         }: UpdateUserDTO
     ): Promise<User> {
-        console.log({
-            username,
-            firstName,
-            lastName,
-            email,
-            password,
-            avatar,
-            gender,
-            dob,
-            address,
-            phone: Number(phone),
-            roleId,
-            status,
-            isVerify,
-            passwordChangedAt,
-            passwordResetToken,
-            passwordResetExpires,
-        });
         return this._prisma.user.update({
             where: {
                 id: id,
@@ -164,7 +139,6 @@ export class UserRepoImpl implements IUserRepository {
                 phone: Number(phone),
                 roleId,
                 status,
-                isVerify,
                 passwordChangedAt,
                 passwordResetToken,
                 passwordResetExpires,

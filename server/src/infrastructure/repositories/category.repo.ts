@@ -30,8 +30,6 @@ export class CategoryRepositoryImpl implements ICategoryRepository {
     }
 
     async findFirst(category: string): Promise<any> {
-        console.log(category);
-
         return await this._prisma.$queryRaw`
             SELECT
                 c.id AS categoryId,

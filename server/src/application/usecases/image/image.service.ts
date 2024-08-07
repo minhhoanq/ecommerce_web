@@ -20,7 +20,6 @@ export class ImageService implements IImageService {
     }: {
         file: Express.Multer.File;
     }): Promise<{ url: string; result: PutObjectCommandOutput }> => {
-        console.log(file);
         const imageName = randomImageName();
         const command = new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
@@ -30,15 +29,13 @@ export class ImageService implements IImageService {
         });
 
         const result: any = await s3.send(command);
-        console.log(result);
 
         const singleUrl = new GetObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: imageName,
         });
 
-        const url = await getSignedUrl(s3, singleUrl, { expiresIn: 3600 });
-        console.log(url);
+        const url = await getSignedUrl(s3, singleUrl, { expiresIn: 604800 });
 
         return {
             url: `${urlImagePublic}/${imageName}`,
@@ -52,7 +49,6 @@ export class ImageService implements IImageService {
         files: Express.Multer.File[];
     }): Promise<{ url: string; result: PutObjectCommandOutput }[]> => {
         // files
-        // console.log("files: ", files);
         const urlArray: { url: string; result: PutObjectCommandOutput }[] = [];
         const fn: any = files.map(async (file) => {
             const imageName = randomImageName();
@@ -64,7 +60,6 @@ export class ImageService implements IImageService {
             });
 
             const result: any = await s3.send(command);
-            console.log(result);
 
             const singleUrl = new GetObjectCommand({
                 Bucket: process.env.AWS_BUCKET_NAME,
@@ -72,7 +67,7 @@ export class ImageService implements IImageService {
             });
 
             await getSignedUrl(s3, singleUrl, {
-                expiresIn: 3600,
+                expiresIn: 604800,
             });
             urlArray.push({
                 url: `${urlImagePublic}/${imageName}`,

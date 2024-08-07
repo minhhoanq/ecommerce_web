@@ -29,8 +29,6 @@ const Dashboard = () => {
         setCustomTime({ from: "", to: "" });
     };
 
-    console.log(data);
-
     const pieData = {
         labels: ["Tông đơn đã hủy", "Tổng đơn thành công"],
         datasets: [

@@ -66,7 +66,6 @@ const SearchItem = ({
     const deboucePriceFrom = useDebounce(price.from, 800);
     const deboucePriceTo = useDebounce(price.to, 800);
     useEffect(() => {
-        console.log(deboucePriceFrom + " and " + deboucePriceTo);
         if (
             +deboucePriceFrom &&
             +deboucePriceTo &&
@@ -85,7 +84,6 @@ const SearchItem = ({
         if (Number(price.to) > 0) params.set("maxPrice", price.to);
         else params.delete("maxPrice");
         params.set("page", 1);
-        console.log("params: ", params);
         const queries = Object.fromEntries([...params]);
 
         navigate({

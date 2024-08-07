@@ -19,7 +19,6 @@ const authentication = asyncHandler(async (req, res, next) => {
         refreshToken,
     });
 
-    console.log("check: ", rs.data.authen);
     if (rs.data?.authen) {
         (req.user = rs.data?.authen.decodeUser),
             (req.keyStore = rs.data?.authen.keyStore),
@@ -37,7 +36,6 @@ const grantAccess = (action, resource) => {
             user: req.user,
         });
 
-        console.log(rs.data);
         if (rs.data) return next();
         return res
             .status(403)

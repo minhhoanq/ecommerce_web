@@ -47,13 +47,11 @@ export class CartService implements ICartService {
         );
         if (!product) throw new NotFoundError("Product not exists!");
         const cart = await this._cartRepo.findByUserId(userId);
-        console.log(cart);
         if (!cart) {
             return await this.createCart(userId, payload);
         }
 
         const cartItems = await this._cartItemRepo.findByCartId(cart.id);
-        console.log(cartItems);
 
         //cart is exist but not product item
         if (!cartItems.length) {
@@ -67,7 +65,6 @@ export class CartService implements ICartService {
         const contantsValue = cartItems.some(
             (cartItem: any) => cartItem.skuId === payload.productItemId
         );
-        console.log(contantsValue);
 
         if (contantsValue) {
             //product item is already

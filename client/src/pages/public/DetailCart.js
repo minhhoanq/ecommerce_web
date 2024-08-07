@@ -9,7 +9,6 @@ import path from "ultils/path";
 
 const DetailCart = ({ location, navigate }) => {
     const { currentCart, current } = useSelector((state) => state.user);
-    console.log(currentCart);
     const handleSubmit = () => {
         navigate(`/${path.CHECKOUT}`, "_blank");
     };

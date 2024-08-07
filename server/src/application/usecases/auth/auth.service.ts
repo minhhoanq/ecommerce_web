@@ -49,7 +49,6 @@ export class AuthService implements IAuthService {
     async me(body: { userId: number }): Promise<User | null> {
         const { userId } = body;
         const user: User | null = await this._userRepo.findById(userId);
-        console.log("userId", user);
 
         return user;
     }
@@ -64,8 +63,6 @@ export class AuthService implements IAuthService {
         const verificationCode = makeVerification();
         const emailEdited = btoa(email) + "@" + verificationCode;
 
-        console.log(emailEdited);
-
         const newUser = await this._userRepo.create({
             username,
             firstName,
@@ -74,8 +71,6 @@ export class AuthService implements IAuthService {
             email: emailEdited,
             roleId: 2,
         });
-
-        console.log(newUser);
 
         if (newUser) {
             const html = ConfirmSignup(verificationCode);
@@ -94,7 +89,6 @@ export class AuthService implements IAuthService {
                 await this._userRepo.deleteByEmail(emailEdited);
             };
 
-            console.log(date.getTime());
             schedule.scheduleJob(
                 date.getTime() + 5 * 60 * 1000,
                 async function () {
@@ -111,7 +105,6 @@ export class AuthService implements IAuthService {
     async finalSignup(
         body: CodeVerifyDTO
     ): Promise<{ user: User; tokens: Tokens | undefined } | null> {
-        console.log(body);
         const userExist = await this._userRepo.findByCodeVerify(body);
 
         if (!userExist)
@@ -120,7 +113,6 @@ export class AuthService implements IAuthService {
             );
 
         userExist.email = atob(userExist.email.split("@")[0]);
-        console.log(userExist.email, userExist.id);
 
         const updateUser = await this._userRepo.update(userExist.id, {
             email: userExist.email,
@@ -129,8 +121,6 @@ export class AuthService implements IAuthService {
 
         const publicKey = crypto.randomBytes(64).toString("hex");
         const privateKey = crypto.randomBytes(64).toString("hex");
-
-        console.log({ publicKey, privateKey });
 
         const publicKeyString = await this._keyStoreService.createKeyStore({
             userId: userExist.id,
@@ -152,7 +142,6 @@ export class AuthService implements IAuthService {
             publicKeyString.privateKey
         );
 
-        console.log("tokens: ", tokens);
         await this._keyStoreService.updateKeyStore({
             userId: userExist.id,
             refreshToken: tokens?.refreshToken,
@@ -179,15 +168,9 @@ export class AuthService implements IAuthService {
         const publicKey = crypto.randomBytes(64).toString("hex");
         const privateKey = crypto.randomBytes(64).toString("hex");
 
-        console.log({ publicKey, privateKey });
-
         const keyStore = await this._keyStoreService.findKeyStrore(
             userExist.id
         );
-
-        console.log(keyStore);
-
-        // const
 
         if (keyStore) {
             await this._keyStoreService.updateKeyStore({
@@ -228,7 +211,6 @@ export class AuthService implements IAuthService {
         const deleteKeyToke = await this._keyStoreService.deleteKeyStore(
             keyToken.id
         );
-        console.log(deleteKeyToke);
         return true;
     }
 
@@ -266,14 +248,11 @@ export class AuthService implements IAuthService {
     //forgot password
     async forgotPassword(body: { email: string }): Promise<boolean> {
         const { email } = body;
-        console.log(email);
         if (!email) throw new BadRequestError("Missing email!");
         const user = await this._userRepo.findByEmail(email);
         if (!user) throw new NotFoundError("User not found!");
 
         const passwordTokens = createPasswordChangedToken();
-
-        console.log(passwordTokens);
 
         const updateUser = await this._userRepo.update(user.id, {
             passwordResetToken: passwordTokens.passwordResetToken,
@@ -291,7 +270,6 @@ export class AuthService implements IAuthService {
                     passwordResetExpires: "",
                 });
 
-            console.log(date.getTime());
             schedule.scheduleJob(
                 date.getTime() + 5 * 60 * 1000,
                 async function () {
@@ -327,8 +305,6 @@ export class AuthService implements IAuthService {
             .update(token)
             .digest("hex");
 
-        console.log(passwordResetToken);
-
         const dateNow = Date.now();
 
         const user = await this._userRepo.findFirst({
@@ -340,7 +316,6 @@ export class AuthService implements IAuthService {
             throw new AuthFailureError(
                 "The data is invalid or you have timed out"
             );
-        console.log(user);
 
         const passwordHash = await bcrypt.hash(password, 10);
 
@@ -355,7 +330,6 @@ export class AuthService implements IAuthService {
     }
 
     async update(userId: number, body: UpdateUserDTO): Promise<User> {
-        console.log("body", body);
         return await this._userRepo.update(userId, body);
     }
 }

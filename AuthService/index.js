@@ -38,7 +38,6 @@ app.use(
             resource: req.body.resource,
             user: req.body.user,
         });
-        console.log(rs.data);
         return res.json(rs.data);
     })
 );

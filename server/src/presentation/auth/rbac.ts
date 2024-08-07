@@ -25,13 +25,11 @@ export class Access {
     GrantAccess = async (action: string, resource: string, user: any) => {
         // return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // console.log(req.user.roleId + " | " + resource);
             const access = await this._RResourceRepo.getResource(
                 user.roleId,
                 resource
             );
 
-            // console.log("access: ", access);
             if (!access.roleName) return false;
 
             const ac = new AccessControl(access.grantList);
@@ -39,10 +37,8 @@ export class Access {
             const isPermitted = permissions[action as keyof typeof permissions](
                 resource
             ) as Permission;
-            console.log("cehechucahaiue");
 
             // const permissions = ac.;
-            // console.log("check 3", isPermitted.granted);
             if (!isPermitted.granted) {
                 return false;
             }

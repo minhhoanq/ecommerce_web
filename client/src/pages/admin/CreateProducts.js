@@ -58,8 +58,6 @@ const CreateProducts = () => {
         setValue("skus", [...watch("skus"), newSKU]);
     };
 
-    console.log(watch("skus"));
-
     const [payload, setPayload] = useState({
         description: "",
     });
@@ -121,9 +119,7 @@ const CreateProducts = () => {
     const handleCreateProduct = async (data) => {
         data.image = preview.image[0];
         data.images = preview.images;
-        console.log("create data product: ", data);
         const response = await apiCreateProduct(data);
-        console.log(response);
         if (response.status === 200) {
             reset(defaultValues);
             toast.success(response.message);
@@ -290,7 +286,7 @@ const CreateProducts = () => {
                         </div>
                     )}
 
-                    {[1, 2, 5].includes(+productType) &&
+                    {[1, 2, 3].includes(+productType) &&
                         watch("skus") &&
                         watch("skus").map((sku, index) => (
                             <SmartphoneFrom
@@ -308,7 +304,7 @@ const CreateProducts = () => {
                                 }}
                             />
                         ))}
-                    {+productType === 3 &&
+                    {+productType === 4 &&
                         watch("skus") &&
                         watch("skus").map((sku, index) => (
                             <CameraFrom
@@ -326,7 +322,7 @@ const CreateProducts = () => {
                                 }}
                             />
                         ))}
-                    {+productType === 4 &&
+                    {+productType === 5 &&
                         watch("skus") &&
                         watch("skus").map((sku, index) => (
                             <TelevisionFrom

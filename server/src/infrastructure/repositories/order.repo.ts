@@ -22,8 +22,6 @@ export class OrderRepositoryImpl implements IOrderRepository {
             }
         ]
     ): Promise<any> {
-        console.log(payload);
-
         try {
             const dateNow = new Date();
             return await this._prisma.$transaction(async (prisma) => {
@@ -38,8 +36,6 @@ export class OrderRepositoryImpl implements IOrderRepository {
                     ) VALUES (${userId}, ${paymentMethodId}, ${addressId}, ${dateNow}, ${total}, ${dateNow})
                     RETURNING *
                 `;
-
-                console.log(order);
 
                 const orderItems = payload.map(
                     async (el: { id: number; quantity: number }) => {
@@ -119,8 +115,6 @@ export class OrderRepositoryImpl implements IOrderRepository {
     }
 
     async findMany(userId: number, query: any): Promise<any> {
-        console.log("Order query: ", query);
-
         const { page, limit } = query;
         const skip = (+page - 1) * +limit;
 

@@ -81,11 +81,6 @@ const ManageOrder = () => {
     };
 
     const handleUpdate = async () => {
-        console.log({
-            userId: editOrder.userId,
-            orderId: editOrder.orderId,
-            orderStatusId: watch("orderStatusId"),
-        });
         const response = await apiUpdateStatus({
             userId: editOrder.userId,
             orderId: editOrder.orderId,
@@ -97,8 +92,6 @@ const ManageOrder = () => {
             setEditOrder(null);
         } else toast.error(response.message);
     };
-
-    console.log(editOrder);
 
     return (
         <div className="w-full flex flex-col gap-4 bg-gray-50 relative">

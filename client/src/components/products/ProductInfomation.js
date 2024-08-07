@@ -53,7 +53,6 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
     useState(() => {
         (async () => {
             const res = await getFeedbackApi(params.title);
-            console.log(res.metadata);
             setFeedback(res.metadata);
         })();
     }, []);
@@ -68,8 +67,6 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
 
     // Example usage
     const paginatedData = paginate(feedbacks, currentPage, limit);
-
-    console.log(paginatedData);
 
     useEffect(() => {
         socket?.on("serverComment", (msg) => {
@@ -89,13 +86,9 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
         );
         const count = feedbacks.length;
         const averageStar = totalStars / count;
-        console.log(count);
-        console.log(totalStars);
-        console.log(averageStar);
+
         setTotalRatings(averageStar.toFixed(2));
     }, [feedbacks]);
-
-    console.log(typeof totalRatings);
 
     return (
         <div>

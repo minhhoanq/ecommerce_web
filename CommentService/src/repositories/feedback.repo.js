@@ -15,7 +15,6 @@ class FeedbackRepository {
     }
 
     async getFeedbacks(data) {
-        console.log("data: ", data);
         const ids = data.map((el) => el.id);
         return await this.prisma.feedback.findMany({
             where: {

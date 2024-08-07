@@ -61,8 +61,6 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
     });
     const [socket, setSocket] = useState(null);
 
-    console.log(params);
-
     useEffect(() => {
         const socket = io(SOCKET_SERVER_URL, {
             transports: ["websocket"],
@@ -148,8 +146,6 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             setStorages(response.metadata.storages);
             setColors(response.metadata.colors);
             setInchs(response.metadata.inchs);
-
-            console.log(response.metadata.sku[0].attributeValue);
 
             setAttribute((prev) => ({
                 ...prev,
@@ -238,12 +234,10 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
             toast.success(response.message);
             dispatch(getCurrent());
         } else toast.error(response.message);
-        // console.log(currentProduct);
     };
 
     const handleChooseVariations = async (el) => {
         setAttribute((prev) => ({ ...prev, storage: el.attributeValue }));
-        console.log(el);
         // Tách URL để lấy phần base URL
         const currentUrl = window.location.href;
         const urlParts = currentUrl.split("/");

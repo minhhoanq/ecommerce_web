@@ -48,7 +48,6 @@ const Products = () => {
         queries.limit = 8;
 
         const response = await apiSearchProducts(queries);
-        console.log(response);
         if (response.status === 200) {
             setProducts(response?.metadata.result);
             setCount(response?.metadata.total);
@@ -59,15 +58,12 @@ const Products = () => {
         (async () => {
             const data =
                 category?.charAt(0).toLocaleUpperCase() + category?.slice(1);
-            console.log(data);
             const res = await apiGetCategory(data);
             setCategoryBrands(res?.metadata?.categories[0]);
         })();
     }, []);
 
     useEffect(() => {
-        console.log("params");
-
         if (category && category !== "products") {
             params.set("category", category);
             params.delete("brand");

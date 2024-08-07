@@ -50,7 +50,6 @@ function App() {
     useEffect(() => {
         (async () => {
             const carts = await getCartItems();
-            console.log(carts);
             dispatch(updateCart(carts));
         })();
     }, []);

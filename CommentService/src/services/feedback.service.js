@@ -29,11 +29,8 @@ class FeedbackService {
     }
 
     async createFeedback(body) {
-        console.log("body", body);
-
         // const producer = await getProducer();
         const response = await RPCRequest(process.env.FEEDBACK_MAIN_RPC, body);
-        console.log(response);
         const data = {
             userId: response.user.id,
             orderItemId: response.orderItemId,
@@ -67,14 +64,12 @@ class FeedbackService {
     }
 
     async getFeedbackItem(data) {
-        console.log("data service: ", data);
         const feedback = await feedbackRepo.getFeedbacks(data);
         return feedback;
     }
 
     async SubscribeEvents(payload) {
         const { event, data } = payload;
-        console.log("vo day di");
 
         switch (event) {
             case "GET_FEEDBACK_ITEM":

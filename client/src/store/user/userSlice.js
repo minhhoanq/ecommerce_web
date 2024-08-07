@@ -13,7 +13,6 @@ export const userSlice = createSlice({
     },
     reducers: {
         login: (state, action) => {
-            console.log(action);
             state.isLoggedIn = action.payload.isLoggedIn;
             state.token = action.payload.token;
             state.current = action.payload.userData;
@@ -29,7 +28,6 @@ export const userSlice = createSlice({
             state.mes = "";
         },
         updateCart: (state, action) => {
-            console.log(action.payload.metadata);
             // const { skuid, color, quantity } = action.payload.metadata;
             // const updatingCart = JSON.parse(JSON.stringify(state.currentCart));
             state.currentCart = action.payload.metadata;

@@ -41,7 +41,6 @@ const Personal = ({ navigate }) => {
         formData.append("file", fileImages[0]); // Append files to FormData with the key "files"
 
         const image = await uploadImage(formData);
-        console.log(image);
         // let imagesArray = uploadInmage.metadata.map((el) => el.url);
         setPreview(image.metadata.url);
     };
@@ -52,10 +51,8 @@ const Personal = ({ navigate }) => {
     }, [watch("avatar")]);
 
     const handleUpdateInfor = async (data) => {
-        console.log("data", data);
         if (preview) data.avatar = preview;
         const response = await apiUpdateCurrent(data);
-        console.log(data);
         if (response.status === 200) {
             dispatch(getCurrent());
             toast.success(response.mesage);

@@ -20,10 +20,7 @@ export class ImageController {
         next: NextFunction
     ) => {
         try {
-            console.log("check");
             const { file } = req;
-
-            console.log(req.file);
 
             if (!file) throw new BadRequestError("File missing!!");
             new SuccessResponse({

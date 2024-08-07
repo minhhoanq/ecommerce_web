@@ -21,8 +21,6 @@ export class InventoryRepositoryImpl implements IInventoryRepository {
         quantity: number,
         userId: number
     ): Promise<any> {
-        console.log({ productItemId, quantity, userId });
-
         const inventoryItem = await this._prisma.inventory.findFirst({
             where: {
                 skuId: productItemId,

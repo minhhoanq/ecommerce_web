@@ -19,7 +19,6 @@ export const productSlice = createSlice({
         });
         builder.addCase(getNewProducts.fulfilled, (state, action) => {
             state.isLoading = false;
-            console.log(action.payload);
             state.newProducts = action.payload;
         });
         builder.addCase(getNewProducts.rejected, (state, action) => {

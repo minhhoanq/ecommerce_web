@@ -15,14 +15,11 @@ const auth = container.get<Auth>(TYPES.Auth);
 const access = container.get<Access>(TYPES.Access);
 router.use("/verify", auth.authentication);
 router.use("/access", async (req, res) => {
-    // console.log(req.body);
     const rs = await access.GrantAccess(
         req.body.action,
         req.body.resource,
         req.body.user
     );
-
-    console.log(rs);
 
     return await res.status(200).json(rs);
 });
