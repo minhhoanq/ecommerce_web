@@ -9,7 +9,7 @@ export default class User {
         public avatar: string | null,
         public gender: string | null,
         public dob: string | null,
-        public phone: number | null,
+        public phone: string | null,
         public roleId: number,
         public status: boolean | null,
         public passwordChangedAt: string | null,

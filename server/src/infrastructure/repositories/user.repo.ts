@@ -136,7 +136,7 @@ export class UserRepoImpl implements IUserRepository {
                 gender,
                 dob,
                 address,
-                phone: Number(phone),
+                phone,
                 roleId,
                 status,
                 passwordChangedAt,

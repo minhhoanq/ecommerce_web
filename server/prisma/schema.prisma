@@ -18,7 +18,7 @@ model User {
   avatar               String?
   gender               String?
   dob                  String?
-  phone                Int?
+  phone                String?
   address              String?
   roleId               Int       @default(3)
   status               Boolean?  @default(true)
@@ -155,7 +155,7 @@ model Price {
 
 model Product {
   id              Int            @id @default(autoincrement())
-  name            String?         @db.VarChar(255)
+  name            String?        @db.VarChar(255)
   image           String?        @db.VarChar(255)
   imageProducts   ImageProduct[]
   desc            String

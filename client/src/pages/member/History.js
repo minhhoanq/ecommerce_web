@@ -39,7 +39,7 @@ const History = ({ navigate, location }) => {
         });
         if (response.status === 200) {
             setOrders(response?.metadata);
-            setCounts(20);
+            setCounts(response?.metadata.length);
         }
     };
     useEffect(() => {

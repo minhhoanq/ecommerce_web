@@ -41,6 +41,7 @@ import { updateCart } from "store/user/userSlice";
 import { getCartItems } from "apis";
 import OrderResult from "pages/member/OrderResult";
 import InputFeedback from "components/common/InputFeedback";
+import PdfFile from "components/common/PdfFile";
 
 function App() {
     const dispatch = useDispatch();
@@ -79,7 +80,7 @@ function App() {
 
             <Routes>
                 <Route path={path.ORDERRESULT} element={<OrderResult />} />
-
+                <Route path={"pdf"} element={<PdfFile />} />
                 <Route path={path.PUBLIC} element={<Public />}>
                     <Route path={path.HOME} element={<Home />} />
                     <Route

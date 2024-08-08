@@ -484,6 +484,8 @@ export class ProductRepositoryImpl implements IProductRepository {
                 id: true,
                 username: true,
                 avatar: true,
+                firstName: true,
+                lastName: true,
             },
         });
 

@@ -155,7 +155,7 @@ const ProductInfomation = ({ ratings, nameProduct, pid, rerender, socket }) => {
                             star={el?.star}
                             updatedAt={el?.createdAt}
                             comment={el?.content}
-                            name={`${el?.user.username}`}
+                            name={`${el?.user.lastName} ${el?.user.firstName}`}
                             avatar={el?.user.avatar}
                             images={el?.imageFeedbacks}
                         />
