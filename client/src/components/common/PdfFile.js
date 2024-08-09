@@ -11,6 +11,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { NavLink, useParams, useSearchParams } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import logo from "../../assets/logo.png";
+import moment from "moment";
+import { formatMoney } from "ultils/helpers";
 
 const styles = StyleSheet.create({
     page: {
@@ -131,7 +133,7 @@ const InvoiceTitle = () => (
     </View>
 );
 
-const Address = () => (
+const Address = (props) => (
     <View style={styles.titleContainer}>
         <View style={styles.spaceBetween}>
             <View>
@@ -141,22 +143,22 @@ const Address = () => (
                 </Text>
             </View>
             <View>
-                <Text style={styles.addressTitle}>7, Ademola Odede, </Text>
-                <Text style={styles.addressTitle}>Ikeja,</Text>
-                <Text style={styles.addressTitle}>Lagos, Nigeria.</Text>
+                <Text style={styles.addressTitle}>{props.address}</Text>
             </View>
         </View>
     </View>
 );
 
-const UserAddress = () => (
+const UserAddress = (props) => (
     <View style={styles.titleContainer}>
         <View style={styles.spaceBetween}>
             <View style={{ maxWidth: 200 }}>
                 <Text style={styles.addressTitle}>Bill to </Text>
-                <Text style={styles.address}>{reciept_data.address}</Text>
+                <Text style={styles.address}>mh.tranminhhoang@gmail.com</Text>
             </View>
-            <Text style={styles.addressTitle}>{reciept_data.date}</Text>
+            <Text style={styles.addressTitle}>
+                {moment(props.createdAt)?.format("DD/MM/YYYY")}
+            </Text>
         </View>
     </View>
 );
@@ -164,39 +166,63 @@ const UserAddress = () => (
 const TableHead = () => (
     <View style={{ width: "100%", flexDirection: "row", marginTop: 10 }}>
         <View style={[styles.theader, styles.theader2]}>
-            <Text>Items</Text>
+            <Text>Ten</Text>
+        </View>
+        <View style={[styles.theader, styles.theader2]}>
+            <Text>Anh</Text>
         </View>
         <View style={styles.theader}>
-            <Text>Price</Text>
+            <Text>Gia</Text>
         </View>
         <View style={styles.theader}>
-            <Text>Qty</Text>
+            <Text>So luong</Text>
         </View>
         <View style={styles.theader}>
-            <Text>Amount</Text>
+            <Text>Tong</Text>
         </View>
     </View>
 );
 
-const TableBody = (items) =>
-    reciept_data.items.map((receipt) => (
-        <Fragment key={receipt.id}>
-            <View style={{ width: "100%", flexDirection: "row" }}>
-                <View style={[styles.tbody, styles.tbody2]}>
-                    <Text>{receipt.desc}</Text>
-                </View>
-                <View style={styles.tbody}>
-                    <Text>{receipt.price} </Text>
-                </View>
-                <View style={styles.tbody}>
-                    <Text>{receipt.qty}</Text>
-                </View>
-                <View style={styles.tbody}>
-                    <Text>{(receipt.price * receipt.qty).toFixed(2)}</Text>
-                </View>
-            </View>
-        </Fragment>
-    ));
+const TableBody = (props) => {
+    return props.items ? (
+        <>
+            {props.items?.map((receipt) => (
+                <Fragment key={receipt.id}>
+                    <View style={{ width: "100%", flexDirection: "row" }}>
+                        <View style={[styles.tbody, styles.tbody2]}>
+                            <Text>{receipt?.productName}</Text>
+                        </View>
+                        <View style={[styles.tbody, styles.tbody2]}>
+                            <Image
+                                style={styles.logo}
+                                src={{
+                                    uri: "https://djusmsx094025.cloudfront.net/3bc623b7d96dae4d90642626e49568b9",
+                                    method: "GET",
+                                    headers: {
+                                        "Access-Control-Allow-Origin": "*",
+                                    },
+                                }}
+                            />
+                        </View>
+                        <View style={styles.tbody}>
+                            <Text>{formatMoney(receipt?.price) + " VND"}</Text>
+                        </View>
+                        <View style={styles.tbody}>
+                            <Text>{receipt?.quantity}</Text>
+                        </View>
+                        <View style={styles.tbody}>
+                            <Text>
+                                {formatMoney(
+                                    receipt?.price * receipt?.quantity
+                                ) + " VND"}
+                            </Text>
+                        </View>
+                    </View>
+                </Fragment>
+            ))}
+        </>
+    ) : null;
+};
 
 const TableTotal = () => (
     <View style={{ width: "100%", flexDirection: "row" }}>
@@ -228,21 +254,21 @@ const PdfFile = () => {
     useEffect(() => {
         (async () => {
             const orderDetail = await apiGetOrder(orderId);
-            setOrder(orderDetail.metadata[0]);
+            setOrder(orderDetail?.metadata[0] ? orderDetail?.metadata[0] : []);
         })();
     }, []);
 
-    console.log(order);
+    console.log(order?.orderitems);
 
     return (
         <PDFViewer width="100%" height="775px" className="app">
             <Document style={{ width: "100%" }}>
                 <Page size="A4" style={styles.page}>
                     <InvoiceTitle />
-                    <Address />
-                    <UserAddress />
+                    <Address address={"abc"} />
+                    <UserAddress createdAt={order.createdAt} />
                     <TableHead />
-                    <TableBody />
+                    <TableBody items={order?.orderitems} />
                     <TableTotal />
                 </Page>
             </Document>
