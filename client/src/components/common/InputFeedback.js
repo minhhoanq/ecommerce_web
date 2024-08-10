@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { uploadImages } from "apis/image";
 import Loading from "./Loading";
+import { toast } from "react-toastify";
 // import { FaStar } from "react-icons/fa6";
 
 const SOCKET_SERVER_URL = "http://localhost:7000";
@@ -103,7 +104,10 @@ const InputFeedback = (props) => {
                 },
             },
         });
+        console.log(createFeedback);
+
         if (createFeedback.status === 201) {
+            toast.success(createFeedback.data.message);
             dispatch(showModal({ isShowModal: false, modalChildren: null }));
             dispatch(showFeedback({ item: null }));
             socket.emit("userComment", createFeedback.data.metadata);
@@ -115,7 +119,7 @@ const InputFeedback = (props) => {
             onSubmit={handleSubmit(handleFeedback)}
             onClick={(e) => e.stopPropagation()}
         >
-            <div className="bg-white h-[620px] w-[450px] p-4 flex flex-col rounded-sm">
+            <div className="bg-white h-[620px] w-[500px] p-4 flex flex-col rounded-sm">
                 <h3 className="font-semibold">Đánh giá</h3>
                 <div
                     className="flex justify-between items-start border-b py-2"
@@ -127,10 +131,23 @@ const InputFeedback = (props) => {
                     <div className="text-left ">
                         <div className="flex-col">
                             <span>{orderItem.productName}</span>
-                            <p className="text-sm">
-                                {orderItem.attributes?.color} |{" "}
-                                {orderItem.attributes?.ram}
-                            </p>
+                            <div className="flex space-x-2">
+                                {orderItem.attributes?.color && (
+                                    <p className="text-sm">
+                                        {orderItem.attributes?.color}
+                                    </p>
+                                )}
+                                {orderItem.attributes?.ram && (
+                                    <p className="text-sm">
+                                        {orderItem.attributes?.ram}
+                                    </p>
+                                )}
+                                {orderItem.attributes?.inch && (
+                                    <p className="text-sm">
+                                        {orderItem.attributes?.inch}
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="w-[100px] text-left">

@@ -88,7 +88,7 @@ const Header = () => {
                                     >
                                         Tài khoản của tôi
                                     </Link>
-                                    {+current.roleId === 2 && (
+                                    {+current.roleId === 1 && (
                                         <Link
                                             className="p-2 w-full hover:bg-sky-100"
                                             to={`/${path.ADMIN}/${path.DASHBOARD}`}

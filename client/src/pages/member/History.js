@@ -62,6 +62,11 @@ const History = ({ navigate, location }) => {
         dispatch(showFeedback({ item }));
     };
 
+    const handleExportPDFFile = (id) => {
+        const pdfUrl = `http://localhost:3000/pdf?orderId=${id}`;
+        window.open(pdfUrl, "_blank");
+    };
+
     return (
         <div className="w-full relative px-4">
             <header className="text-xl font-semibold py-4 border-b border-b-blue-200">
@@ -95,6 +100,7 @@ const History = ({ navigate, location }) => {
                         <th className="text-center py-2">TỔNG</th>
                         <th className="text-center py-2">TRẠNG THÁi</th>
                         <th className="text-center py-2">NGÀY TẠO</th>
+                        <th className="text-center py-2"></th>
                         <th className="text-center py-2"></th>
                     </tr>
                 </thead>
@@ -143,6 +149,14 @@ const History = ({ navigate, location }) => {
                                             <IoIosArrowDown />
                                         </div>
                                     )}
+                                </td>
+                                <td
+                                    className="text-center py-2 border border-main text-main cursor-pointer hover:bg-red-50"
+                                    onClick={() =>
+                                        handleExportPDFFile(el.orderId)
+                                    }
+                                >
+                                    Xuất PDF
                                 </td>
                             </tr>
                             <tr>

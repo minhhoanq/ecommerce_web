@@ -200,13 +200,22 @@ export class OrderRepositoryImpl implements IOrderRepository {
             `;
 
         return {
-            countNewUser: countNewUser[0].count.toString(),
-            paid: paid[0].sum.toString(),
-            unPaid: unPaid[0]?.sum.toString(),
-            sold: sold[0]?.count.toString(),
+            countNewUser:
+                countNewUser[0]?.count !== null
+                    ? countNewUser[0]?.count.toString()
+                    : 0,
+            paid: paid[0]?.sum !== null ? paid[0]?.sum.toString() : 0,
+            unPaid: unPaid[0]?.sum !== null ? unPaid[0]?.sum.toString() : 0,
+            sold: sold[0]?.count !== null ? sold[0]?.count.toString() : 0,
             statusOrder: {
-                complete: completeOrder[0]?.count.toString(),
-                cancel: cancelOrder[0]?.count.toString(),
+                complete:
+                    completeOrder[0]?.count !== null
+                        ? completeOrder[0]?.count.toString()
+                        : 0,
+                cancel:
+                    cancelOrder[0]?.count !== null
+                        ? cancelOrder[0]?.count.toString()
+                        : 0,
             },
             orderDate,
         };

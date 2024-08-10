@@ -154,7 +154,7 @@ const UserAddress = (props) => (
         <View style={styles.spaceBetween}>
             <View style={{ maxWidth: 200 }}>
                 <Text style={styles.addressTitle}>Bill to </Text>
-                <Text style={styles.address}>mh.tranminhhoang@gmail.com</Text>
+                <Text style={styles.address}>{props.userName}</Text>
             </View>
             <Text style={styles.addressTitle}>
                 {moment(props.createdAt)?.format("DD/MM/YYYY")}
@@ -167,9 +167,6 @@ const TableHead = () => (
     <View style={{ width: "100%", flexDirection: "row", marginTop: 10 }}>
         <View style={[styles.theader, styles.theader2]}>
             <Text>Ten</Text>
-        </View>
-        <View style={[styles.theader, styles.theader2]}>
-            <Text>Anh</Text>
         </View>
         <View style={styles.theader}>
             <Text>Gia</Text>
@@ -192,18 +189,7 @@ const TableBody = (props) => {
                         <View style={[styles.tbody, styles.tbody2]}>
                             <Text>{receipt?.productName}</Text>
                         </View>
-                        <View style={[styles.tbody, styles.tbody2]}>
-                            <Image
-                                style={styles.logo}
-                                src={{
-                                    uri: "https://djusmsx094025.cloudfront.net/3bc623b7d96dae4d90642626e49568b9",
-                                    method: "GET",
-                                    headers: {
-                                        "Access-Control-Allow-Origin": "*",
-                                    },
-                                }}
-                            />
-                        </View>
+
                         <View style={styles.tbody}>
                             <Text>{formatMoney(receipt?.price) + " VND"}</Text>
                         </View>
@@ -224,7 +210,7 @@ const TableBody = (props) => {
     ) : null;
 };
 
-const TableTotal = () => (
+const TableTotal = (props) => (
     <View style={{ width: "100%", flexDirection: "row" }}>
         <View style={styles.total}>
             <Text></Text>
@@ -233,15 +219,10 @@ const TableTotal = () => (
             <Text> </Text>
         </View>
         <View style={styles.tbody}>
-            <Text>Total</Text>
+            <Text>Tong tien</Text>
         </View>
         <View style={styles.tbody}>
-            <Text>
-                {reciept_data.items.reduce(
-                    (sum, item) => sum + item.price * item.qty,
-                    0
-                )}
-            </Text>
+            <Text>{formatMoney(props.total) + " VND"}</Text>
         </View>
     </View>
 );
@@ -258,18 +239,19 @@ const PdfFile = () => {
         })();
     }, []);
 
-    console.log(order?.orderitems);
-
     return (
         <PDFViewer width="100%" height="775px" className="app">
             <Document style={{ width: "100%" }}>
                 <Page size="A4" style={styles.page}>
                     <InvoiceTitle />
                     <Address address={"abc"} />
-                    <UserAddress createdAt={order.createdAt} />
+                    <UserAddress
+                        createdAt={order.createdAt}
+                        userName={order?.lastName + " " + order?.firstName}
+                    />
                     <TableHead />
                     <TableBody items={order?.orderitems} />
-                    <TableTotal />
+                    <TableTotal total={order?.total} />
                 </Page>
             </Document>
         </PDFViewer>
