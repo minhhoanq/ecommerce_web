@@ -347,6 +347,79 @@ export class ProductRepositoryImpl implements IProductRepository {
         return products;
     }
 
+    async findProductsManager(
+        limit: number,
+        sort: string,
+        page: number,
+        filter: any
+    ): Promise<any> {
+        const skip = (page - 1) * limit;
+        const sortBy: Prisma.UserOrderByWithRelationInput =
+            sort === "ctime" ? { createdAt: "desc" } : { id: "asc" };
+        const products = await this._prisma.product.findMany({
+            where: filter,
+            orderBy: [sortBy],
+            skip: skip,
+            take: 9,
+            include: {
+                skus: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        attributes: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        inventories: {
+                            select: {
+                                stock: true,
+                            },
+                        },
+                        prices: {
+                            select: {
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                categorybrand: {
+                    select: {
+                        category: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                        brand: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                imageProducts: {
+                    select: {
+                        id: true,
+                        src: true,
+                    },
+                },
+            },
+        });
+
+        const productSkus: any[] = await this._prisma.$queryRaw`
+            SELECT DISTINCT ON (sk."name") sk.id, sk."name", sk."slug", pr."price", p."image", ca."name" as category, br."name" as brand 
+            FROM products as p
+            JOIN skus AS sk ON p.id = sk."productId"
+            JOIN categorybrands as cb on p."categoryBrandId" = cb.id
+            JOIN categories as ca on cb."categoryId" = ca.id
+            JOIN brands as br on cb."brandId" = br.id
+            JOIN prices AS pr ON sk.id = pr."skuId"
+        `;
+
+        await sendProductsByKafka(productSkus);
+
+        return products;
+    }
+
     async findAllVariations(slug: string, category: string): Promise<any> {
         let attributeQuery;
         switch (category) {

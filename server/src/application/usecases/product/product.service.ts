@@ -126,6 +126,25 @@ export class ProductService implements IProductService {
         return await this._productRepo.findProducts(limit, sort, page, filter);
     }
 
+    async getProductsManager({
+        limit,
+        sort,
+        page,
+        filter,
+    }: {
+        limit: number;
+        sort: string;
+        page: number;
+        filter: any;
+    }): Promise<any> {
+        return await this._productRepo.findProductsManager(
+            limit,
+            sort,
+            page,
+            filter
+        );
+    }
+
     async getProduct(slug: string): Promise<any> {
         const product = await this._productRepo.findProduct(slug);
 

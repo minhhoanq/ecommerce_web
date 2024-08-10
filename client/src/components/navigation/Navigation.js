@@ -26,7 +26,8 @@ const Navigation = () => {
         const handleEnter = (e) => {
             if (e.keyCode === 13) {
                 navigate({
-                    pathname: location.pathname,
+                    // pathname: location.pathname,
+                    pathname: `/${path.PRODUCTS}`,
                     search: createSearchParams({ q }).toString(),
                 });
             }

@@ -208,8 +208,14 @@ const ManageOrder = () => {
                                             </option>
                                             <option value={4}>Đã hủy</option>
                                         </select>
+                                    ) : el.orderStatusId === 1 ? (
+                                        "Đang xử lí"
+                                    ) : el.orderStatusId === 2 ? (
+                                        "Đã thanh toán"
+                                    ) : el.orderStatusId === 3 ? (
+                                        "Hoàn thành"
                                     ) : (
-                                        el.orderStatusId
+                                        "Đã hủy"
                                     )}
                                 </td>
                                 <td className="text-center py-2">
@@ -228,14 +234,14 @@ const ManageOrder = () => {
                                     >
                                         <BiEdit size={20} />
                                     </span>
-                                    <span
+                                    {/* <span
                                         onClick={() =>
                                             handleDeleteProduct(el.orderId)
                                         }
                                         className="text-blue-500 hover:text-orange-500 inline-block hover:underline cursor-pointer px-1"
                                     >
                                         <RiDeleteBin6Line size={20} />
-                                    </span>
+                                    </span> */}
                                 </td>
                             </tr>
                         ))}

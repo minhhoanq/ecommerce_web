@@ -22,6 +22,18 @@ export interface IProductService {
         filter: any;
     }): Promise<any>;
 
+    getProductsManager({
+        limit,
+        sort,
+        page,
+        filter,
+    }: {
+        limit: number;
+        sort: string;
+        page: number;
+        filter: any;
+    }): Promise<any>;
+
     getVariations(slug: string, category: string): Promise<any>;
 
     getProduct(slug: string): Promise<any>;

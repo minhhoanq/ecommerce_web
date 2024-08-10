@@ -246,7 +246,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
             JOIN prices pr ON sk.id = pr."skuId"
             JOIN products p ON sk."productId" = p.id
             GROUP BY o.id, u.username, u.id
-            ORDER BY o.id;
+            ORDER BY o."createdAt" desc;
         `;
     }
 }

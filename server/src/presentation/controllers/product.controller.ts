@@ -151,6 +151,19 @@ export class ProductController {
         }
     }
 
+    async getProductsManager(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "getProducts successfully!",
+                metadata: await this._productService.getProductsManager(
+                    parseQueryParams(req.query)
+                ),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getVariations(req: Request, res: Response, next: NextFunction) {
         try {
             new SuccessResponse({
