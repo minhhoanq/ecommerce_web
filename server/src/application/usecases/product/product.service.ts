@@ -17,7 +17,6 @@ import initEs from "../../../infrastructure/elasticsearch/index";
 
 const clientEs = initEs.getClients();
 
-//Product Factory
 @injectable()
 export class ProductService implements IProductService {
     private _productRepo: IProductRepository;
@@ -242,5 +241,9 @@ export class ProductService implements IProductService {
             total: resultEs?.body?.hits?.total?.value,
             result: resultEs?.body?.hits?.hits,
         };
+    }
+
+    async getBestSellers(): Promise<any> {
+        return await this._productRepo.findBestSellers();
     }
 }

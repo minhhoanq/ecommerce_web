@@ -218,4 +218,15 @@ export class ProductController {
             next(error);
         }
     }
+
+    async getBestSellers(req: Request, res: Response, next: NextFunction) {
+        try {
+            new SuccessResponse({
+                message: "List bestsellers",
+                metadata: await this._productService.getBestSellers(),
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

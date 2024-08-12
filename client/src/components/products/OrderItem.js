@@ -68,11 +68,12 @@ const OrderItem = ({
             </span>
             <span className="col-span-1 w-full text-center">
                 <div className="flex items-center h-full">
-                    <SelectQuantity
+                    {/* <SelectQuantity
                         quantity={quantity}
                         handleQuantity={handleQuantity}
                         handleChangeQuantity={handleChangeQuantity}
-                    />
+                    /> */}
+                    {dfQuantity}
                 </div>
             </span>
             <span className="col-span-3 w-full h-full flex items-center justify-center text-center">

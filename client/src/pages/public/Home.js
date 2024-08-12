@@ -15,6 +15,7 @@ import withBaseComponent from "hocs/withBaseComponent";
 import { createSearchParams } from "react-router-dom";
 import { getCartItems } from "apis";
 import { updateCart } from "store/user/userSlice";
+import { createSlug } from "ultils/helpers";
 
 const { IoIosArrowForward } = icons;
 const Home = ({ navigate }) => {
@@ -120,24 +121,23 @@ const Home = ({ navigate }) => {
                                         className="w-1/2 flex-1 h-[129px] object-contain"
                                     />
                                     <div className="w-1/2 flex-1 text-gray-700">
-                                        <h4 className="font-semibold uppercase">
+                                        <h4
+                                            className="font-semibold uppercase cursor-pointer hover:underline"
+                                            onClick={() =>
+                                                navigate({
+                                                    pathname: `/products/${createSlug(
+                                                        el.name
+                                                    )}`,
+                                                })
+                                            }
+                                        >
                                             {el.name}
                                         </h4>
                                         <ul className="text-sm">
                                             {el?.brands?.map((item) => (
                                                 <span
                                                     key={item}
-                                                    className="flex cursor-pointer hover:underline gap-1 items-center text-gray-500"
-                                                    onClick={() =>
-                                                        navigate({
-                                                            pathname: `/${el.name.toLowerCase()}`,
-                                                            search: createSearchParams(
-                                                                {
-                                                                    brand: item,
-                                                                }
-                                                            ).toString(),
-                                                        })
-                                                    }
+                                                    className="flex gap-1 items-center text-gray-500"
                                                 >
                                                     <IoIosArrowForward
                                                         size={14}

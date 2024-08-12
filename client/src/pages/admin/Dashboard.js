@@ -1,4 +1,4 @@
-import { apiGetDashboard, apiGetStatistical } from "apis";
+import { apiGetBestSellers, apiGetDashboard, apiGetStatistical } from "apis";
 import BoxInfo from "components/chart/BoxInfo";
 import CustomChart from "components/chart/CustomChart";
 import React, { useEffect, useState } from "react";
@@ -10,24 +10,32 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Dashboard = () => {
     const [data, setData] = useState();
     const [isMonth, setIsMonth] = useState(false);
+    const [bestSellers, setBestSellers] = useState([]);
     const [customTime, setCustomTime] = useState({
         from: "",
         to: "",
     });
-    const fetchDataDashboard = async (params) => {
+    const fetchDataDashboard = async () => {
         const response = await apiGetStatistical();
         if (response.status === 200) setData(response.metadata);
+        const dataBestSellers = await apiGetBestSellers();
+        if (dataBestSellers.status === 200)
+            setBestSellers(dataBestSellers.metadata);
     };
+    // useEffect(() => {
+    //     const type = isMonth ? "MTH" : "D";
+    //     const params = { type };
+    //     if (customTime.from) params.from = customTime.from;
+    //     if (customTime.to) params.to = customTime.to;
+    //     fetchDataDashboard(params);
+    // }, [isMonth, customTime]);
+    // const handleCustomTime = () => {
+    //     setCustomTime({ from: "", to: "" });
+    // };
+
     useEffect(() => {
-        const type = isMonth ? "MTH" : "D";
-        const params = { type };
-        if (customTime.from) params.from = customTime.from;
-        if (customTime.to) params.to = customTime.to;
-        fetchDataDashboard(params);
-    }, [isMonth, customTime]);
-    const handleCustomTime = () => {
-        setCustomTime({ from: "", to: "" });
-    };
+        fetchDataDashboard();
+    }, []);
 
     const pieData = {
         labels: ["Tông đơn đã hủy", "Tổng đơn thành công"],
@@ -100,10 +108,10 @@ const Dashboard = () => {
                         className="border-yellow-500 text-white bg-yellow-500"
                     />
                 </div>
-                <div className="mt-6 grid grid-cols-10 gap-4 w-[1230px]">
-                    <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative flex-1 rounded-md  p-4">
-                        <div className="flex items-center justify-between">
-                            Thống kê doanh thu
+                <div className="mt-6 grid grid-cols-10 gap-4">
+                    <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative flex-1 rounded-md p-4">
+                        <div className="flex items-center justify-between font-bold">
+                            Thống kê doanh thu 15 ngày gần nhất
                         </div>
                         {data?.orderDate && (
                             <CustomChart
@@ -115,10 +123,55 @@ const Dashboard = () => {
                     </div>
                     <div className="col-span-3 rounded-md border p-4">
                         <span className="font-bold gap-8">
-                            Số người truy cập chưa đăng ký và đã đăng ký
+                            Số đơn hàng thành công và đã hủy
                         </span>
                         <div>
                             <Pie data={pieData} />;
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-6 grid grid-cols-1 gap-4">
+                    <div className="col-span-7 min-h-[500px] border flex flex-col gap-4 relative flex-1 rounded-md p-4">
+                        <span className="font-bold">
+                            Các sản phẩm bán chạy nhất trong tháng
+                        </span>
+                        <div>
+                            <table className="table-auto mb-6 text-left w-full">
+                                <thead className="font-bold bg-gray-700 text-[13px] text-white">
+                                    <tr className="border border-gray-500">
+                                        <th className="px-4 py-2">#</th>
+                                        <th className="px-4 py-2">Ảnh</th>
+                                        <th className="px-4 py-2">Tên</th>
+                                        <th className="px-4 py-2">Đã bán</th>
+                                        <th className="px-4 py-2">Tồn kho</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {bestSellers &&
+                                        bestSellers.map((el, index) => (
+                                            <tr key={index}>
+                                                <td className="py-2 px-4">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="py-2 px-4">
+                                                    <img
+                                                        src={el.image}
+                                                        className="h-[50px] "
+                                                    />
+                                                </td>
+                                                <td className="py-2 px-4">
+                                                    {el.productname}
+                                                </td>
+                                                <td className="py-2 px-4">
+                                                    {el.total_quantity} sản phẩm
+                                                </td>
+                                                <td className="py-2 px-4">
+                                                    {el.stock} sản phẩm
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

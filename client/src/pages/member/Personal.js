@@ -73,10 +73,8 @@ const Personal = ({ navigate }) => {
                     <label htmlFor="file">
                         <img
                             src={
-                                // preview
-                                //     ? preview
-                                //     : current?.avatar ||
-                                "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
+                                preview ? preview : current?.avatar
+                                // "https://png.pngtree.com/png-clipart/20200727/original/pngtree-smartphone-shop-sale-logo-design-png-image_5069958.jpg"
                             }
                             alt="avatar"
                             className="w-20 h-20 ml-8 object-cover rounded-full cursor-pointer"

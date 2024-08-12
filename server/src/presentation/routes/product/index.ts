@@ -66,6 +66,10 @@ router.get(
 );
 router.get("/", asyncHandler(controller.getProducts.bind(controller)));
 router.get(
+    "/best-sellers",
+    asyncHandler(controller.getBestSellers.bind(controller))
+);
+router.get(
     "/manager",
     asyncHandler(controller.getProductsManager.bind(controller))
 );

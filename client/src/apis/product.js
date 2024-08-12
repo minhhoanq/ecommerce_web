@@ -87,3 +87,8 @@ export const getFeedbackApi = (slug) =>
         url: "/product/feedback/" + slug,
         method: "get",
     });
+export const apiGetBestSellers = () =>
+    axios({
+        url: "/product/best-sellers",
+        method: "get",
+    });

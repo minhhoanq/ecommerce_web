@@ -26,4 +26,5 @@ export interface IProductRepository {
     findAllVariations(slug: string, category: string): Promise<any>;
     findProduct(slug: string): Promise<any>;
     findFeedbackProductItem(slug: string): Promise<any>;
+    findBestSellers(): Promise<any>;
 }

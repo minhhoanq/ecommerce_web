@@ -569,4 +569,47 @@ export class ProductRepositoryImpl implements IProductRepository {
 
         return feedbacksWithUserInfo;
     }
+
+    async findBestSellers(): Promise<any> {
+        const rawBestSellers: [] = await this._prisma.$queryRaw`
+            WITH reservation_totals AS (
+            SELECT
+                iv.id,
+                iv."skuId",
+                iv."stock",
+                pr."image",
+                sk."name" AS productName,
+                SUM((reservation->>'quantity')::int) AS total_quantity
+            FROM
+                inventories AS iv
+                JOIN skus AS sk ON iv."skuId" = sk.id
+                JOIN products as pr on sk."productId" = pr.id
+                CROSS JOIN jsonb_array_elements(iv.reservations::jsonb) AS reservation
+            GROUP BY
+                iv.id, iv."skuId", sk."name", pr."image"
+            )
+            SELECT
+                id,
+                "skuId",
+                    stock,
+                    image,
+                productName,
+                total_quantity
+            FROM
+                reservation_totals
+            ORDER BY
+                total_quantity DESC
+            LIMIT 10
+            `;
+        // Convert BigInt to string
+        const bestSeller = rawBestSellers.map((item: any) => ({
+            ...item,
+            id: item.id.toString(), // Convert BigInt to string
+            skuId: item.skuId.toString(), // Convert BigInt to string
+            total_quantity: Number(item.total_quantity), // Convert BigInt to Number
+        }));
+
+        console.log(bestSeller);
+        return bestSeller;
+    }
 }

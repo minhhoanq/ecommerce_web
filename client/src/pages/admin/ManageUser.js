@@ -56,7 +56,7 @@ const ManageUser = () => {
                                 <th className="px-4 py-2">Email</th>
                                 <th className="px-4 py-2">Họ</th>
                                 <th className="px-4 py-2">Tên</th>
-                                <th className="px-4 py-2">QUyền</th>
+                                <th className="px-4 py-2">Quyền</th>
                                 <th className="px-4 py-2">Số điện thoại</th>
                                 <th className="px-4 py-2">Trạng thái</th>
                                 <th className="px-4 py-2">Ngày tạo</th>
