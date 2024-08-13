@@ -360,7 +360,7 @@ export class ProductRepositoryImpl implements IProductRepository {
             where: filter,
             orderBy: [sortBy],
             skip: skip,
-            take: 9,
+            take: 8,
             include: {
                 skus: {
                     select: {
@@ -405,19 +405,12 @@ export class ProductRepositoryImpl implements IProductRepository {
             },
         });
 
-        const productSkus: any[] = await this._prisma.$queryRaw`
-            SELECT DISTINCT ON (sk."name") sk.id, sk."name", sk."slug", pr."price", p."image", ca."name" as category, br."name" as brand 
-            FROM products as p
-            JOIN skus AS sk ON p.id = sk."productId"
-            JOIN categorybrands as cb on p."categoryBrandId" = cb.id
-            JOIN categories as ca on cb."categoryId" = ca.id
-            JOIN brands as br on cb."brandId" = br.id
-            JOIN prices AS pr ON sk.id = pr."skuId"
-        `;
+        const totalProduct = await this._prisma.product.count();
 
-        await sendProductsByKafka(productSkus);
-
-        return products;
+        return {
+            totalProduct,
+            products,
+        };
     }
 
     async findAllVariations(slug: string, category: string): Promise<any> {
@@ -578,6 +571,7 @@ export class ProductRepositoryImpl implements IProductRepository {
                 iv."skuId",
                 iv."stock",
                 pr."image",
+				sk."attributes",
                 sk."name" AS productName,
                 SUM((reservation->>'quantity')::int) AS total_quantity
             FROM
@@ -586,13 +580,14 @@ export class ProductRepositoryImpl implements IProductRepository {
                 JOIN products as pr on sk."productId" = pr.id
                 CROSS JOIN jsonb_array_elements(iv.reservations::jsonb) AS reservation
             GROUP BY
-                iv.id, iv."skuId", sk."name", pr."image"
+                iv.id, iv."skuId", sk."name", pr."image", sk."attributes"
             )
             SELECT
                 id,
                 "skuId",
-                    stock,
-                    image,
+                stock,
+                image,
+				attributes,
                 productName,
                 total_quantity
             FROM

@@ -50,8 +50,8 @@ const ManageProducts = () => {
             limit: process.env.REACT_APP_LIMIT,
         });
         if (response.status === 200) {
-            setCounts(response.metadata.length);
-            setProducts(response.metadata);
+            setCounts(response.metadata.totalProduct);
+            setProducts(response.metadata.products);
         }
     };
     const queryDecounce = useDebounce(watch("q"), 800);
@@ -258,7 +258,11 @@ const ManageProducts = () => {
                                                         </div>
                                                     </div>
                                                     <div className="text-center p-2">
-                                                        x {item.quantity}
+                                                        Số lượng{" "}
+                                                        {
+                                                            item.inventories[0]
+                                                                .stock
+                                                        }
                                                     </div>
                                                     <div className="text-right p-2 w-[200px]">
                                                         {formatMoney(

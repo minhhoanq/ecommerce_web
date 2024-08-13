@@ -125,8 +125,8 @@ const Dashboard = () => {
                         <span className="font-bold gap-8">
                             Số đơn hàng thành công và đã hủy
                         </span>
-                        <div>
-                            <Pie data={pieData} />;
+                        <div className="h-full flex items-center">
+                            <Pie data={pieData} />
                         </div>
                     </div>
                 </div>
@@ -142,6 +142,9 @@ const Dashboard = () => {
                                         <th className="px-4 py-2">#</th>
                                         <th className="px-4 py-2">Ảnh</th>
                                         <th className="px-4 py-2">Tên</th>
+                                        <th className="px-4 py-2">
+                                            Thuộc tính
+                                        </th>
                                         <th className="px-4 py-2">Đã bán</th>
                                         <th className="px-4 py-2">Tồn kho</th>
                                     </tr>
@@ -161,6 +164,26 @@ const Dashboard = () => {
                                                 </td>
                                                 <td className="py-2 px-4">
                                                     {el.productname}
+                                                </td>
+                                                <td>
+                                                    {el.attributes.ram && (
+                                                        <p className="text-sm">
+                                                            {el.attributes.ram}
+                                                        </p>
+                                                    )}
+                                                    {el.attributes.inch && (
+                                                        <p className="text-sm">
+                                                            {el.attributes.inch}
+                                                        </p>
+                                                    )}
+                                                    {el.attributes.color && (
+                                                        <p className="text-sm">
+                                                            {
+                                                                el.attributes
+                                                                    .color
+                                                            }
+                                                        </p>
+                                                    )}
                                                 </td>
                                                 <td className="py-2 px-4">
                                                     {el.total_quantity} sản phẩm

@@ -169,14 +169,27 @@ const History = ({ navigate, location }) => {
                                             : "hidden"
                                     }`}
                                 >
-                                    <Stepper
-                                        steps={[
-                                            { label: "Đang xử lí" },
-                                            { label: "Đã thanh toán" },
-                                            { label: "Hoàn thành" },
-                                        ]}
-                                        activeStep={el?.orderStatusId}
-                                    />
+                                    {el?.orderStatusId === 4 ? (
+                                        <Stepper
+                                            steps={[
+                                                { label: "Đang xử lí" },
+                                                { label: "Đã hủy" },
+                                            ]}
+                                            styleConfig={{
+                                                completedBgColor: "#C0C0C0",
+                                            }}
+                                            activeStep={el?.orderStatusId}
+                                        />
+                                    ) : (
+                                        <Stepper
+                                            steps={[
+                                                { label: "Đang xử lí" },
+                                                { label: "Đã thanh toán" },
+                                                { label: "Hoàn thành" },
+                                            ]}
+                                            activeStep={el?.orderStatusId}
+                                        />
+                                    )}
                                     <div className="p-4 border-t-2">
                                         {el?.orderitems?.map((item) => (
                                             <div
