@@ -11,6 +11,7 @@ import { BadRequestError } from "../../shared/core/error.response";
 import slugify from "slugify";
 import { sendProductsByKafka } from "../kafka";
 import { RPCRequest } from "../rabbitmq";
+import redisClient from "../redis";
 
 @injectable()
 export class ProductRepositoryImpl implements IProductRepository {
@@ -342,6 +343,10 @@ export class ProductRepositoryImpl implements IProductRepository {
             JOIN prices AS pr ON sk.id = pr."skuId"
         `;
 
+        // if ((await redisClient.get("products")) === null) {
+        //     redisClient.set("products", JSON.stringify(products));
+        // }
+
         await sendProductsByKafka(productSkus);
 
         return products;
@@ -357,7 +362,9 @@ export class ProductRepositoryImpl implements IProductRepository {
         const sortBy: Prisma.UserOrderByWithRelationInput =
             sort === "ctime" ? { createdAt: "desc" } : { id: "asc" };
         const products = await this._prisma.product.findMany({
-            where: filter,
+            where: {
+                name: filter,
+            },
             orderBy: [sortBy],
             skip: skip,
             take: 8,

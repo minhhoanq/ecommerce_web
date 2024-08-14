@@ -135,7 +135,7 @@ export class OrderController {
         try {
             new SuccessResponse({
                 message: "Order successfully!",
-                metadata: await this._orderService.getAllOrders(),
+                metadata: await this._orderService.getAllOrders(req.query),
             }).send(res);
         } catch (error) {
             next(error);

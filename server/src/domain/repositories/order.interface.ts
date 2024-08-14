@@ -22,5 +22,5 @@ export interface IOrderRepository {
     findMany(userId: number, query: any): Promise<any>;
     findFirstOrderItem(orderItemId: number): Promise<any>;
     getStatistical(): Promise<any>;
-    findAllOrders(): Promise<any>;
+    findAllOrders(query: any): Promise<any>;
 }

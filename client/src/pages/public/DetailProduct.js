@@ -361,9 +361,9 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
                                 <span key={index}>{el}</span>
                             )
                         )}
-                        <span className="text-sm text-main italic">{`(Đã bán: ${
+                        {/* <span className="text-sm text-main italic">{`(Đã bán: ${
                             products?.sold || 23
-                        })`}</span>
+                        })`}</span> */}
                     </div>
                     {/* <ul className="list-square text-sm text-gray-500 pl-4">
                         {currentProducts?.desc?.length > 1 &&

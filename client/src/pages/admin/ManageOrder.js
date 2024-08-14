@@ -41,8 +41,8 @@ const ManageOrder = () => {
             limit: process.env.REACT_APP_LIMIT,
         });
         if (response.status === 200) {
-            setCounts(response.metadata.length);
-            setOrders(response.metadata);
+            setCounts(response.metadata.totalOrders);
+            setOrders(response.metadata.orders);
         }
     };
     const render = useCallback(() => {
@@ -98,7 +98,7 @@ const ManageOrder = () => {
             <div className="h-[69px] w-full"></div>
             <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
                 <h1 className="text-xl font-bold tracking-tight mt-2">
-                    QUẢN LÍ ĐƠN HÀNG
+                    QUẢN LÝ ĐƠN HÀNG
                 </h1>
                 {editOrder && (
                     <>
@@ -204,7 +204,7 @@ const ManageOrder = () => {
                                                 Đã thanh toán
                                             </option>
                                             <option value={3}>
-                                                Hoành thành
+                                                Hoàn thành
                                             </option>
                                             <option value={4}>Đã hủy</option>
                                         </select>

@@ -116,7 +116,7 @@ export class OrderRepositoryImpl implements IOrderRepository {
 
     async findMany(userId: number, query: any): Promise<any> {
         const { page, limit } = query;
-        const skip = (+page - 1) * +limit;
+        const skip = (+page - 1) * limit;
 
         const orders: any[] = await this._prisma.$queryRaw`
             SELECT o.id AS "orderId", o."userId", o."total", o."paymentMethodId", o."orderStatusId", o."createdAt", o."updatedAt",
@@ -221,8 +221,11 @@ export class OrderRepositoryImpl implements IOrderRepository {
         };
     }
 
-    async findAllOrders(): Promise<any> {
-        return await this._prisma.$queryRaw`
+    async findAllOrders(query: any): Promise<any> {
+        const { limit, page } = query;
+        const skip = (+page - 1) * limit;
+
+        const orders = await this._prisma.$queryRaw`
             SELECT 
                 o.id AS "orderId", 
                 u.id AS "userId",
@@ -246,7 +249,16 @@ export class OrderRepositoryImpl implements IOrderRepository {
             JOIN prices pr ON sk.id = pr."skuId"
             JOIN products p ON sk."productId" = p.id
             GROUP BY o.id, u.username, u.id
-            ORDER BY o."createdAt" desc;
+            ORDER BY o."createdAt" desc
+            LIMIT ${+limit}
+            OFFSET ${+skip}
         `;
+
+        const totalOrders = await this._prisma.order.count();
+
+        return {
+            totalOrders,
+            orders,
+        };
     }
 }

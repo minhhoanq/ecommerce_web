@@ -38,7 +38,6 @@ router.patch(
 router.post(
     "/checkout",
     auth.authentication,
-
     // access.GrantAccess("createOwn", "order"),
     asyncHandler(controller.checkout.bind(controller))
 );

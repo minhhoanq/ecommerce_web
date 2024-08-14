@@ -46,8 +46,8 @@ export class UserRepoImpl implements IUserRepository {
         });
     }
 
-    async findAll(): Promise<any[]> {
-        return await this._prisma.user.findMany({
+    async findAll(): Promise<any> {
+        const users = await this._prisma.user.findMany({
             where: {
                 roleId: 2,
             },
@@ -60,6 +60,17 @@ export class UserRepoImpl implements IUserRepository {
                 createdAt: true,
             },
         });
+
+        const totalUsers = await this._prisma.user.count({
+            where: {
+                roleId: 2,
+            },
+        });
+
+        return {
+            totalUsers,
+            users,
+        };
     }
 
     async findFirst(data: FindFirstUserDTO): Promise<User | null> {

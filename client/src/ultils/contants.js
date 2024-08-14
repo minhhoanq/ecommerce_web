@@ -172,21 +172,21 @@ export const adminSidebar = [
     {
         id: 1,
         type: "SINGLE",
-        text: "Quản lí chung",
+        text: "Quản lý chung",
         path: `/${path.ADMIN}/${path.DASHBOARD}`,
         icon: <AiOutlineDashboard size={20} />,
     },
     {
         id: 2,
         type: "SINGLE",
-        text: "Quản lí người dùng",
+        text: "Quản lý người dùng",
         path: `/${path.ADMIN}/${path.MANAGE_USER}`,
         icon: <MdGroups size={20} />,
     },
     {
         id: 3,
         type: "PARENT",
-        text: "Quản lí sản phẩm",
+        text: "Quản lý sản phẩm",
         icon: <TbBrandProducthunt size={20} />,
         submenu: [
             {
@@ -202,7 +202,7 @@ export const adminSidebar = [
     {
         id: 4,
         type: "SINGLE",
-        text: "Quản lí đơn hàng",
+        text: "Quản lý đơn hàng",
         path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
         icon: <RiBillLine size={20} />,
     },
@@ -262,11 +262,19 @@ export const blockStatus = [
 ];
 export const statusOrders = [
     {
-        label: "Cancalled",
-        value: "Cancalled",
+        label: "Đang xử lí",
+        value: "pending",
     },
     {
-        label: "Succeed",
-        value: "Succeed",
+        label: "Đã thanh toán",
+        value: "paid",
+    },
+    {
+        label: "Hoàn thành",
+        value: "completed",
+    },
+    {
+        label: "Đã hủy",
+        value: "cancel",
     },
 ];

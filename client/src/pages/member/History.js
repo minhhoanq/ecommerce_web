@@ -48,10 +48,10 @@ const History = ({ navigate, location }) => {
     }, [params]);
 
     const handleSearchStatus = ({ value }) => {
-        navigate({
-            pathname: location.pathname,
-            search: createSearchParams({ status: value }).toString(),
-        });
+        // navigate({
+        //     pathname: location.pathname,
+        //     search: createSearchParams({ status: value }).toString(),
+        // });
     };
 
     const handleShowOrderDetail = (orderId) => {
@@ -72,9 +72,9 @@ const History = ({ navigate, location }) => {
             <header className="text-xl font-semibold py-4 border-b border-b-blue-200">
                 <h3 className="uppercase">Đơn đã mua</h3>
             </header>
-            <div className="flex justify-end items-center px-4">
-                <form className="w-[45%] grid grid-cols-2 gap-4">
-                    <div className="col-span-1">
+            <div className="flex justify-end items-center p-4">
+                <form className="w-[20%] grid grid-cols-1 gap-4">
+                    {/* <div className="col-span-1">
                         <InputForm
                             id="q"
                             register={register}
@@ -82,7 +82,7 @@ const History = ({ navigate, location }) => {
                             fullWidth
                             placeholder="Tìm kiểm theo trạng thái,..."
                         />
-                    </div>
+                    </div> */}
                     <div className="col-span-1 flex items-center">
                         <CustomSelect
                             options={statusOrders}

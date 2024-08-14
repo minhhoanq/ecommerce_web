@@ -12,6 +12,7 @@ import clsx from "clsx";
 
 const ManageUser = () => {
     const [users, setUsers] = useState(null);
+    const [count, setCount] = useState(null);
     const [queries, setQueries] = useState({
         q: "",
     });
@@ -21,7 +22,10 @@ const ManageUser = () => {
             ...params,
             limit: process.env.REACT_APP_LIMIT,
         });
-        if (response.status === 200) setUsers(response.metadata);
+        if (response.status === 200) {
+            setCount(response.metadata.totalUsers);
+            setUsers(response.metadata.users);
+        }
     };
 
     const queriesDebounce = useDebounce(queries.q, 800);
@@ -35,10 +39,10 @@ const ManageUser = () => {
     return (
         <div className={clsx("w-full")}>
             <h1 className="h-[75px] flex justify-between items-center text-xl font-bold px-4 border-b">
-                <span>Quản lí người dùng</span>
+                <span>QUẢN LÝ NGƯỜI DÙNG</span>
             </h1>
             <div className="w-full p-4">
-                <div className="flex justify-end py-4">
+                {/* <div className="flex justify-end py-4">
                     <InputField
                         nameKey={"q"}
                         value={queries.q}
@@ -47,7 +51,7 @@ const ManageUser = () => {
                         placeholder="Tìm kiếm theo tên hoặc email..."
                         isHideLabel
                     />
-                </div>
+                </div> */}
                 <div>
                     <table className="table-auto mb-6 text-left w-full">
                         <thead className="font-bold bg-gray-700 text-[13px] text-white">
@@ -102,7 +106,7 @@ const ManageUser = () => {
                     </table>
                 </div>
                 <div className="w-full flex justify-end">
-                    <Pagination totalCount={3} />
+                    <Pagination totalCount={count} />
                 </div>
             </div>
         </div>

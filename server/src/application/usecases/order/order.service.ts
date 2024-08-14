@@ -281,7 +281,7 @@ export class OrderService implements IOrderService {
         return await this._orderRepo.getStatistical();
     }
 
-    async getAllOrders(): Promise<any> {
-        return await this._orderRepo.findAllOrders();
+    async getAllOrders(query: any): Promise<any> {
+        return await this._orderRepo.findAllOrders(query);
     }
 }

@@ -54,12 +54,14 @@ const ManageProducts = () => {
             setProducts(response.metadata.products);
         }
     };
-    const queryDecounce = useDebounce(watch("q"), 800);
+    const queryDecounce = useDebounce(watch("filter"), 800);
     useEffect(() => {
         if (queryDecounce) {
             navigate({
                 pathname: location.pathname,
-                search: createSearchParams({ q: queryDecounce }).toString(),
+                search: createSearchParams({
+                    filter: queryDecounce,
+                }).toString(),
             });
         } else
             navigate({
@@ -113,20 +115,20 @@ const ManageProducts = () => {
             <div className="h-[69px] w-full"></div>
             <div className="p-4 border-b w-full bg-gray-100 flex justify-between items-center fixed top-0">
                 <h1 className="text-xl font-bold tracking-tight mt-2">
-                    QUẢN LÍ SẢN PHẨM
+                    QUẢN LÝ SẢN PHẨM
                 </h1>
             </div>
-            <div className="flex justify-end items-center px-4">
+            {/* <div className="flex justify-end items-center px-4">
                 <form className="w-[45%]">
                     <InputForm
-                        id="q"
+                        id="filter"
                         register={register}
                         errors={errors}
                         fullWidth
                         placeholder="Search products by title, description,..."
                     />
                 </form>
-            </div>
+            </div> */}
             <table className="table-auto">
                 <thead>
                     <tr className="border bg-sky-900 text-white border-white">

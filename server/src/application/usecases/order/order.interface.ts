@@ -16,5 +16,5 @@ export interface IOrderService {
     }): Promise<any>;
     SubscribeEvents(payload: { event: string; data: any }): Promise<any>;
     getStatistical(): Promise<any>;
-    getAllOrders(): Promise<any>;
+    getAllOrders(query: any): Promise<any>;
 }
